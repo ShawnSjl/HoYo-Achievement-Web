@@ -1,7 +1,6 @@
 import { defineStore } from "pinia";
 import { ref } from 'vue';
-import {deleteCurrentUser, login, isAdmin, logout, isLogin} from "@/api/user";
-import { isTokenExpired } from "@/utils/jwt";
+import {deleteCurrentUser, login, logout, isLogin} from "@/api/user";
 import {showError, showInfo, showSuccess, showWarn} from "@/utils/notification.js";
 
 export const useUserStore = defineStore(
