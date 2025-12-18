@@ -2,24 +2,50 @@ import api from "@/utils/request";
 
 // User login
 export const login = (credentials) => {
-    return api.post("/auth/login", credentials);
+    return api.post("/user/login", credentials);
 };
 
-// User register
-export const register = (credentials) => {
-    return api.post("/auth/register", credentials);
-};
+// Check if the current user is logged in
+export const isLogin = () => {
+    return api.get("/user/is-login");
+}
 
+// User logout
+export const logout = () => {
+    return api.post("/user/logout");
+}
+
+// Get all users
 export const getAllUsers = () => {
-    return api.get("/auth/get-all");
+    return api.get("/user/all");
 }
 
-export const changePassword = (credentials) => {
-    return api.put("/auth/change-password", credentials);
+// Create a new user
+export const createUser = (request) => {
+    return api.post("/user/create", request);
+};
+
+// Update the user's username
+export const updateUsername = (request) => {
+    return api.put("/user/update-username", request);
 }
 
-export const deleteUserById = (id) => {
-    return api.delete("/auth/delete", {
-        params: { id }
-    });
+// Change the user's password
+export const changePassword = (request) => {
+    return api.put("/auth/change-password", request);
+}
+
+// Update the user's status
+export const updateUserStatus = (request) => {
+    return api.put("/user/update-status", request);
+}
+
+// Update the user's role; Should only be called by admin or root
+export const updateUserRoles = (request) => {
+    return api.put("/user/update-role", request);
+}
+
+// Delete the user
+export const deleteCurrentUser = () => {
+    return api.delete("/user/delete");
 }

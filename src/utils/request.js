@@ -13,10 +13,10 @@ const api = axios.create({
 api.interceptors.request.use(
     (config) => {
         // 从 localStorage 或 Vuex 中获取 token
-        const token = localStorage.getItem("jwt_token");
+        const token = localStorage.getItem("sa_token");
 
         if (token) {
-            config.headers["Authorization"] = `Bearer ${token}`;
+            config.headers["satoken"] = token;
         }
 
         return config;
@@ -36,7 +36,7 @@ api.interceptors.response.use(
         if (error.response && error.response.status === 401) {
             console.warn("Token 可能已过期，请重新登录");
             // 可以在这里触发退出登录逻辑，比如清除 token 并跳转到登录页
-            localStorage.removeItem("jwt_token");
+            localStorage.removeItem("sa_token");
         }
 
         return Promise.reject(error);
