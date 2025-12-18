@@ -1,7 +1,7 @@
 <script setup>
 import {ref, onMounted, onBeforeUnmount, nextTick, watch, computed} from "vue";
 import { useZzzAchievementStore } from "@/stores/zzzAchievementsStore";
-import { useAuthStore } from '@/stores/authStore';
+import { useUserStore } from '@/stores/userStore.js';
 import { useIsMobileStore } from '@/stores/isMobileStore';
 import {
   categories, cityClasses,
@@ -16,7 +16,7 @@ import ZzzAside from "@/views/ZzzAchievement/ZzzAside.vue";
 
 // 使用Pinia作为本地缓存
 const achievementStore = useZzzAchievementStore()
-const authStore = useAuthStore();
+const authStore = useUserStore();
 const isMobileStore = useIsMobileStore();
 
 /* 筛选和排序成就 */
@@ -94,7 +94,6 @@ const errorMessage = ref('');
 const fetchData = async () => {
   try {
     loading.value = true;
-    authStore.loadUser();
     await achievementStore.updateAchievements();
     errorMessage.value = '';
   } catch (e) {

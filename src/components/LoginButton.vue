@@ -1,10 +1,10 @@
 <script setup>
 import {computed, reactive, ref} from 'vue';
-import { useAuthStore } from '@/stores/authStore';
+import { useUserStore } from '@/stores/userStore.js';
 import { showWarn, showSuccess, showError} from "@/utils/notification";
 
 // 使用Pinia作为本地缓存
-const authStore = useAuthStore();
+const authStore = useUserStore();
 
 const loginDialogVisible = ref(false);
 
@@ -40,15 +40,10 @@ const submitForm = () => {
   })
 }
 const handleLogin = async () => {
-  try {
-    await authStore.loginUser({
-      username: loginForm.username,
-      password: loginForm.password,
-    })
-    showSuccess('登录成功');
-  } catch (error) {
-    showError('登录失败', error);
-  }
+  await authStore.loginUser({
+    username: loginForm.username,
+    password: loginForm.password,
+  })
 }
 </script>
 

@@ -1,5 +1,5 @@
 <script setup>
-import {useAuthStore} from "@/stores/authStore";
+import {useUserStore} from "@/stores/userStore.js";
 import {useSrAchievementStore} from "@/stores/srAchievementStore";
 import {useIsMobileStore} from "@/stores/isMobileStore";
 import {computed, nextTick, onBeforeUnmount, onMounted, ref, watch} from "vue";
@@ -10,7 +10,7 @@ import SrAside from "@/views/SrAchievement/SrAside.vue";
 import SrStatisticClass from "@/views/SrAchievement/SrStatisticClass.vue";
 
 // 使用Pinia作为本地缓存
-const authStore = useAuthStore()
+const authStore = useUserStore()
 const srAchievementStore = useSrAchievementStore()
 const isMobileStore = useIsMobileStore()
 
@@ -73,7 +73,6 @@ const errorMessage = ref('');
 const fetchData = async () => {
   try {
     loading.value = true;
-    authStore.loadUser();
     await srAchievementStore.updateAchievements();
     errorMessage.value = "";
   } catch (e) {

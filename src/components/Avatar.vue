@@ -2,11 +2,11 @@
 import {computed} from 'vue';
 import router from "@/router";
 import Zzz from '@/assets/zzz-image/zzz-logo.png'
-import {useAuthStore} from "@/stores/authStore";
+import {useUserStore} from "@/stores/userStore.js";
 import AvatarPopover from '@/components/AvatarPopover.vue'
 import {useIsMobileStore} from "@/stores/isMobileStore";
 
-const authStore = useAuthStore();
+const authStore = useUserStore();
 const isMobileStore = useIsMobileStore();
 
 const userName = computed(() => {return authStore.getUserName()})

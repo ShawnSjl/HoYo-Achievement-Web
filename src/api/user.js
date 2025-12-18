@@ -15,6 +15,11 @@ export const logout = () => {
     return api.post("/user/logout");
 }
 
+// Check if the current user is an admin
+export const isAdmin = () => {
+    return api.get("/user/is-admin");
+}
+
 // Get all users
 export const getAllUsers = () => {
     return api.get("/user/all");

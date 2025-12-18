@@ -3,10 +3,10 @@ import {computed, ref, watch} from "vue";
 import {showError} from "@/utils/notification";
 import {getAllUsers} from "@/api/user";
 import AddUserButton from "@/views/User/AddUserButton.vue";
-import {useAuthStore} from "@/stores/authStore";
+import {useUserStore} from "@/stores/userStore.js";
 
 // 使用Pinia作为本地缓存
-const authStore = useAuthStore();
+const authStore = useUserStore();
 
 const manageDialogVisible = ref(false);
 const allUsers = ref([]);
@@ -25,7 +25,6 @@ const fetchAllUsers = async () => {
     allUsers.value = response.users;
   } catch (e) {
     showError('获取用户列表失败', e);
-    authStore.loadUser()
   } finally {
     needToUpdate.value = false;
   }

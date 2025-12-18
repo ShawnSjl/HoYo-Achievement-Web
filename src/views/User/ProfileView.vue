@@ -1,7 +1,7 @@
 <script setup>
 import {computed, onMounted, watch} from "vue";
 import DefaultAvatar from '@/assets/zzz-image/zzz-logo.png'
-import {useAuthStore} from "@/stores/authStore";
+import {useUserStore} from "@/stores/userStore.js";
 import {useZzzAchievementStore} from "@/stores/zzzAchievementsStore";
 import {showError} from "@/utils/notification";
 import ProfileSettingButton from "@/views/User/ProfileSettingButton.vue";
@@ -12,11 +12,11 @@ import ProfileCardsLayout from "@/views/User/ProfileCardsLayout.vue";
 import {useIsMobileStore} from "@/stores/isMobileStore";
 
 // 使用Pinia作为本地缓存
-const authStore = useAuthStore();
+const authStore = useUserStore();
 const zzzAchievementStore = useZzzAchievementStore()
 const isMobileStore = useIsMobileStore();
 
-const isLoggedIn = computed(() => {return authStore.isAuthenticated()})
+const isLoggedIn = computed(() => {return authStore.isUserLogin()})
 
 // 移动端适配
 const avatarSize = computed(() => { return isMobileStore.isMobile? 'default' : 'large'})
@@ -24,7 +24,6 @@ const avatarSize = computed(() => { return isMobileStore.isMobile? 'default' : '
 // 同步数据
 const fetchData = async () => {
   try {
-    authStore.loadUser();
     await zzzAchievementStore.updateAchievements();
   } catch (e) {
     showError('Load data failed');

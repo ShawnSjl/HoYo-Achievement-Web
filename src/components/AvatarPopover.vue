@@ -1,14 +1,14 @@
 <script setup>
 import {ref, computed} from "vue";
-import {useAuthStore} from "@/stores/authStore";
+import {useUserStore} from "@/stores/userStore.js";
 import LoginButton from "@/components/LoginButton.vue";
 import LogoutButton from "@/components/LogoutButton.vue";
 import RegisterButton from "@/components/RegisterButton.vue";
 import UserSpaceButton from "@/components/UserSpaceButton.vue";
 
-const authStore = useAuthStore();
+const authStore = useUserStore();
 
-const isLoggedIn = computed(() => {return authStore.isAuthenticated()})
+const isLoggedIn = computed(() => {return authStore.isUserLogin()})
 </script>
 
 <template>

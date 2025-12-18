@@ -1,7 +1,7 @@
 <script setup>
 import { ref, computed } from 'vue';
 import { useRouter } from 'vue-router';
-import { useAuthStore } from '@/stores/authStore';
+import { useUserStore } from '@/stores/userStore.js';
 import {showWarn, showSuccess, showError, showInfo} from "@/utils/notification";
 
 // 使用Pinia作为本地缓存
