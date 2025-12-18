@@ -18,7 +18,7 @@ const props = defineProps({
 // 获取成就图片
 const achievementImg = computed(() => {
   const class_id = srClasses.indexOf(props.achievement.class) + 1;
-  return new URL(`/src/assets/image-sr/sr-class-${class_id}-level-${props.achievement.reward_level}.png`, import.meta.url).href
+  return new URL(`/src/assets/sr-image/sr-class-${class_id}-level-${props.achievement.reward_level}.png`, import.meta.url).href
 })
 
 // 获取奖励数量

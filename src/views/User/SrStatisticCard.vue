@@ -89,7 +89,7 @@ const getCompleteLevel3Number = computed(() => {
 
 <style scoped>
 .card-bg {
-  background-image: url("@/assets/image-sr/sr-bg-3.png");
+  background-image: url("@/assets/sr-image/sr-bg-3.png");
   background-size: cover;
   background-repeat: no-repeat;
   border-radius: 16px;

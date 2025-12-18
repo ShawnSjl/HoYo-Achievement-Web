@@ -41,7 +41,7 @@ const handleSR = () => {
 
 /* 左边背景 */
 .left {
-  background-image: url('@/assets/image/zzz-bg-2.png');
+  background-image: url('@/assets/zzz-image/zzz-bg-2.png');
   clip-path: polygon(0 0, 55% 0, 45% 100%, 0 100%);
   background-position: left -800px top;
   z-index: 1;
@@ -49,7 +49,7 @@ const handleSR = () => {
 
 /* 右边背景 */
 .right {
-  background-image: url('@/assets/image-sr/sr-bg-2.png');
+  background-image: url('@/assets/sr-image/sr-bg-2.png');
   clip-path: polygon(55% 0, 100% 0, 100% 100%, 45% 100%);
   background-position: right -200px top;
   z-index: 0;

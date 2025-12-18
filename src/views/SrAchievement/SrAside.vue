@@ -10,7 +10,7 @@ const achievementClass = defineModel()
 // 获取成就类别图片
 function getAchievementImg(cls) {
   const class_id = srClasses.indexOf(cls) + 1;
-  return new URL(`/src/assets/image-sr/sr-class-${class_id}.png`, import.meta.url).href
+  return new URL(`/src/assets/sr-image/sr-class-${class_id}.png`, import.meta.url).href
 }
 
 const handleSelect = async (srClass) => {

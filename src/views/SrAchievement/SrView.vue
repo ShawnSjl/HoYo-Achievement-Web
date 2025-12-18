@@ -174,7 +174,7 @@ onBeforeUnmount(() => {
 .sr-bg-page {
   width: 100%;
   height: 100vh;
-  background-image: url("@/assets/image-sr/sr-bg-3.png");
+  background-image: url("@/assets/sr-image/sr-bg-3.png");
   background-size: cover;
   background-repeat: no-repeat;
   background-position: top;
