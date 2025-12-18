@@ -61,9 +61,6 @@ const handleComplete = async () => {
       <div class="sr-detail">
         <div class="sr-name">
           {{ props.achievement.name }}
-          <span v-if="props.achievement.hidden !== 0" class="sr-hidden-badge">
-            隐藏
-          </span>
         </div>
         <div class="sr-desc">{{ props.achievement.description }}</div>
       </div>
@@ -196,18 +193,6 @@ const handleComplete = async () => {
   color: #757575;
 }
 
-.sr-hidden-badge {
-  background-color: #f11a1a;
-  color: #fff;
-  font-size: 12px;
-  padding: 2px 6px;
-  border-radius: 10px;
-  margin-left: 8px;
-  position: relative;
-  top: -10px;
-  left: -10px;
-}
-
 @media (max-width: 900px) {
   .sr-detail {
     font-size: 12px;
@@ -217,10 +202,6 @@ const handleComplete = async () => {
 
   .sr-name {
     font-size: 15px;
-  }
-
-  .sr-hidden-badge {
-    font-size: 10px;
   }
 }
 

@@ -15,7 +15,6 @@ export const zzzExport = async () => {
             {header: '名称', key: 'name', width: 20},
             {header: '描述', key: 'description', width: 40},
             {header: '奖励等级', key: 'reward_level', width: 15},
-            {header: '是否隐藏', key: 'hidden', width: 10},
             {header: '版本', key: 'game_version', width: 12},
             {header: '状态', key: 'complete', width: 10}
         ];

@@ -82,9 +82,6 @@ const getAchievementName = computed(() => {
       <div class="zzz-detail">
         <div class="zzz-name">
           {{ getAchievementName }}
-          <span v-if="props.achievement.hidden !== 0" class="zzz-hidden-badge">
-            隐藏
-          </span>
         </div>
         <div class="zzz-desc">{{ props.achievement.description }}</div>
       </div>
@@ -227,18 +224,6 @@ const getAchievementName = computed(() => {
   color: #acacac;
 }
 
-.zzz-hidden-badge {
-  background-color: #f11a1a;
-  color: #fff;
-  font-size: 12px;
-  padding: 2px 6px;
-  border-radius: 10px;
-  margin-left: 8px;
-  position: relative;
-  top: -10px;
-  left: -10px;
-}
-
 @media (max-width: 900px) {
   .zzz-detail {
     font-size: 12px;
@@ -248,10 +233,6 @@ const getAchievementName = computed(() => {
 
   .zzz-name {
     font-size: 15px;
-  }
-
-  .zzz-hidden-badge {
-    font-size: 10px;
   }
 }
 
