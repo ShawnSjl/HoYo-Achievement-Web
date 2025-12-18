@@ -27,20 +27,20 @@ api.interceptors.request.use(
 );
 
 // 响应拦截器
-api.interceptors.response.use(
-    (response) => {
-        return response.data;
-    },
-    (error) => {
-        // 处理 token 过期等情况
-        if (error.response && error.response.status === 401) {
-            console.warn("Token 可能已过期，请重新登录");
-            // 可以在这里触发退出登录逻辑，比如清除 token 并跳转到登录页
-            localStorage.removeItem("sa_token");
-        }
-
-        return Promise.reject(error);
-    }
-);
+// api.interceptors.response.use(
+//     (response) => {
+//         return response.data;
+//     },
+//     (error) => {
+//         // 处理 token 过期等情况
+//         if (error.response && error.response.status === 401) {
+//             console.warn("Token 可能已过期，请重新登录");
+//             // 可以在这里触发退出登录逻辑，比如清除 token 并跳转到登录页
+//             localStorage.removeItem("sa_token");
+//         }
+//
+//         return Promise.reject(error);
+//     }
+// );
 
 export default api;

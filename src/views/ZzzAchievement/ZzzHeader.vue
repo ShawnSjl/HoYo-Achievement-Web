@@ -15,7 +15,7 @@ const category = defineModel();
     <div class="zzz-header-left">
       <div class="zzz-header-left-start">
         <avatar />
-        <game-switch style="margin-left: 30px" />
+<!--        <game-switch style="margin-left: 30px" />-->
       </div>
       <div class="zzz-header-left-end">
         <zzz-setting-button />

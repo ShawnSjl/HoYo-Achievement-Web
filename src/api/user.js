@@ -54,3 +54,8 @@ export const updateUserRoles = (request) => {
 export const deleteCurrentUser = () => {
     return api.delete("/user/delete");
 }
+
+// Do the second authentication
+export const secondAuth = () => {
+    return api.get("/user/second-auth");
+}

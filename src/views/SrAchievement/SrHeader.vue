@@ -24,7 +24,7 @@ const isMobileStore = useIsMobileStore();
 
     <div class="sr-header-right">
       <sr-setting-button />
-      <game-switch class="sr-header-right-gap" />
+<!--      <game-switch class="sr-header-right-gap" />-->
       <avatar />
     </div>
   </div>
