@@ -1,5 +1,5 @@
 import {defineStore} from "pinia";
-import {computed, ref} from 'vue';
+import {ref} from 'vue';
 import {changePassword, deleteCurrentUser, isAdmin, isLogin, login, logout, updateUsername} from "@/api/user";
 import {showError, showInfo, showSuccess} from "@/utils/notification.js";
 
@@ -37,11 +37,11 @@ export const useUserStore = defineStore(
 
         /**
          * Get whether the current user is login
-         * @type {ComputedRef<boolean>}
+         * @returns {boolean}
          */
-        const isUserLogin = computed(() => {
+        function isUserLogin() {
             return !!(token.value);
-        });
+        }
 
         /**
          * Force check if the current user is logged in.
@@ -92,11 +92,11 @@ export const useUserStore = defineStore(
 
         /**
          * Get whether the current user is an admin
-         * @type {ComputedRef<boolean>}
+         * @returns {boolean}
          */
-        const isUserAdmin = computed(() => {
+        function isUserAdmin() {
             return !!(token.value && admin.value);
-        });
+        }
 
         /**
          * Force check if the current user is an admin.
