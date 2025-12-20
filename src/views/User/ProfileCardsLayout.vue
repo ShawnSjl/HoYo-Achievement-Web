@@ -1,11 +1,13 @@
 <script setup>
-import {ref, nextTick, onBeforeUnmount, onMounted} from "vue";
-import AnnouncementCard from "@/views/User/AnnouncementCard.vue";
-import EmptyCard from "@/views/User/EmptyCard.vue";
+import {nextTick, onBeforeUnmount, onMounted, ref} from "vue";
+import {useIsMobileStore} from "@/stores/isMobileStore";
+import {useAccountStore} from "@/stores/accountStore.js";
 import ZzzStatisticCard from "@/views/User/ZzzStatisticCard.vue";
 import SrStatisticCard from "@/views/User/SrStatisticCard.vue";
-import {useIsMobileStore} from "@/stores/isMobileStore";
+import EmptyCard from "@/views/User/EmptyCard.vue";
 
+// 使用Pinia作为本地缓存
+const accountStore = useAccountStore(); // FIXME 给卡片设置pros
 const isMobileStore = useIsMobileStore();
 
 // 设置卡片墙高度
@@ -30,41 +32,61 @@ onBeforeUnmount(() => {
 
 <template>
   <el-scrollbar :max-height="cardsLayoutHeight" style="margin-left: 10px">
-    <div v-if="!isMobileStore.isMobile" class="profile-card-layout">
-      <el-row :gutter="20">
-        <el-col :span="14">
-          <zzz-statistic-card class="profile-card" />
-        </el-col>
-        <el-col :span="10">
-          <sr-statistic-card class="profile-card" />
-        </el-col>
-      </el-row>
-      <el-row style="margin-top: 20px" :gutter="20">
-        <el-col :span="10">
-          <announcement-card class="profile-card"/>
-        </el-col>
-        <el-col :span="14">
-          <empty-card class="profile-card" />
-        </el-col>
-      </el-row>
-    </div>
-    <div v-else class="profile-card-layout">
-      <el-row :gutter="20">
-        <el-col :span="24">
-          <zzz-statistic-card class="profile-card" />
-        </el-col>
-      </el-row>
-      <el-row style="margin-top: 10px" :gutter="20">
-        <el-col :span="24">
-          <sr-statistic-card class="profile-card" />
-        </el-col>
-      </el-row>
-      <el-row style="margin-top: 10px" :gutter="20">
-        <el-col :span="24">
-          <announcement-card class="profile-card"/>
-        </el-col>
-      </el-row>
-    </div>
+    <el-row :gutter="20" class="profile-card-layout">
+
+      <el-col
+          v-for="item in accountStore.accounts"
+          :key="item.uuid"
+      >
+        <div v-if="item.type === 'ZZZ'">
+          <zzz-statistic-card :uuid="item.uuid" class="profile-card"/>
+        </div>
+        <div v-if="item.type === 'SR'">
+          <sr-statistic-card :uuid="item.uuid" class="profile-card"/>
+        </div>
+      </el-col>
+
+      <el-col>
+        <empty-card class="profile-card"/>
+      </el-col>
+
+
+    </el-row>
+    <!--    <div v-if="!isMobileStore.isMobile" class="profile-card-layout">-->
+    <!--      <el-row :gutter="20">-->
+    <!--        <el-col :span="14">-->
+    <!--          <zzz-statistic-card class="profile-card"/>-->
+    <!--        </el-col>-->
+    <!--        <el-col :span="10">-->
+    <!--          <sr-statistic-card class="profile-card"/>-->
+    <!--        </el-col>-->
+    <!--      </el-row>-->
+    <!--      <el-row :gutter="20" style="margin-top: 20px">-->
+    <!--        <el-col :span="10">-->
+    <!--          <announcement-card class="profile-card"/>-->
+    <!--        </el-col>-->
+    <!--        <el-col :span="14">-->
+    <!--          <empty-card class="profile-card"/>-->
+    <!--        </el-col>-->
+    <!--      </el-row>-->
+    <!--    </div>-->
+    <!--    <div v-else class="profile-card-layout">-->
+    <!--      <el-row :gutter="20">-->
+    <!--        <el-col :span="24">-->
+    <!--          <zzz-statistic-card class="profile-card"/>-->
+    <!--        </el-col>-->
+    <!--      </el-row>-->
+    <!--      <el-row :gutter="20" style="margin-top: 10px">-->
+    <!--        <el-col :span="24">-->
+    <!--          <sr-statistic-card class="profile-card"/>-->
+    <!--        </el-col>-->
+    <!--      </el-row>-->
+    <!--      <el-row :gutter="20" style="margin-top: 10px">-->
+    <!--        <el-col :span="24">-->
+    <!--          <announcement-card class="profile-card"/>-->
+    <!--        </el-col>-->
+    <!--      </el-row>-->
+    <!--    </div>-->
   </el-scrollbar>
 </template>
 

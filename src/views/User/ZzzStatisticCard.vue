@@ -1,55 +1,67 @@
 <script setup>
-import { computed } from 'vue';
+import {computed} from 'vue';
 import router from "@/router";
-import { useZzzAchievementStore } from "@/stores/zzzAchievementsStore";
-import { zzzVersion } from "@/utils/config";
+import {useZzzAchievementStore} from "@/stores/zzzAchievementsStore";
+import {zzzVersion} from "@/utils/config";
 import ZzzAchievementImg1 from '@/assets/zzz-image/zzz-achievement-level-1.png';
 import ZzzAchievementImg2 from '@/assets/zzz-image/zzz-achievement-level-2.png';
 import ZzzAchievementImg3 from '@/assets/zzz-image/zzz-achievement-level-3.png';
+import {useAccountStore} from "@/stores/accountStore.js";
 
 // 使用Pinia作为本地缓存
-const achievementStore = useZzzAchievementStore()
+const accountStore = useAccountStore();
+const achievementStore = useZzzAchievementStore();
 
+// 传入只读数据
+const props = defineProps({
+  uuid: String,
+});
+
+// 获取账号成就
+const account = accountStore.accounts.find(account => account.uuid === props.uuid);
+
+// 计算成就数量
 const getTotalNumber = computed(() => {
-  return achievementStore.achievements.length
+  return account.achievements.length
       - achievementStore.getBranchAchievementsNumber();
 })
 const getTotalCompleteNumber = computed(() => {
-  return achievementStore.achievements.filter(achievement => achievement.complete === 1).length;
+  return account.achievements.filter(achievement => achievement.complete === 1).length;
 })
 
 const getLevel1Number = computed(() => {
-  return achievementStore.achievements.filter(achievement => achievement.reward_level === 1).length
+  return account.achievements.filter(achievement => achievement.reward_level === 1).length
       - achievementStore.getBranchAchievementNumberByLevel(1);
 })
 const getCompleteLevel1Number = computed(() => {
-  return achievementStore.achievements.filter(achievement => achievement.reward_level === 1 &&
+  return account.achievements.filter(achievement => achievement.reward_level === 1 &&
       achievement.complete === 1
   ).length;
 })
 
 const getLevel2Number = computed(() => {
-  return achievementStore.achievements.filter(achievement => achievement.reward_level === 2).length
+  return account.achievements.filter(achievement => achievement.reward_level === 2).length
       - achievementStore.getBranchAchievementNumberByLevel(2);
 })
 const getCompleteLevel2Number = computed(() => {
-  return achievementStore.achievements.filter(achievement => achievement.reward_level === 2 &&
+  return account.achievements.filter(achievement => achievement.reward_level === 2 &&
       achievement.complete === 1
   ).length;
 })
 
 const getLevel3Number = computed(() => {
-  return achievementStore.achievements.filter(achievement => achievement.reward_level === 3).length
+  return account.achievements.filter(achievement => achievement.reward_level === 3).length
       - achievementStore.getBranchAchievementNumberByLevel(3);
 })
 const getCompleteLevel3Number = computed(() => {
-  return achievementStore.achievements.filter(achievement => achievement.reward_level === 3 &&
+  return account.achievements.filter(achievement => achievement.reward_level === 3 &&
       achievement.complete === 1
   ).length;
 })
 
+// 处理点击转跳
 const handleClick = () => {
-  router.push({ path: '/zzz' });
+  router.push({path: '/zzz'});
 }
 </script>
 
@@ -64,19 +76,19 @@ const handleClick = () => {
 
       <div class="zzz-statistic-total">
         <div style="align-self: center; margin-left: 11px">总计：</div>
-        <p> {{getTotalCompleteNumber}} / {{getTotalNumber}}</p>
+        <p> {{ getTotalCompleteNumber }} / {{ getTotalNumber }}</p>
       </div>
       <div class="zzz-statistic-total">
-        <img :src="ZzzAchievementImg1" alt="achievement image" class="zzz-achievement-image" />
-        <p> {{getCompleteLevel1Number}} / {{getLevel1Number}}</p>
+        <img :src="ZzzAchievementImg1" alt="achievement image" class="zzz-achievement-image"/>
+        <p> {{ getCompleteLevel1Number }} / {{ getLevel1Number }}</p>
       </div>
       <div class="zzz-statistic-total">
-        <img :src="ZzzAchievementImg2" alt="achievement image" class="zzz-achievement-image" />
-        <p> {{getCompleteLevel2Number}} / {{getLevel2Number}}</p>
+        <img :src="ZzzAchievementImg2" alt="achievement image" class="zzz-achievement-image"/>
+        <p> {{ getCompleteLevel2Number }} / {{ getLevel2Number }}</p>
       </div>
       <div class="zzz-statistic-total">
-        <img :src="ZzzAchievementImg3" alt="achievement image" class="zzz-achievement-image" />
-        <p> {{getCompleteLevel3Number}} / {{getLevel3Number}}</p>
+        <img :src="ZzzAchievementImg3" alt="achievement image" class="zzz-achievement-image"/>
+        <p> {{ getCompleteLevel3Number }} / {{ getLevel3Number }}</p>
       </div>
     </el-card>
   </div>
@@ -84,7 +96,7 @@ const handleClick = () => {
 
 <style scoped>
 .card-bg {
-  background-image: url("@/assets/image/zzz-bg-1.png");
+  background-image: url("@/assets/zzz-image/zzz-bg-1.png");
   background-size: cover;
   background-repeat: no-repeat;
   background-position: top;
@@ -103,7 +115,7 @@ const handleClick = () => {
   width: 53px;
   height: 53px;
   border-radius: 50%; /* 核心代码：让图片变圆 */
-  object-fit: cover;   /* 保证图片不变形、居中裁剪 */
+  object-fit: cover; /* 保证图片不变形、居中裁剪 */
   border: 3px solid #000000; /* 可选的边框 */
   background-color: #000000;
 }

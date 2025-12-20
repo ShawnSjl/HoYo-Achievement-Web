@@ -1,7 +1,7 @@
 <script setup>
-import {computed, reactive, ref} from 'vue';
-import { showWarn, showSuccess, showError} from "@/utils/notification";
-import {register} from "@/api/user";
+import {reactive, ref} from 'vue';
+import {showError, showSuccess} from "@/utils/notification";
+import {createUser} from "@/api/user";
 
 const updateData = defineModel();
 
@@ -28,8 +28,8 @@ const confirmValidator = (rule, value, callback) => {
 }
 const rules = {
   username: [
-    { required: true, message: '请输入用户名', trigger: ['blur', 'change'] },
-    { min: 3, max: 20, message: '长度在3到20个字符', trigger: ['blur', 'change'] },
+    {required: true, message: '请输入用户名', trigger: ['blur', 'change']},
+    {min: 3, max: 20, message: '长度在3到20个字符', trigger: ['blur', 'change']},
     {
       pattern: usernameCharPattern,
       message: '用户名格式不正确,只能包含中文、字母、数字、下划线',
@@ -37,8 +37,8 @@ const rules = {
     }
   ],
   password: [
-    { required: true, message: '请输入密码', trigger: ['blur', 'change'] },
-    { min: 8, max: 50, message: '长度在8到50个字符', trigger: ['blur', 'change'] },
+    {required: true, message: '请输入密码', trigger: ['blur', 'change']},
+    {min: 8, max: 50, message: '长度在8到50个字符', trigger: ['blur', 'change']},
     {
       pattern: passwordCharPattern,
       message: '密码格式错误，需包含字母和数字，可包含部分特殊字符',
@@ -46,14 +46,14 @@ const rules = {
     }
   ],
   confirmPassword: [
-    { required: true, message: '请确认新密码', trigger: ['blur', 'change'] },
-    { min: 8, max: 50, message: '长度在8到50个字符', trigger: ['blur', 'change'] },
+    {required: true, message: '请确认新密码', trigger: ['blur', 'change']},
+    {min: 8, max: 50, message: '长度在8到50个字符', trigger: ['blur', 'change']},
     {
       pattern: passwordCharPattern,
       message: '密码格式错误，需包含字母和数字，可包含部分特殊字符',
       trigger: ['blur', 'change']
     },
-    { validator: confirmValidator, trigger: ['blur', 'change'] }
+    {validator: confirmValidator, trigger: ['blur', 'change']}
   ],
 }
 
@@ -73,7 +73,7 @@ const submitForm = () => {
 }
 const handleAddUser = async () => {
   try {
-    await register({
+    await createUser({
       username: userForm.username,
       password: userForm.password,
     });
@@ -88,16 +88,16 @@ const handleAddUser = async () => {
 </script>
 
 <template>
-  <el-button type="primary" @click="dialogVisible = true" style="width: 100%" plain>
+  <el-button plain style="width: 100%" type="primary" @click="dialogVisible = true">
     添加新用户
   </el-button>
 
   <div class="add-user-dialog">
     <el-dialog
         v-model="dialogVisible"
-        title="添加新用户"
         :before-close="handleClose"
         class="login-dialog"
+        title="添加新用户"
     >
       <div>
         <el-form
@@ -108,20 +108,20 @@ const handleAddUser = async () => {
             @keyup.enter.native="submitForm"
         >
           <el-form-item label="用户名" prop="username">
-            <el-input v-model="userForm.username" />
+            <el-input v-model="userForm.username"/>
           </el-form-item>
           <el-form-item label="密码" prop="password">
-            <el-input v-model="userForm.password" type="password" />
+            <el-input v-model="userForm.password" type="password"/>
           </el-form-item>
           <el-form-item label="密码" prop="confirmPassword">
-            <el-input v-model="userForm.confirmPassword" type="password" />
+            <el-input v-model="userForm.confirmPassword" type="password"/>
           </el-form-item>
         </el-form>
       </div>
 
       <template #footer>
         <el-button @click="handleClose">取消</el-button>
-        <el-button type="primary" @click="submitForm" style="margin-left: 10px">添加</el-button>
+        <el-button style="margin-left: 10px" type="primary" @click="submitForm">添加</el-button>
       </template>
     </el-dialog>
   </div>

@@ -2,42 +2,44 @@
 import {computed, onMounted, watch} from "vue";
 import DefaultAvatar from '@/assets/zzz-image/zzz-logo.png'
 import {useUserStore} from "@/stores/userStore.js";
-import {useZzzAchievementStore} from "@/stores/zzzAchievementsStore";
-import {showError} from "@/utils/notification";
 import ProfileSettingButton from "@/views/User/ProfileSettingButton.vue";
 import LoginButton from "@/components/LoginButton.vue";
 import LogoutButton from "@/components/LogoutButton.vue";
 import RegisterButton from "@/components/RegisterButton.vue";
 import ProfileCardsLayout from "@/views/User/ProfileCardsLayout.vue";
 import {useIsMobileStore} from "@/stores/isMobileStore";
+import {useAccountStore} from "@/stores/accountStore.js";
 
 // 使用Pinia作为本地缓存
-const authStore = useUserStore();
-const zzzAchievementStore = useZzzAchievementStore()
+const userStore = useUserStore();
+const accountStore = useAccountStore();
 const isMobileStore = useIsMobileStore();
 
-const isLoggedIn = computed(() => {return authStore.isUserLogin()})
-
+const isLoggedIn = computed(() => {
+  return userStore.isUserLogin()
+})
 // 移动端适配
-const avatarSize = computed(() => { return isMobileStore.isMobile? 'default' : 'large'})
+const avatarSize = computed(() => {
+  return isMobileStore.isMobile ? 'default' : 'large'
+})
 
 // 同步数据
-const fetchData = async () => {
-  try {
-    await zzzAchievementStore.updateAchievements();
-  } catch (e) {
-    showError('Load data failed');
+const fetchRemoteData = async () => {
+  if (isLoggedIn) {
+    await accountStore.fetchAccounts();
   }
 };
 onMounted(() => {
-  fetchData();
+  fetchRemoteData();
 });
 
 // 获取用户名，并处理用户登录登出
-const userName = computed(() => {return authStore.getUserName()})
+const userName = computed(() => {
+  return userStore.getUserName()
+})
 watch(userName, async (newUserName) => {
   console.log(newUserName);
-  await fetchData();
+  await fetchRemoteData();
 });
 </script>
 
@@ -47,7 +49,7 @@ watch(userName, async (newUserName) => {
 
       <div class="profile-header">
         <div class="profile-header-start">
-          <el-avatar :size="avatarSize" :src="DefaultAvatar" />
+          <el-avatar :size="avatarSize" :src="DefaultAvatar"/>
           <div class="profile-info">
             <p>{{ userName }}</p>
           </div>
@@ -55,11 +57,11 @@ watch(userName, async (newUserName) => {
 
         <div class="profile-header-end">
           <div v-if="isLoggedIn" class="profile-header-end">
-            <logout-button style="margin-left: 20px" />
-            <profile-setting-button />
+            <logout-button style="margin-left: 20px"/>
+            <profile-setting-button/>
           </div>
           <div v-else class="profile-header-end">
-            <register-button style="margin-left: 20px" />
+            <register-button style="margin-left: 20px"/>
             <login-button/>
           </div>
         </div>
@@ -68,7 +70,7 @@ watch(userName, async (newUserName) => {
       <el-divider></el-divider>
 
       <div class="profile-statistic">
-        <profile-cards-layout />
+        <profile-cards-layout/>
       </div>
     </div>
   </div>
@@ -128,7 +130,7 @@ html, body {
   align-items: center;
 }
 
-.profile-header-end{
+.profile-header-end {
   display: flex;
   flex-direction: row-reverse;
   align-items: center;

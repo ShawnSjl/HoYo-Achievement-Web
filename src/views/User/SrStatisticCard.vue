@@ -7,48 +7,60 @@ import SrAchievementImg3 from "@/assets/sr-image/sr-achievement-level-3.png";
 import SrAchievementImg2 from "@/assets/sr-image/sr-achievement-level-2.png";
 import SrAchievementImg1 from "@/assets/sr-image/sr-achievement-level-1.png";
 import SrAchievement from "@/assets/sr-image/sr-achievement.png";
-
-const handleClick = () => {
-  router.push({ path: '/sr' });
-}
+import {useAccountStore} from "@/stores/accountStore.js";
 
 // 使用Pinia作为本地缓存
+const accountStore = useAccountStore();
 const achievementStore = useSrAchievementStore()
 
+// 传入只读数据
+const props = defineProps({
+  uuid: String,
+});
+
+// 获取账号成就
+const account = accountStore.accounts.find(account => account.uuid === props.uuid);
+
+// 计算成就数量
 const totalNumber = computed(() => {
-  return achievementStore.achievements.length
+  return account.achievements.length
       - achievementStore.getBranchAchievementsNumber();
 })
 const completeNumber = computed(() => {
-  return achievementStore.achievements.filter(achievement => achievement.complete === 1).length;
+  return account.achievements.filter(achievement => achievement.complete === 1).length;
 })
 
 const getLevel1Number = computed(() => {
-  return achievementStore.achievements.filter(achievement => achievement.reward_level === 1).length
+  return account.achievements.filter(achievement => achievement.reward_level === 1).length
       - achievementStore.getBranchAchievementNumberByLevel(1);
 })
 const getCompleteLevel1Number = computed(() => {
-  return achievementStore.achievements.filter(achievement => achievement.reward_level === 1
+  return account.achievements.filter(achievement => achievement.reward_level === 1
       && achievement.complete === 1).length;
 })
 
 const getLevel2Number = computed(() => {
-  return achievementStore.achievements.filter(achievement => achievement.reward_level === 2).length
+  return account.achievements.filter(achievement => achievement.reward_level === 2).length
       - achievementStore.getBranchAchievementNumberByLevel(2);
 })
 const getCompleteLevel2Number = computed(() => {
-  return achievementStore.achievements.filter(achievement => achievement.reward_level === 2
+  return account.achievements.filter(achievement => achievement.reward_level === 2
       && achievement.complete === 1).length;
 })
 
 const getLevel3Number = computed(() => {
-  return achievementStore.achievements.filter(achievement => achievement.reward_level === 3).length
+  return account.achievements.filter(achievement => achievement.reward_level === 3).length
       - achievementStore.getBranchAchievementNumberByLevel(3);
 })
 const getCompleteLevel3Number = computed(() => {
-  return achievementStore.achievements.filter(achievement => achievement.reward_level === 3
+  return account.achievements.filter(achievement => achievement.reward_level === 3
       && achievement.complete === 1).length;
 })
+
+// 处理点击转跳
+const handleClick = () => {
+  router.push({path: '/sr'});
+}
 </script>
 
 <template>
@@ -56,7 +68,7 @@ const getCompleteLevel3Number = computed(() => {
     <el-card shadow="never" @click="handleClick">
       <template #header>
         <div slot="header">
-          崩坏：星穹铁道 游戏版本：{{srVersion}}
+          崩坏：星穹铁道 游戏版本：{{ srVersion }}
           <br/>
           成就完成度统计
         </div>
@@ -65,22 +77,22 @@ const getCompleteLevel3Number = computed(() => {
       <div class="sr-profile-statistic-wrapper">
         <div class="sr-statistic-total-wrapper">
           <div class="sr-statistic-total">
-            <img :src="SrAchievement" class="sr-header-title-img" alt="sr achievement">
+            <img :src="SrAchievement" alt="sr achievement" class="sr-header-title-img">
             <p class="sr-statistic-total-title">达成成就</p>
           </div>
-          <p class="sr-statistic-total-count">{{completeNumber}}/{{totalNumber}}</p>
+          <p class="sr-statistic-total-count">{{ completeNumber }}/{{ totalNumber }}</p>
         </div>
         <div class="sr-statistic-level">
-          <img :src="SrAchievementImg3" alt="achievement image" class="sr-statistic-img" />
-          <p class="sr-statistic-level-count">{{getCompleteLevel3Number}}/{{getLevel3Number}}</p>
+          <img :src="SrAchievementImg3" alt="achievement image" class="sr-statistic-img"/>
+          <p class="sr-statistic-level-count">{{ getCompleteLevel3Number }}/{{ getLevel3Number }}</p>
         </div>
         <div class="sr-statistic-level">
-          <img :src="SrAchievementImg2" alt="achievement image" class="sr-statistic-img" />
-          <p class="sr-statistic-level-count">{{getCompleteLevel2Number}}/{{getLevel2Number}}</p>
+          <img :src="SrAchievementImg2" alt="achievement image" class="sr-statistic-img"/>
+          <p class="sr-statistic-level-count">{{ getCompleteLevel2Number }}/{{ getLevel2Number }}</p>
         </div>
         <div class="sr-statistic-level">
-          <img :src="SrAchievementImg1" alt="achievement image" class="sr-statistic-img" />
-          <p class="sr-statistic-level-count">{{getCompleteLevel1Number}}/{{getLevel1Number}}</p>
+          <img :src="SrAchievementImg1" alt="achievement image" class="sr-statistic-img"/>
+          <p class="sr-statistic-level-count">{{ getCompleteLevel1Number }}/{{ getLevel1Number }}</p>
         </div>
       </div>
     </el-card>
@@ -151,7 +163,7 @@ const getCompleteLevel3Number = computed(() => {
   align-items: center;
 }
 
-.sr-statistic-level+.sr-statistic-level {
+.sr-statistic-level + .sr-statistic-level {
   margin-top: 10px;
 }
 
