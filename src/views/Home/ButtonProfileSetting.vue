@@ -1,8 +1,8 @@
 <script setup>
 import {computed} from "vue";
-import PasswordChangeButton from "@/views/Home/ChangePasswordButton.vue";
-import DeleteAccountButton from "@/views/Home/DeleteAccountButton.vue";
-import ManageUserButton from "@/views/Home/ManageUserButton.vue";
+import ButtonChangePassword from "@/views/Home/ButtonChangePassword.vue";
+import ButtonDeleteUser from "@/views/Home/ButtonDeleteUser.vue";
+import ButtonManageUser from "@/views/Home/ButtonManageUser.vue";
 
 const isAdmin = computed(() => {
   const role = JSON.parse(localStorage.getItem("user")).role
@@ -24,13 +24,13 @@ const isAdmin = computed(() => {
 
     <template #default>
       <div class="profile-popover">
-        <password-change-button/>
+        <button-change-password/>
       </div>
       <div v-if="isAdmin" class="profile-popover">
-        <manage-user-button/>
+        <button-manage-user/>
       </div>
       <div v-else class="profile-popover">
-        <delete-account-button/>
+        <button-delete-user/>
       </div>
     </template>
   </el-popover>

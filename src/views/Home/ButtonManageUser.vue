@@ -2,7 +2,7 @@
 import {ref, watch} from "vue";
 import {showError} from "@/utils/notification.js";
 import {getAllUsers} from "@/api/user.js";
-import AddUserButton from "@/views/Home/AddUserButton.vue";
+import ButtonAddUser from "@/views/Home/ButtonAddUser.vue";
 import {useUserStore} from "@/stores/userStore.js";
 
 // 使用Pinia作为本地缓存
@@ -59,7 +59,7 @@ watch(needToUpdate, () => {
             </template>
           </el-table-column>
         </el-table>
-        <add-user-button v-model="needToUpdate"/>
+        <button-add-user v-model="needToUpdate"/>
       </div>
     </el-dialog>
 

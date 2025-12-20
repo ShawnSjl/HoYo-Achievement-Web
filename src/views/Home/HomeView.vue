@@ -2,7 +2,7 @@
 import {computed, onMounted, watch} from "vue";
 import DefaultAvatar from '@/assets/zzz-image/zzz-logo.png'
 import {useUserStore} from "@/stores/userStore.js";
-import ProfileSettingButton from "@/views/Home/ProfileSettingButton.vue";
+import ButtonProfileSetting from "@/views/Home/ButtonProfileSetting.vue";
 import LoginButton from "@/components/LoginButton.vue";
 import LogoutButton from "@/components/LogoutButton.vue";
 import RegisterButton from "@/components/RegisterButton.vue";
@@ -58,7 +58,7 @@ watch(userName, async (newUserName) => {
         <div class="profile-header-end">
           <div v-if="isLoggedIn" class="profile-header-end">
             <logout-button style="margin-left: 20px"/>
-            <profile-setting-button/>
+            <button-profile-setting/>
           </div>
           <div v-else class="profile-header-end">
             <register-button style="margin-left: 20px"/>

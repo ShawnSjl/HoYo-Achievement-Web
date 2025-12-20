@@ -2,9 +2,9 @@
 import {nextTick, onBeforeUnmount, onMounted, ref} from "vue";
 import {useIsMobileStore} from "@/stores/isMobileStore.js";
 import {useAccountStore} from "@/stores/accountStore.js";
-import ZzzStatisticCard from "@/views/Home/ZzzStatisticCard.vue";
-import SrStatisticCard from "@/views/Home/SrStatisticCard.vue";
-import EmptyCard from "@/views/Home/EmptyCard.vue";
+import CardZzzStatistic from "@/views/Home/CardZzzStatistic.vue";
+import CardSrStatistic from "@/views/Home/CardSrStatistic.vue";
+import CardEmpty from "@/views/Home/CardEmpty.vue";
 
 // 使用Pinia作为本地缓存
 const accountStore = useAccountStore();
@@ -39,15 +39,15 @@ onBeforeUnmount(() => {
           :key="item.uuid"
       >
         <div v-if="item.type === 'ZZZ'">
-          <zzz-statistic-card :uuid="item.uuid" class="profile-card"/>
+          <card-zzz-statistic :uuid="item.uuid" class="profile-card"/>
         </div>
         <div v-if="item.type === 'SR'">
-          <sr-statistic-card :uuid="item.uuid" class="profile-card"/>
+          <card-sr-statistic :uuid="item.uuid" class="profile-card"/>
         </div>
       </el-col>
 
       <el-col>
-        <empty-card class="profile-card"/>
+        <card-empty class="profile-card"/>
       </el-col>
 
 
