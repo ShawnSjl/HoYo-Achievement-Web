@@ -26,16 +26,18 @@ export const useAccountStore = defineStore(
                 // Clean the current data first
                 accounts.value = [];
 
+                // FIXME 登录时加载两次
+
                 // Get accounts from the backend
                 const accountsResponse = await getAccountByUserId();
-                if (accountsResponse.code !== 200) {
-                    showInfo(accountsResponse.msg)
+                if (accountsResponse.data.code !== 200) {
+                    showInfo(accountsResponse.data.msg)
                     return;
                 }
-                showSuccess(accountsResponse.msg);
+                showSuccess(accountsResponse.data.msg);
 
                 // For each account, get achievements from the backend
-                for (const account of accountsResponse.data) {
+                for (const account of accountsResponse.data.data) {
                     // Get achievements from the backend
                     const requestBody = {uuid: account.account_uuid};
                     let achievementResponse;
@@ -57,7 +59,7 @@ export const useAccountStore = defineStore(
                         type: account.game_type,
                         name: account.account_name,
                         inGameUid: account.account_in_game_uid,
-                        achievements: achievementResponse.data,
+                        achievements: achievementResponse.data.data,
                     }
 
                     // Push the account to the list
@@ -90,8 +92,8 @@ export const useAccountStore = defineStore(
                         account_in_game_uid: inGameUid,
                     }
                     const createResponse = await createAccount(requestBody);
-                    if (createResponse.code !== 200) {
-                        showInfo(createResponse.msg);
+                    if (createResponse.data.code !== 200) {
+                        showInfo(createResponse.data.msg);
                         return;
                     }
                 }
@@ -116,7 +118,7 @@ export const useAccountStore = defineStore(
                     type: type,
                     name: accountName,
                     inGameUid: inGameUid,
-                    achievements: achievementResponse.data,
+                    achievements: achievementResponse.data.data,
                 }
 
                 // Push the account to the list
@@ -149,8 +151,8 @@ export const useAccountStore = defineStore(
                     };
 
                     const updateResponse = await updateAccountName(requestBody);
-                    if (updateResponse.code !== 200) {
-                        showInfo(updateResponse.msg);
+                    if (updateResponse.data.code !== 200) {
+                        showInfo(updateResponse.data.msg);
                         return;
                     }
                 }
@@ -186,8 +188,8 @@ export const useAccountStore = defineStore(
                     };
 
                     const updateResponse = await updateAccountInGameUid(requestBody);
-                    if (updateResponse.code !== 200) {
-                        showInfo(updateResponse.msg);
+                    if (updateResponse.data.code !== 200) {
+                        showInfo(updateResponse.data.msg);
                         return;
                     }
                 }
@@ -221,8 +223,8 @@ export const useAccountStore = defineStore(
                     };
 
                     const deleteResponse = await deleteAccount(requestBody);
-                    if (deleteResponse.code !== 200) {
-                        showInfo(deleteResponse.msg);
+                    if (deleteResponse.data.code !== 200) {
+                        showInfo(deleteResponse.data.msg);
                         return;
                     }
                 }

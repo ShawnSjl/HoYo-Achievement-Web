@@ -13,7 +13,7 @@ const api = axios.create({
 api.interceptors.request.use(
     (config) => {
         // 从 localStorage 或 Vuex 中获取 token
-        const token = localStorage.getItem("sa_token");
+        const token = localStorage.getItem("token");
 
         if (token) {
             config.headers["satoken"] = token;

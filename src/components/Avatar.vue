@@ -1,42 +1,45 @@
 <script setup>
 import {computed} from 'vue';
-import router from "@/router";
 import Zzz from '@/assets/zzz-image/zzz-logo.png'
 import {useUserStore} from "@/stores/userStore.js";
 import AvatarPopover from '@/components/AvatarPopover.vue'
 import {useIsMobileStore} from "@/stores/isMobileStore";
 
-const authStore = useUserStore();
+// 使用Pinia作为本地缓存
+const userStore = useUserStore();
 const isMobileStore = useIsMobileStore();
 
-const userName = computed(() => {return authStore.getUserName()})
+// 获取用户名称
+const userName = computed(() => {
+  return userStore.getUserName()
+})
 
 // 移动端适配
-const avatarSize = computed(() => { return isMobileStore.isMobile? 'default' : 'large'})
-const avatarTrigger = computed(() => { return isMobileStore.isMobile? 'click' : 'hover'})
-
-const handleClick = () => {
-  router.push({ path: '/space' });
-}
+const avatarSize = computed(() => {
+  return isMobileStore.isMobile ? 'default' : 'large'
+})
+const avatarTrigger = computed(() => {
+  return isMobileStore.isMobile ? 'click' : 'hover'
+})
 </script>
 
 <template>
   <el-popover
-    placement="bottom"
-    width="200"
-    :trigger="avatarTrigger">
+      :trigger="avatarTrigger"
+      placement="bottom"
+      width="200">
 
     <template #reference>
       <div class="avatar-container">
-        <el-avatar :size="avatarSize" :src="Zzz" />
+        <el-avatar :size="avatarSize" :src="Zzz"/>
         <div class="avatar-side">
-          <p class="avatar-username">{{userName}}</p>
+          <p class="avatar-username">{{ userName }}</p>
         </div>
       </div>
     </template>
 
     <template #default>
-      <avatar-popover />
+      <avatar-popover/>
     </template>
   </el-popover>
 </template>

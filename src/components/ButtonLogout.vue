@@ -1,11 +1,12 @@
 <script setup>
 import {useUserStore} from "@/stores/userStore.js";
 
-const authStore = useUserStore();
+// 使用Pinia作为本地缓存
+const userStore = useUserStore();
 </script>
 
 <template>
-  <el-button round plain type="danger" @click="authStore.logoutUser()">
+  <el-button plain round type="danger" @click="userStore.logoutUser()">
     退出登录
   </el-button>
 </template>

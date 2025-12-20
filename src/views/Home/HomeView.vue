@@ -15,9 +15,11 @@ const userStore = useUserStore();
 const accountStore = useAccountStore();
 const isMobileStore = useIsMobileStore();
 
+// 获取用户是否login
 const isLoggedIn = computed(() => {
-  return userStore.isUserLogin()
+  return userStore.token !== ''
 })
+
 // 移动端适配
 const avatarSize = computed(() => {
   return isMobileStore.isMobile ? 'default' : 'large'
@@ -25,7 +27,7 @@ const avatarSize = computed(() => {
 
 // 同步数据
 const fetchRemoteData = async () => {
-  if (isLoggedIn) {
+  if (isLoggedIn.value) {
     await accountStore.fetchAccounts();
   }
 };

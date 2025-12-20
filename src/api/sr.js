@@ -2,7 +2,7 @@ import api from "@/utils/request"
 
 // Get all SR achievement
 export const srGetAll = (request) => {
-    return api.get('/api/sr/all', request);
+    return api.get('/api/sr/all', {params: request});
 }
 
 // Get all SR achievement with empty record

@@ -2,45 +2,47 @@ import {defineStore} from "pinia";
 import {ref} from 'vue';
 import {changePassword, deleteCurrentUser, isAdmin, isLogin, login, logout, updateUsername} from "@/api/user";
 import {showError, showInfo, showSuccess} from "@/utils/notification.js";
+import {useAccountStore} from "@/stores/accountStore.js";
 
 export const useUserStore = defineStore(
     "user",
     () => {
         const token = ref('');
-        const username = ref('');
+        const user = ref('');
         const admin = ref(false);
 
         /**
          * Async function that tries to log in the user
-         * @param credentials
+         * @param username
+         * @param password
          */
-        async function loginUser(credentials) {
+        async function loginUser(username, password) {
             try {
                 // Login by given credentials
-                const loginResponse = await login(credentials);
-                if (loginResponse.code === 200) {
-                    token.value = loginResponse.data.token;
-                    username.value = loginResponse.data.username;
-                    admin.value = loginResponse.data.isAdmin;
+                const requestBody = {
+                    username: username,
+                    password: password
+                }
+                const loginResponse = await login(requestBody);
+                if (loginResponse.data.code === 200) {
+                    token.value = loginResponse.data.data.token;
+                    user.value = loginResponse.data.data.username;
+                    admin.value = loginResponse.data.data.isAdmin;
 
-                    // TODO: get user account on other store
+                    localStorage.setItem('token', token.value);
+
+                    // Fetch accounts from the backend
+                    const accountStore = useAccountStore();
+                    await accountStore.fetchAccounts();
 
                     showSuccess('登录成功');
                 } else {
-                    showInfo(loginResponse.msg);
+                    showInfo(loginResponse.data.msg);
                 }
             } catch (error) {
                 console.error('Login error:', error);
                 showError("登录错误", error)
             }
-        }
-
-        /**
-         * Get whether the current user is login
-         * @returns {boolean}
-         */
-        function isUserLogin() {
-            return !!(token.value);
         }
 
         /**
@@ -52,13 +54,13 @@ export const useUserStore = defineStore(
 
             try {
                 const isLoginResponse = await isLogin();
-                if (isLoginResponse.code === 200) {
-                    if (!isLoginResponse.data) {
+                if (isLoginResponse.data.code === 200) {
+                    if (!isLoginResponse.data.data) {
                         await logoutUser();
                     }
-                    return isLoginResponse.data;
+                    return isLoginResponse.data.data;
                 } else {
-                    showError(isLoginResponse.msg)
+                    showError(isLoginResponse.data.msg)
                     return false;
                 }
             } catch (error) {
@@ -74,10 +76,10 @@ export const useUserStore = defineStore(
             // Log out the token in the backend
             try {
                 const logoutResponse = await logout();
-                if (logoutResponse.code === 200) {
-                    showSuccess(logoutResponse.msg)
+                if (logoutResponse.data.code === 200) {
+                    showSuccess(logoutResponse.data.msg)
                 } else {
-                    showError(logoutResponse.msg)
+                    showError(logoutResponse.data.msg)
                 }
             } catch (error) {
                 console.error('Logout error:', error);
@@ -86,8 +88,12 @@ export const useUserStore = defineStore(
 
             // Remove data from local storage whatever the response is
             token.value = '';
-            username.value = '';
+            user.value = '';
             admin.value = false;
+
+            // Empty the account list in the account store
+            const accountStore = useAccountStore();
+            accountStore.accounts.value = [];
         }
 
         /**
@@ -109,8 +115,8 @@ export const useUserStore = defineStore(
             // Check if the user is an admin
             try {
                 const isAdminResponse = await isAdmin();
-                if (isAdminResponse.code === 200) {
-                    return isAdminResponse.data;
+                if (isAdminResponse.data.code === 200) {
+                    return isAdminResponse.data.data;
                 } else {
                     await logoutUser()
                     return false;
@@ -135,11 +141,11 @@ export const useUserStore = defineStore(
             // Update the username in the backend
             try {
                 const updateResponse = await updateUsername({username: newUsername});
-                if (updateResponse.code === 200) {
-                    username.value = newUsername;
-                    showInfo(updateResponse.msg);
+                if (updateResponse.data.code === 200) {
+                    user.value = newUsername;
+                    showInfo(updateResponse.data.msg);
                 } else {
-                    showInfo(updateResponse.msg);
+                    showInfo(updateResponse.data.msg);
                 }
             } catch (error) {
                 console.error('Update username error:', error);
@@ -160,10 +166,10 @@ export const useUserStore = defineStore(
 
             try {
                 const updateResponse = await changePassword({password: newPassword});
-                if (updateResponse.code === 200) {
-                    showInfo(updateResponse.msg);
+                if (updateResponse.data.code === 200) {
+                    showInfo(updateResponse.data.msg);
                 } else {
-                    showInfo(updateResponse.msg);
+                    showInfo(updateResponse.data.msg);
                 }
             } catch (error) {
                 console.error('Update password error:', error);
@@ -183,11 +189,11 @@ export const useUserStore = defineStore(
 
             try {
                 const deleteResponse = await deleteCurrentUser();
-                if (deleteResponse.code === 200) {
+                if (deleteResponse.data.code === 200) {
                     await logoutUser();
-                    showSuccess(deleteResponse.msg);
+                    showSuccess(deleteResponse.data.msg);
                 } else {
-                    showInfo(deleteResponse.msg);
+                    showInfo(deleteResponse.data.msg);
                 }
             } catch (error) {
                 console.error('Delete error:', error);
@@ -196,20 +202,19 @@ export const useUserStore = defineStore(
         }
 
         /**
-         * Get username
+         * Get the user's name
          * @returns {UnwrapRef<string>|string}
          */
         function getUserName() {
-            if (!username.value) return '游客'
-            return username.value;
+            if (!user.value) return '游客'
+            return user.value;
         }
 
         return {
             token,
-            username,
+            user,
             admin,
             loginUser,
-            isUserLogin,
             forceCheckIsUserLogin,
             logoutUser,
             isUserAdmin,

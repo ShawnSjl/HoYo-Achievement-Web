@@ -6,10 +6,12 @@ import ButtonLogout from "@/components/ButtonLogout.vue";
 import ButtonRegister from "@/components/ButtonRegister.vue";
 import ButtonHomePage from "@/components/ButtonHomePage.vue";
 
-const authStore = useUserStore();
+// 使用Pinia作为本地缓存
+const userStore = useUserStore();
 
+// 获取用户是否login
 const isLoggedIn = computed(() => {
-  return authStore.isUserLogin()
+  return userStore.token !== ''
 })
 </script>
 

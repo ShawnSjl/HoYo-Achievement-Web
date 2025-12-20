@@ -17,10 +17,10 @@ export const useZzzAchievementStore = defineStore(
         async function fetchBranches() {
             try {
                 const response = await zzzGetAllBranch();
-                if (response.code === 200) {
-                    branches.value = processBranchData(response.data);
+                if (response.data.code === 200) {
+                    branches.value = processBranchData(response.data.data);
                 } else {
-                    showInfo(response.msg);
+                    showInfo(response.data.msg);
                 }
             } catch (error) {
                 console.error("Fail to get ZZZ achievements\' branches:", error);
@@ -104,8 +104,8 @@ export const useZzzAchievementStore = defineStore(
                     }
 
                     const updateResponse = await zzzUpdateAchievement(requestBody);
-                    if (updateResponse.code !== 200) {
-                        showInfo(updateResponse.msg)
+                    if (updateResponse.data.code !== 200) {
+                        showInfo(updateResponse.data.msg)
                         return;
                     }
                 }
