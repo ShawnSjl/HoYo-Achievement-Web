@@ -1,94 +1,153 @@
-import { defineStore } from 'pinia';
-import { ref } from 'vue';
-import {zzzGetAll, zzzUpdateAchievement, zzzGetAllBranch} from '@/api/zzz';
+import {defineStore} from 'pinia';
+import {ref} from 'vue';
+import {zzzGetAllBranch, zzzUpdateAchievement} from '@/api/zzz';
+import {showError, showInfo} from "@/utils/notification.js";
 
 export const useZzzAchievementStore = defineStore(
-    'zzz-achievements',
-    ()=> {
-        const achievements = ref([]);
+    'zzz-achievement',
+    () => {
         const branches = ref([]);
-        const length = ref(0);
-        const currentUser = ref(null);
         const isMale = ref(true);
         const isCompleteFirst = ref(false);
 
-        // Get achievements for current user
-        async function fetchAchievements() {
-            // 强制更新，忽略本地数据
+        /**
+         * Fetch branches from the backend.
+         * @returns {Promise<void>}
+         */
+        async function fetchBranches() {
             try {
-                const response = await zzzGetAll();
-                achievements.value = response.achievements;
-
-                branches.value = await zzzGetAllBranch();
+                const response = await zzzGetAllBranch();
+                if (response.code === 200) {
+                    branches.value = processBranchData(response.data);
+                } else {
+                    showInfo(response.msg);
+                }
             } catch (error) {
-                console.error('Fail to get achievements:', error);
-                achievements.value = [];
-            }
-
-            // 更新用户信息用于比对
-            currentUser.value = localStorage.getItem("user")
-
-            // 储存条目数，做简单的验证
-            length.value = achievements.value.length;
-        }
-
-        // Update achievement
-        async function updateAchievements() {
-            const user = localStorage.getItem('user');
-
-            // 如果本地数据是空的或者有异常，获取新的数据
-            if (achievements.value.length === 0 || achievements.value.length !== length.value) {
-                await fetchAchievements();
-            } else if (currentUser.value !== user) {
-                // 如果用户变更，则立刻更新数据
-                await fetchAchievements();
+                console.error("Fail to get ZZZ achievements\' branches:", error);
+                showError("成就分支获取失败", error)
             }
         }
 
-        async function completeAchievement(achievementId, complete) {
-            await updateAchievements();
+        /**
+         * Process raw data from the backend into a format suitable for the frontend.
+         * @param rawData
+         * @returns {any[]}
+         */
+        function processBranchData(rawData) {
+            /*
+            [
+                {
+                    "achievement_id": 8001009,
+                    "branch_id": 1
+                },
+                {
+                    "achievement_id": 8001008,
+                    "branch_id": 1
+                },
+            ]
+            =>
+            [
+                {
+                    "branch_id": 1,
+                    "achievement_id": [8001009, 8001008]
+                },
+            ]
+             */
+            const map = new Map();
 
-            const user = localStorage.getItem('user');
+            rawData.forEach(item => {
+                const bid = item.branch_id;
 
-            // 获取本地的成就数据
-            const target = achievements.value.find(item => item.achievement_id === achievementId);
-            if (!target) { console.error('Fail to get achievements:', achievementId); return; }
+                if (!map.has(bid)) {
+                    map.set(bid, {
+                        branch_id: bid,
+                        achievement_id: []
+                    });
+                }
 
-            // 忽略未更改数据
-            if (target.complete === complete) {
-                return;
-            }
+                map.get(bid).achievement_id.push(item.achievement_id);
+            });
 
-            // 如果是登录用户，更新后端数据库
-            if (user) {
-                // 尝试更新，如果更新失败，重新获取所有数据
-                try {
-                    await zzzUpdateAchievement({ achievement_id: `${achievementId}`, complete: `${complete}` });
-                } catch (error) {
-                    console.error('Fail to update achievements:', error);
-                    await fetchAchievements();
+            return Array.from(map.values());
+        }
+
+        /**
+         * Update achievement status in the backend and local data.
+         * @param achievements
+         * @param achievementId
+         * @param complete
+         * @returns {Promise<void>}
+         */
+        async function completeAchievement(achievements, achievementId, complete) {
+            try {
+                if (branches.value.length === 0) await fetchBranches();
+
+                // Get target achievement from the achievements list
+                const target = achievements.value.find(item => item.achievement_id === achievementId);
+                if (!target) {
+                    console.error('Fail to get achievements:', achievementId);
+                    showError("目标成就获取失败");
                     return;
                 }
-            }
 
-            // 更新本地数据
-            target.complete = complete;
-            const branchAchievements = getOtherAchievements (achievementId);
-            const branchStatus = complete === 1 ? 2 : 0;
-            for (const branchAchievement of branchAchievements) {
-                const branchTarget = achievements.value.find(item => item.achievement_id === branchAchievement);
-                branchTarget.complete = branchStatus;
+                // Ignore unchanged data
+                if (target.complete === complete) {
+                    return;
+                }
+
+                // Update achievement in the backend if the user is logged in
+                if (localStorage.getItem('token')) {
+                    const requestBody = {
+                        uuid: "",
+                        achievement_id: `${achievementId}`,
+                        complete_status: `${complete}`
+                    }
+
+                    const updateResponse = await zzzUpdateAchievement(requestBody);
+                    if (updateResponse.code !== 200) {
+                        showInfo(updateResponse.msg)
+                        return;
+                    }
+                }
+
+                // Update local data
+                target.complete = complete;
+
+                // Update other achievements in the same branch
+                const branchAchievements = getOtherAchievements(achievements, achievementId);
+                const branchStatus = complete === 1 ? 2 : 0;
+                for (const branchAchievement of branchAchievements) {
+                    const branchTarget = achievements.value.find(item => item.achievement_id === branchAchievement);
+                    branchTarget.complete = branchStatus;
+                }
+            } catch (error) {
+                console.error("Fail to update achievements:", error);
+                showError("成就状态更新失败", error);
             }
         }
 
-        function getOtherAchievements(targetId) {
+        /**
+         * Get other achievements in the same branch out of the target achievement.
+         * @param achievements
+         * @param targetId
+         * @returns {Promise<*|*[]>}
+         */
+        async function getOtherAchievements(achievements, targetId) {
+            if (branches.value.length === 0) await fetchBranches();
+
             const branch = branches.value.find(item => item.achievement_id.includes(targetId));
-            if (!branch) return []; // 找不到直接返回空数组
+            if (!branch) return []; // return empty array if not found
 
             return branch.achievement_id.filter(id => id !== targetId);
         }
 
-        function getBranchAchievementsNumber() {
+        /**
+         * Get the total number of additional achievements in all branches.
+         * @returns {Promise<number>}
+         */
+        async function getBranchAchievementsNumber() {
+            if (branches.value.length === 0) await fetchBranches();
+
             let count = 0;
             for (const branch of branches.value) {
                 count = count + branch.achievement_id.length - 1;
@@ -96,16 +155,22 @@ export const useZzzAchievementStore = defineStore(
             return count;
         }
 
-        function getBranchAchievementNumberByLevel(level) {
-            if (achievements.value.length === 0) {
-                fetchAchievements();
-            }
+        /**
+         * Get the total number of additional achievements in all branches with the specified level.
+         * @param achievements
+         * @param level
+         * @returns {Promise<number>}
+         */
+        async function getBranchAchievementNumberByLevel(achievements, level) {
+            if (branches.value.length === 0) await fetchBranches();
 
             let count = 0;
             for (const branch of branches.value) {
+                // Get an example achievement from the branch
                 const achievement_id = branch.achievement_id[0];
                 const achievement = achievements.value.find(item => item.achievement_id === achievement_id);
 
+                // If the level matches, add to the total count
                 if (level === achievement.reward_level) {
                     count = count + branch.achievement_id.length - 1;
                 }
@@ -113,16 +178,22 @@ export const useZzzAchievementStore = defineStore(
             return count;
         }
 
-        function getBranchAchievementsNumberByClass(zzz_class_id) {
-            if (achievements.value.length === 0) {
-                fetchAchievements();
-            }
+        /**
+         * Get the total number of additional achievements in all branches with the specified class.
+         * @param achievements
+         * @param zzz_class_id
+         * @returns {Promise<number>}
+         */
+        async function getBranchAchievementsNumberByClass(achievements, zzz_class_id) {
+            if (branches.value.length === 0) await fetchBranches();
 
             let count = 0;
             for (const branch of branches.value) {
+                // Get an example achievement from the branch
                 const achievement_id = branch.achievement_id[0];
                 const achievement = achievements.value.find(item => item.achievement_id === achievement_id);
 
+                // If the class matches, add to the total count
                 if (zzz_class_id === achievement.class_id) {
                     count = count + branch.achievement_id.length - 1;
                 }
@@ -130,16 +201,23 @@ export const useZzzAchievementStore = defineStore(
             return count;
         }
 
-        function getBranchAchievementNumberByClassAndLevel(zzz_class_id, level) {
-            if (achievements.value.length === 0) {
-                fetchAchievements();
-            }
+        /**
+         * Get the total number of additional achievements in all branches with the specified class and level.
+         * @param achievements
+         * @param zzz_class_id
+         * @param level
+         * @returns {Promise<number>}
+         */
+        async function getBranchAchievementNumberByClassAndLevel(achievements, zzz_class_id, level) {
+            if (branches.value.length === 0) await fetchBranches();
 
             let count = 0;
             for (const branch of branches.value) {
+                // Get an example achievement from the branch
                 const achievement_id = branch.achievement_id[0];
                 const achievement = achievements.value.find(item => item.achievement_id === achievement_id);
 
+                // If the class and level matches, add to the total count
                 if (zzz_class_id === achievement.class_id && level === achievement.reward_level) {
                     count = count + branch.achievement_id.length - 1;
                 }
@@ -148,14 +226,9 @@ export const useZzzAchievementStore = defineStore(
         }
 
         return {
-            achievements,
+            branches,
             isMale,
             isCompleteFirst,
-            currentUser,
-            length,
-            branches,
-            fetchAchievements,
-            updateAchievements,
             completeAchievement,
             getBranchAchievementsNumber,
             getBranchAchievementNumberByLevel,
