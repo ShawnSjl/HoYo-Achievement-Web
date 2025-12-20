@@ -1,8 +1,7 @@
 <script setup>
 import Avatar from "@/components/Avatar.vue";
-import GameSwitch from "@/components/GameSwitch.vue";
 import SrAchievement from "@/assets/sr-image/sr-achievement.png"
-import SrSettingButton from "@/views/SrAchievement/SrSettingButton.vue";
+import ButtonSrSetting from "@/views/SrAchievement/ButtonSrSetting.vue";
 import SrStatisticTotal from "@/views/SrAchievement/SrStatisticTotal.vue";
 import {useIsMobileStore} from "@/stores/isMobileStore";
 
@@ -13,19 +12,19 @@ const isMobileStore = useIsMobileStore();
   <div class="sr-header-content">
     <div class="sr-header-left">
       <div class="sr-header-title-wrapper">
-        <img :src="SrAchievement" class="sr-header-title-img" alt="sr achievement">
+        <img :src="SrAchievement" alt="sr achievement" class="sr-header-title-img">
         <div class="sr-header-title">成就</div>
       </div>
 
-      <div v-if="!isMobileStore.isMobile"  class="sr-header-statistic-wrapper">
-        <sr-statistic-total />
+      <div v-if="!isMobileStore.isMobile" class="sr-header-statistic-wrapper">
+        <sr-statistic-total/>
       </div>
     </div>
 
     <div class="sr-header-right">
-      <sr-setting-button />
-<!--      <game-switch class="sr-header-right-gap" />-->
-      <avatar />
+      <button-sr-setting/>
+      <!--      <game-switch class="sr-header-right-gap" />-->
+      <avatar/>
     </div>
   </div>
 </template>

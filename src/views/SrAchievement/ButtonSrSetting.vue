@@ -1,16 +1,18 @@
 <script setup>
-import {ref, computed} from "vue";
+import {computed, ref} from "vue";
 import {useIsMobileStore} from "@/stores/isMobileStore";
 import {useSrAchievementStore} from "@/stores/srAchievementStore";
 import {Check, Close, Warning} from '@element-plus/icons-vue';
 import {ElMessageBox} from "element-plus";
 import {showError, showSuccess} from "@/utils/notification";
 import {srExport} from "@/utils/srExport";
-import SrImportButton from "@/views/SrAchievement/SrImportButton.vue";
+import ButtonSrImport from "@/views/SrAchievement/ButtonSrImport.vue";
 
 // 移动端适配
 const isMobileStore = useIsMobileStore();
-const dialogWidth = computed(() => { return isMobileStore.isMobile? '100%' : '500px' });
+const dialogWidth = computed(() => {
+  return isMobileStore.isMobile ? '100%' : '500px'
+});
 
 const achievementStore = useSrAchievementStore();
 
@@ -46,8 +48,8 @@ const openWarn = () => {
 
 <template>
   <el-button
-      type="primary"
       round
+      type="primary"
       @click="handleClick">
     选项
   </el-button>
@@ -55,26 +57,26 @@ const openWarn = () => {
   <div class="sr-setting-wrapper">
     <el-dialog
         v-model="dialogVisible"
-        title="选项"
-        :width="dialogWidth"
         :before-close="handleClose"
-        >
+        :width="dialogWidth"
+        title="选项"
+    >
       <div>
         <p>未完成的成就优先:</p>
         <el-switch
             v-model="achievementStore.isCompleteFirst"
-            size="large"
-            inline-prompt
             :active-icon="Check"
             :inactive-icon="Close"
+            inline-prompt
+            size="large"
         />
       </div>
       <div>
         <p>导入:</p>
         <div style="display: flex">
-          <sr-import-button />
-          <el-tooltip placement="top" effect="light">
-            <el-button :icon="Warning" circle text style="margin-left: 5px" />
+          <button-sr-import/>
+          <el-tooltip effect="light" placement="top">
+            <el-button :icon="Warning" circle style="margin-left: 5px" text/>
             <template #content>
               <p>表格头匹配格式：</p>
               <p>成就名称：'名称', '成就'</p>
@@ -85,11 +87,11 @@ const openWarn = () => {
       </div>
       <div>
         <p>导出:</p>
-        <el-button type="primary" round dark @click="srExport()">导出成就表格</el-button>
+        <el-button dark round type="primary" @click="srExport()">导出成就表格</el-button>
       </div>
       <div>
         <p>强制更新数据:</p>
-        <el-button round dark color="red" @click="openWarn">更新</el-button>
+        <el-button color="red" dark round @click="openWarn">更新</el-button>
       </div>
     </el-dialog>
 

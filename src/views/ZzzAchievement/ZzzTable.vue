@@ -1,5 +1,5 @@
 <script setup>
-import ZzzStatisticClassCard from "@/views/ZzzAchievement/ZzzStatisticClassCard.vue";
+import CardZzzStatisticClass from "@/views/ZzzAchievement/CardZzzStatisticClass.vue";
 import ZzzTableRow from "@/views/ZzzAchievement/ZzzTableRow.vue";
 import ZzzClassSelect from "@/views/ZzzAchievement/ZzzClassSelect.vue";
 import {useIsMobileStore} from "@/stores/isMobileStore";
@@ -15,11 +15,11 @@ const isMobileStore = useIsMobileStore();
 
 <template>
   <div v-if="isMobileStore.isMobile" class="zzz-table-header">
-    <zzz-class-select v-model="achievementClass" class="zzz-table-header-select" />
-    <zzz-statistic-class-card :achievement-class="achievementClass" class="zzz-table-header-card" />
+    <zzz-class-select v-model="achievementClass" class="zzz-table-header-select"/>
+    <card-zzz-statistic-class :achievement-class="achievementClass" class="zzz-table-header-card"/>
   </div>
   <div v-else>
-    <zzz-statistic-class-card :achievement-class="achievementClass" style="margin-bottom: 10px" />
+    <card-zzz-statistic-class :achievement-class="achievementClass" style="margin-bottom: 10px"/>
   </div>
 
   <el-scrollbar :height="tableHeight">
@@ -30,7 +30,7 @@ const isMobileStore = useIsMobileStore();
           class="zzz-card-row"
           shadow="hover"
       >
-        <zzz-table-row :achievement="row" />
+        <zzz-table-row :achievement="row"/>
       </el-card>
     </div>
   </el-scrollbar>

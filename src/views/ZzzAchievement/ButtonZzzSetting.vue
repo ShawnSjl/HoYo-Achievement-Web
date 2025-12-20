@@ -1,12 +1,12 @@
 <script setup>
 import {computed, ref} from 'vue';
-import { useZzzAchievementStore } from "@/stores/zzzAchievementsStore";
+import {useZzzAchievementStore} from "@/stores/zzzAchievementsStore";
 import {Check, Close, Warning} from '@element-plus/icons-vue';
 import {ElMessageBox} from "element-plus";
 import {showError, showSuccess} from "@/utils/notification";
 import {useIsMobileStore} from "@/stores/isMobileStore";
 import {zzzExport} from "@/utils/zzzExport";
-import ZzzImportButton from "@/views/ZzzAchievement/ZzzImportButton.vue";
+import ButtonZzzImport from "@/views/ZzzAchievement/ButtonZzzImport.vue";
 
 // 使用Pinia作为本地缓存
 const achievementStore = useZzzAchievementStore();
@@ -15,7 +15,9 @@ const isMobileStore = useIsMobileStore();
 const dialogVisible = ref(false);
 
 // 移动端适配
-const dialogWidth = computed(() => { return isMobileStore.isMobile? '100%' : '500px' });
+const dialogWidth = computed(() => {
+  return isMobileStore.isMobile ? '100%' : '500px'
+});
 
 const handleClick = () => {
   dialogVisible.value = true;
@@ -56,18 +58,18 @@ const openWarn = () => {
   <div class="zzz-setting-dialog">
     <el-dialog
         v-model="dialogVisible"
-        title="选项"
-        :width="dialogWidth"
         :before-close="handleClose"
+        :width="dialogWidth"
+        title="选项"
     >
       <div>
         <p>未完成的成就优先:</p>
         <el-switch
             v-model="achievementStore.isCompleteFirst"
-            size="large"
-            inline-prompt
             :active-icon="Check"
             :inactive-icon="Close"
+            inline-prompt
+            size="large"
         />
       </div>
       <div>
@@ -80,9 +82,9 @@ const openWarn = () => {
       <div>
         <p>导入:</p>
         <div style="display: flex">
-          <zzz-import-button />
+          <button-zzz-import/>
           <el-tooltip placement="top">
-            <el-button :icon="Warning" circle text style="margin-left: 5px" />
+            <el-button :icon="Warning" circle style="margin-left: 5px" text/>
             <template #content>
               <p>表格头匹配格式：</p>
               <p>成就ID：'ID', '成就ID', '编号'</p>
@@ -93,11 +95,11 @@ const openWarn = () => {
       </div>
       <div>
         <p>导出:</p>
-        <el-button type="primary" round dark @click="zzzExport()">导出成就表格</el-button>
+        <el-button dark round type="primary" @click="zzzExport()">导出成就表格</el-button>
       </div>
       <div>
         <p>强制更新数据:</p>
-        <el-button round dark color="red" @click="openWarn">更新</el-button>
+        <el-button color="red" dark round @click="openWarn">更新</el-button>
       </div>
     </el-dialog>
   </div>

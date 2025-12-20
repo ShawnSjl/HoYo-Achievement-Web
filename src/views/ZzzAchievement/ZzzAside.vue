@@ -1,8 +1,8 @@
 <script setup>
 import {computed, watch} from "vue";
-import { useZzzAchievementStore } from "@/stores/zzzAchievementsStore";
+import {useZzzAchievementStore} from "@/stores/zzzAchievementsStore";
 import {zzzGetClassByCategory, zzzGetClassIdByName} from "@/utils/zzzAchievementClass";
-import ZzzStatisticTotalCard from "@/views/ZzzAchievement/ZzzStatisticTotalCard.vue";
+import CardZzzStatisticTotal from "@/views/ZzzAchievement/CardZzzStatisticTotal.vue";
 
 // 使用Pinia作为本地缓存
 const achievementStore = useZzzAchievementStore()
@@ -18,14 +18,14 @@ const classes = computed(() => zzzGetClassByCategory(props.category));
 // update achievement class when category changed
 watch(classes, (newClasses) => {
   achievementClass.value = newClasses[0];
-}, { immediate: true });
+}, {immediate: true});
 
 const completePercentage = computed(() => {
   return (className) => {
     const classId = zzzGetClassIdByName(className);
 
     const numberTotal = achievementStore.achievements.filter(achievement => achievement.class_id === classId).length
-      - achievementStore.getBranchAchievementsNumberByClass(classId);
+        - achievementStore.getBranchAchievementsNumberByClass(classId);
 
     const numberComplete = achievementStore.achievements.filter(achievement => achievement.class_id === classId &&
         achievement.complete === 1).length;
@@ -39,20 +39,20 @@ const completePercentage = computed(() => {
 
 <template>
   <div class="zzz-aside">
-    <el-segmented v-model="achievementClass" :options="classes" size="large" direction="vertical">
+    <el-segmented v-model="achievementClass" :options="classes" direction="vertical" size="large">
       <template #default="each">
         <div class="zzz-class-option">
           <div style="flex: 1"></div>
           <div style="flex: 1">
-            <p>{{each.item}}</p>
+            <p>{{ each.item }}</p>
           </div>
           <div class="zzz-class-option-percentage">
-            <p>{{completePercentage(each.item)}}%</p>
+            <p>{{ completePercentage(each.item) }}%</p>
           </div>
         </div>
       </template>
     </el-segmented>
-    <zzz-statistic-total-card class="zzz-container-statistic-total" />
+    <card-zzz-statistic-total class="zzz-container-statistic-total"/>
   </div>
 </template>
 
@@ -86,7 +86,7 @@ const completePercentage = computed(() => {
   flex-direction: row;
 }
 
-.zzz-class-option-percentage  {
+.zzz-class-option-percentage {
   flex: 1;
   display: flex;
   flex-direction: row-reverse;
