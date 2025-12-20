@@ -3,9 +3,9 @@ import {computed, onMounted, watch} from "vue";
 import DefaultAvatar from '@/assets/zzz-image/zzz-logo.png'
 import {useUserStore} from "@/stores/userStore.js";
 import ButtonProfileSetting from "@/views/Home/ButtonProfileSetting.vue";
-import LoginButton from "@/components/LoginButton.vue";
-import LogoutButton from "@/components/LogoutButton.vue";
-import RegisterButton from "@/components/RegisterButton.vue";
+import ButtonLogin from "@/components/ButtonLogin.vue";
+import ButtonLogout from "@/components/ButtonLogout.vue";
+import ButtonRegister from "@/components/ButtonRegister.vue";
 import ProfileCardsLayout from "@/views/Home/ProfileCardsLayout.vue";
 import {useIsMobileStore} from "@/stores/isMobileStore.js";
 import {useAccountStore} from "@/stores/accountStore.js";
@@ -57,12 +57,12 @@ watch(userName, async (newUserName) => {
 
         <div class="profile-header-end">
           <div v-if="isLoggedIn" class="profile-header-end">
-            <logout-button style="margin-left: 20px"/>
+            <button-logout style="margin-left: 20px"/>
             <button-profile-setting/>
           </div>
           <div v-else class="profile-header-end">
-            <register-button style="margin-left: 20px"/>
-            <login-button/>
+            <button-register style="margin-left: 20px"/>
+            <button-login/>
           </div>
         </div>
       </div>

@@ -1,25 +1,27 @@
 <script setup>
-import {ref, computed} from "vue";
+import {computed} from "vue";
 import {useUserStore} from "@/stores/userStore.js";
-import LoginButton from "@/components/LoginButton.vue";
-import LogoutButton from "@/components/LogoutButton.vue";
-import RegisterButton from "@/components/RegisterButton.vue";
-import UserSpaceButton from "@/components/UserSpaceButton.vue";
+import ButtonLogin from "@/components/ButtonLogin.vue";
+import ButtonLogout from "@/components/ButtonLogout.vue";
+import ButtonRegister from "@/components/ButtonRegister.vue";
+import ButtonHomePage from "@/components/ButtonHomePage.vue";
 
 const authStore = useUserStore();
 
-const isLoggedIn = computed(() => {return authStore.isUserLogin()})
+const isLoggedIn = computed(() => {
+  return authStore.isUserLogin()
+})
 </script>
 
 <template>
   <div class="avatar-popover">
-    <user-space-button />
+    <button-home-page/>
     <div v-if="!isLoggedIn" class="avatar-popover-button">
-      <login-button />
-      <register-button style="margin-top: 10px"/>
+      <button-login/>
+      <button-register style="margin-top: 10px"/>
     </div>
     <div v-else class="avatar-popover-button">
-      <logout-button />
+      <button-logout/>
     </div>
   </div>
 </template>
