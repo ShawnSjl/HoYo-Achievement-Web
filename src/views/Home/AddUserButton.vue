@@ -1,7 +1,7 @@
 <script setup>
 import {reactive, ref} from 'vue';
-import {showError, showSuccess} from "@/utils/notification";
-import {createUser} from "@/api/user";
+import {showError, showSuccess} from "@/utils/notification.js";
+import {createUser} from "@/api/user.js";
 
 const updateData = defineModel();
 

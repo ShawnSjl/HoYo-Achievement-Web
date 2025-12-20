@@ -1,6 +1,6 @@
 <script setup>
 import {reactive, ref} from "vue";
-import {showError} from "@/utils/notification";
+import {showError} from "@/utils/notification.js";
 import {useUserStore} from "@/stores/userStore.js";
 
 // 使用Pinia作为本地缓存

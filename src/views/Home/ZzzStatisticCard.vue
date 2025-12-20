@@ -1,8 +1,8 @@
 <script setup>
 import {computed} from 'vue';
-import router from "@/router";
-import {useZzzAchievementStore} from "@/stores/zzzAchievementsStore";
-import {zzzVersion} from "@/utils/config";
+import router from "@/router/index.js";
+import {useZzzAchievementStore} from "@/stores/zzzAchievementsStore.js";
+import {zzzVersion} from "@/utils/config.js";
 import ZzzAchievementImg1 from '@/assets/zzz-image/zzz-achievement-level-1.png';
 import ZzzAchievementImg2 from '@/assets/zzz-image/zzz-achievement-level-2.png';
 import ZzzAchievementImg3 from '@/assets/zzz-image/zzz-achievement-level-3.png';

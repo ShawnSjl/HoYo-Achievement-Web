@@ -1,5 +1,5 @@
 <script setup>
-import {siteVersion} from "@/utils/config";
+import {siteVersion} from "@/utils/config.js";
 </script>
 
 <template>
@@ -7,7 +7,7 @@ import {siteVersion} from "@/utils/config";
     <el-card shadow="never" style="height: 360px">
       <template #header>
         <div slot="header">
-          网站公告 版本：v{{siteVersion}}
+          网站公告 版本：v{{ siteVersion }}
         </div>
       </template>
 

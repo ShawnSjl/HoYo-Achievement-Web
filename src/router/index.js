@@ -1,12 +1,12 @@
 import {createRouter, createWebHistory} from "vue-router";
 import ZzzView from "@/views/ZzzAchievement/ZzzView.vue";
-import ProfileView from "@/views/User/ProfileView.vue"
+import HomeView from "@/views/Home/HomeView.vue"
 import SrView from "@/views/SrAchievement/SrView.vue";
 
 const routes = [
     {
         path: "/",
-        component: ProfileView,
+        component: HomeView,
         meta: {
             title: "首页",
             theme: 'light',
@@ -22,15 +22,6 @@ const routes = [
             color: '#000000'
         }
     },
-    // {
-    //     path: "/space",
-    //     component: ProfileView,
-    //     meta: {
-    //         title: '个人空间',
-    //         theme: 'light',
-    //         color: '#f6f6f6'
-    //     }
-    // },
     {
         path: "/sr",
         component: SrView,

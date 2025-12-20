@@ -1,8 +1,8 @@
 <script setup>
-import {ref, computed} from "vue";
-import PasswordChangeButton from "@/views/User/ChangePasswordButton.vue";
-import DeleteAccountButton from "@/views/User/DeleteAccountButton.vue";
-import ManageUserButton from "@/views/User/ManageUserButton.vue";
+import {computed} from "vue";
+import PasswordChangeButton from "@/views/Home/ChangePasswordButton.vue";
+import DeleteAccountButton from "@/views/Home/DeleteAccountButton.vue";
+import ManageUserButton from "@/views/Home/ManageUserButton.vue";
 
 const isAdmin = computed(() => {
   const role = JSON.parse(localStorage.getItem("user")).role
@@ -13,11 +13,11 @@ const isAdmin = computed(() => {
 <template>
   <el-popover
       placement="bottom"
-      width="200"
-      trigger="click">
+      trigger="click"
+      width="200">
 
     <template #reference>
-      <el-button round plain type="primary">
+      <el-button plain round type="primary">
         设置
       </el-button>
     </template>

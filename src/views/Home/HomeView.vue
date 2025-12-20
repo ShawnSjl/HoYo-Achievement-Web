@@ -1,76 +1,168 @@
 <script setup>
-import router from "@/router";
-import {showInfo} from "@/utils/notification";
+import {computed, onMounted, watch} from "vue";
+import DefaultAvatar from '@/assets/zzz-image/zzz-logo.png'
+import {useUserStore} from "@/stores/userStore.js";
+import ProfileSettingButton from "@/views/Home/ProfileSettingButton.vue";
+import LoginButton from "@/components/LoginButton.vue";
+import LogoutButton from "@/components/LogoutButton.vue";
+import RegisterButton from "@/components/RegisterButton.vue";
+import ProfileCardsLayout from "@/views/Home/ProfileCardsLayout.vue";
+import {useIsMobileStore} from "@/stores/isMobileStore.js";
+import {useAccountStore} from "@/stores/accountStore.js";
 
-const handleZZZ = () => {
-  router.push({ path: '/zzz' });
-}
+// 使用Pinia作为本地缓存
+const userStore = useUserStore();
+const accountStore = useAccountStore();
+const isMobileStore = useIsMobileStore();
 
-const handleSR = () => {
-  router.push({ path: '/sr' });
-}
+const isLoggedIn = computed(() => {
+  return userStore.isUserLogin()
+})
+// 移动端适配
+const avatarSize = computed(() => {
+  return isMobileStore.isMobile ? 'default' : 'large'
+})
+
+// 同步数据
+const fetchRemoteData = async () => {
+  if (isLoggedIn) {
+    await accountStore.fetchAccounts();
+  }
+};
+onMounted(() => {
+  fetchRemoteData();
+});
+
+// 获取用户名，并处理用户登录登出
+const userName = computed(() => {
+  return userStore.getUserName()
+})
+watch(userName, async (newUserName) => {
+  console.log(newUserName);
+  await fetchRemoteData();
+});
 </script>
 
 <template>
-  <div class="background-container">
-    <div class="half left" @click="handleZZZ" />
-    <div class="half right" @click="handleSR" />
+  <div class="profile-bg">
+    <div class="profile-content">
+
+      <div class="profile-header">
+        <div class="profile-header-start">
+          <el-avatar :size="avatarSize" :src="DefaultAvatar"/>
+          <div class="profile-info">
+            <p>{{ userName }}</p>
+          </div>
+        </div>
+
+        <div class="profile-header-end">
+          <div v-if="isLoggedIn" class="profile-header-end">
+            <logout-button style="margin-left: 20px"/>
+            <profile-setting-button/>
+          </div>
+          <div v-else class="profile-header-end">
+            <register-button style="margin-left: 20px"/>
+            <login-button/>
+          </div>
+        </div>
+      </div>
+
+      <el-divider></el-divider>
+
+      <div class="profile-statistic">
+        <profile-cards-layout/>
+      </div>
+    </div>
   </div>
 </template>
 
 <style scoped>
-.background-container {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100vw;
-  height: 100vh;
-  overflow: hidden;
-  z-index: -1; /* 保持在页面最底层 */
-}
-
-.half {
-  position: absolute;
-  width: 100%;
+html, body {
   height: 100%;
-  background-size: cover;
-  background-repeat: no-repeat;
-  background-position: center;
-  transition: transform 0.4s ease;
+  margin: 0;
+  padding: 0;
 }
 
-/* 左边背景 */
-.left {
-  background-image: url('@/assets/zzz-image/zzz-bg-2.png');
-  clip-path: polygon(0 0, 55% 0, 45% 100%, 0 100%);
-  background-position: left -800px top;
-  z-index: 1;
+.profile-bg {
+  background-color: #f6f6f6;
+  height: 100%;
+  width: 100%;
+  z-index: -1;
+  inset: 0;
+  position: fixed;
 }
 
-/* 右边背景 */
-.right {
-  background-image: url('@/assets/sr-image/sr-bg-2.png');
-  clip-path: polygon(55% 0, 100% 0, 100% 100%, 45% 100%);
-  background-position: right -200px top;
-  z-index: 0;
+.profile-content {
+  max-width: 1080px;
+  margin: 0 auto;
+  padding: 0 20px;
 }
 
-/* hover 效果 */
-.left:hover,
-.right:hover {
-  transform: scale(1.02);
-  z-index: 2;
-}
-
-@media (orientation: portrait) {
-  .left {
-    clip-path: polygon(0 0, 100% 0, 100% 45%, 0 55%);
-    background-position: right -400px top -100px;
+@media (max-width: 900px) {
+  .profile-content {
+    max-width: 830px;
+    margin: 0 auto;
+    padding: 0 5px;
   }
+}
 
-  .right {
-    clip-path: polygon(0 55%, 100% 45%, 100% 100%, 0 100%);
-    background-position: right -200px top 150px ;
+.profile-header {
+  padding-top: 20px;
+  margin: 0 auto;
+  width: 70%;
+  justify-self: center;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+}
+
+@media (max-width: 900px) {
+  .profile-header {
+    padding-top: 10px;
+    width: 80%;
+  }
+}
+
+.profile-header-start {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+
+.profile-header-end {
+  display: flex;
+  flex-direction: row-reverse;
+  align-items: center;
+}
+
+.profile-info {
+  margin-left: 30px;
+  justify-self: center;
+  font-weight: bold;
+  font-size: 32px;
+}
+
+
+@media (max-width: 900px) {
+  .profile-info {
+    margin-left: 10px;
+    justify-self: center;
+    font-weight: bold;
+    font-size: 14px;
+  }
+}
+
+.profile-statistic {
+  width: 85%;
+  justify-self: center;
+  margin: 0 auto;
+  padding: 0 5px;
+}
+
+@media (max-width: 900px) {
+  .profile-statistic {
+    width: 95%;
   }
 }
 </style>

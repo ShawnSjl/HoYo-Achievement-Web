@@ -1,8 +1,8 @@
 <script setup>
 import {computed} from "vue";
-import {useSrAchievementStore} from "@/stores/srAchievementStore";
-import router from "@/router";
-import {srVersion} from "@/utils/config";
+import {useSrAchievementStore} from "@/stores/srAchievementStore.js";
+import router from "@/router/index.js";
+import {srVersion} from "@/utils/config.js";
 import SrAchievementImg3 from "@/assets/sr-image/sr-achievement-level-3.png";
 import SrAchievementImg2 from "@/assets/sr-image/sr-achievement-level-2.png";
 import SrAchievementImg1 from "@/assets/sr-image/sr-achievement-level-1.png";

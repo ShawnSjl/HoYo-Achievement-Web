@@ -1,13 +1,13 @@
 <script setup>
 import {nextTick, onBeforeUnmount, onMounted, ref} from "vue";
-import {useIsMobileStore} from "@/stores/isMobileStore";
+import {useIsMobileStore} from "@/stores/isMobileStore.js";
 import {useAccountStore} from "@/stores/accountStore.js";
-import ZzzStatisticCard from "@/views/User/ZzzStatisticCard.vue";
-import SrStatisticCard from "@/views/User/SrStatisticCard.vue";
-import EmptyCard from "@/views/User/EmptyCard.vue";
+import ZzzStatisticCard from "@/views/Home/ZzzStatisticCard.vue";
+import SrStatisticCard from "@/views/Home/SrStatisticCard.vue";
+import EmptyCard from "@/views/Home/EmptyCard.vue";
 
 // 使用Pinia作为本地缓存
-const accountStore = useAccountStore(); // FIXME 给卡片设置pros
+const accountStore = useAccountStore();
 const isMobileStore = useIsMobileStore();
 
 // 设置卡片墙高度

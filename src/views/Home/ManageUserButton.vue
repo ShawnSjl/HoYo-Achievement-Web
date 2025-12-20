@@ -1,8 +1,8 @@
 <script setup>
-import {computed, ref, watch} from "vue";
-import {showError} from "@/utils/notification";
-import {getAllUsers} from "@/api/user";
-import AddUserButton from "@/views/User/AddUserButton.vue";
+import {ref, watch} from "vue";
+import {showError} from "@/utils/notification.js";
+import {getAllUsers} from "@/api/user.js";
+import AddUserButton from "@/views/Home/AddUserButton.vue";
 import {useUserStore} from "@/stores/userStore.js";
 
 // 使用Pinia作为本地缓存
@@ -38,21 +38,21 @@ watch(needToUpdate, () => {
 </script>
 
 <template>
-  <el-button round plain type="warning" @click="manageDialogVisible = true; fetchAllUsers()" style="margin-top: 10px">
+  <el-button plain round style="margin-top: 10px" type="warning" @click="manageDialogVisible = true; fetchAllUsers()">
     管理用户
   </el-button>
 
   <div class="manage-dialog">
     <el-dialog
-      v-model="manageDialogVisible"
-      title="管理用户"
-      @close="manageDialogVisible = false"
-      class="manage-dialog">
+        v-model="manageDialogVisible"
+        class="manage-dialog"
+        title="管理用户"
+        @close="manageDialogVisible = false">
       <div>
         <el-table :data="allUsers" max-height="400" style="margin-bottom: 10px">
-          <el-table-column label="ID" prop="user_id" width="50" />
-          <el-table-column label="用户名" prop="username" width="300" />
-          <el-table-column label="权限" prop="role" width="150" />
+          <el-table-column label="ID" prop="user_id" width="50"/>
+          <el-table-column label="用户名" prop="username" width="300"/>
+          <el-table-column label="权限" prop="role" width="150"/>
           <el-table-column label="创建时间" prop="created_at" width="270">
             <template #default="{ row }">
               {{ formatTime(row.created_at) }}

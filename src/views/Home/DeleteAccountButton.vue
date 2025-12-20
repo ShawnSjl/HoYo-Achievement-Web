@@ -1,7 +1,7 @@
 <script setup>
-import { ref } from 'vue'
-import { useUserStore } from '@/stores/userStore.js';
-import {showError} from "@/utils/notification";
+import {ref} from 'vue'
+import {useUserStore} from '@/stores/userStore.js';
+import {showError} from "@/utils/notification.js";
 
 // 使用Pinia作为本地缓存
 const authStore = useUserStore();
@@ -14,7 +14,7 @@ const handleClose = () => {
   outerVisible.value = false
 }
 
-const handleDelete = async() => {
+const handleDelete = async () => {
   // try {
   //   handleClose()
   //   await authStore.deleteUser()
@@ -26,7 +26,7 @@ const handleDelete = async() => {
 </script>
 
 <template>
-  <el-button round plain type="danger" class="profile-delete-button" @click="outerVisible = true">
+  <el-button class="profile-delete-button" plain round type="danger" @click="outerVisible = true">
     注销账号
   </el-button>
 
@@ -35,9 +35,9 @@ const handleDelete = async() => {
 
     <el-dialog
         v-model="innerVisible"
-        width="500"
-        title="注销账户二次确认"
         append-to-body
+        title="注销账户二次确认"
+        width="500"
         @close="handleClose"
     >
       <span>注销账户后，数据无法恢复！请再次确认要删除账户。</span>
@@ -54,7 +54,7 @@ const handleDelete = async() => {
     <template #footer>
       <div class="dialog-footer">
         <el-button @click="handleClose">取消</el-button>
-        <el-button type="danger" @click="innerVisible = true" style="margin-left: 10px">
+        <el-button style="margin-left: 10px" type="danger" @click="innerVisible = true">
           确认
         </el-button>
       </div>
