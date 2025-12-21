@@ -38,11 +38,13 @@ onBeforeUnmount(() => {
 
 <template>
   <el-scrollbar :max-height="cardsLayoutHeight" style="margin-left: 10px">
-    <el-row :gutter="20" class="profile-card-layout">
+    <el-row :gutter="16" style="width: 99%">
 
       <el-col
           v-for="item in accounts"
           :key="item.uuid"
+          :lg="8" :md="12" :sm="12" :xs="24"
+          class="col-margin"
       >
         <div v-if="item.type === 'ZZZ'">
           <card-zzz-statistic :uuid="item.uuid" class="profile-card"/>
@@ -52,65 +54,24 @@ onBeforeUnmount(() => {
         </div>
       </el-col>
 
-      <el-col>
+      <el-col :lg="8" :md="12" :sm="12" :xs="24" class="col-margin">
         <card-new-account class="profile-card"/>
       </el-col>
 
-      <el-col>
+      <el-col :lg="12" :md="16" :sm="12" :xs="24" class="col-margin">
         <card-server-info class="profile-card"/>
       </el-col>
 
     </el-row>
-    <!--    <div v-if="!isMobileStore.isMobile" class="profile-card-layout">-->
-    <!--      <el-row :gutter="20">-->
-    <!--        <el-col :span="14">-->
-    <!--          <zzz-statistic-card class="profile-card"/>-->
-    <!--        </el-col>-->
-    <!--        <el-col :span="10">-->
-    <!--          <sr-statistic-card class="profile-card"/>-->
-    <!--        </el-col>-->
-    <!--      </el-row>-->
-    <!--      <el-row :gutter="20" style="margin-top: 20px">-->
-    <!--        <el-col :span="10">-->
-    <!--          <announcement-card class="profile-card"/>-->
-    <!--        </el-col>-->
-    <!--        <el-col :span="14">-->
-    <!--          <empty-card class="profile-card"/>-->
-    <!--        </el-col>-->
-    <!--      </el-row>-->
-    <!--    </div>-->
-    <!--    <div v-else class="profile-card-layout">-->
-    <!--      <el-row :gutter="20">-->
-    <!--        <el-col :span="24">-->
-    <!--          <zzz-statistic-card class="profile-card"/>-->
-    <!--        </el-col>-->
-    <!--      </el-row>-->
-    <!--      <el-row :gutter="20" style="margin-top: 10px">-->
-    <!--        <el-col :span="24">-->
-    <!--          <sr-statistic-card class="profile-card"/>-->
-    <!--        </el-col>-->
-    <!--      </el-row>-->
-    <!--      <el-row :gutter="20" style="margin-top: 10px">-->
-    <!--        <el-col :span="24">-->
-    <!--          <announcement-card class="profile-card"/>-->
-    <!--        </el-col>-->
-    <!--      </el-row>-->
-    <!--    </div>-->
   </el-scrollbar>
 </template>
 
 <style scoped>
-.profile-card-layout {
-  width: 98%;
-}
-
-@media (max-width: 900px) {
-  .profile-card-layout {
-    overflow-x: hidden;
-  }
-}
-
 .profile-card {
   max-height: 360px;
+}
+
+.col-margin {
+  margin-bottom: 16px;
 }
 </style>

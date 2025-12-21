@@ -168,7 +168,7 @@ html, body {
 }
 
 .profile-statistic {
-  width: 85%;
+  width: 90%;
   justify-self: center;
   margin: 0 auto;
   padding: 0 5px;
