@@ -90,10 +90,11 @@ export const useUserStore = defineStore(
             token.value = '';
             user.value = '';
             admin.value = false;
+            localStorage.removeItem('token');
 
             // Empty the account list in the account store
             const accountStore = useAccountStore();
-            accountStore.accounts.value = [];
+            accountStore.remoteAccounts.value = [];
         }
 
         /**

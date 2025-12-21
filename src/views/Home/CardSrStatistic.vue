@@ -18,8 +18,13 @@ const props = defineProps({
   uuid: String,
 });
 
+// 获取账户列表
+const accounts = computed(() => {
+  return accountStore.getAccounts();
+})
+
 // 获取账号成就
-const account = accountStore.accounts.find(account => account.uuid === props.uuid);
+const account = accounts.value.find(account => account.uuid === props.uuid);
 
 // 计算成就数量
 const totalNumber = computed(() => {

@@ -1,5 +1,5 @@
 <script setup>
-import {nextTick, onBeforeUnmount, onMounted, ref} from "vue";
+import {computed, nextTick, onBeforeUnmount, onMounted, ref} from "vue";
 import {useIsMobileStore} from "@/stores/isMobileStore.js";
 import {useAccountStore} from "@/stores/accountStore.js";
 import CardZzzStatistic from "@/views/Home/CardZzzStatistic.vue";
@@ -9,6 +9,11 @@ import CardEmpty from "@/views/Home/CardEmpty.vue";
 // 使用Pinia作为本地缓存
 const accountStore = useAccountStore();
 const isMobileStore = useIsMobileStore();
+
+// 获取账户列表
+const accounts = computed(() => {
+  return accountStore.getAccounts();
+})
 
 // 设置卡片墙高度
 const cardsLayoutHeight = ref(500)
@@ -35,7 +40,7 @@ onBeforeUnmount(() => {
     <el-row :gutter="20" class="profile-card-layout">
 
       <el-col
-          v-for="item in accountStore.accounts"
+          v-for="item in accounts"
           :key="item.uuid"
       >
         <div v-if="item.type === 'ZZZ'">

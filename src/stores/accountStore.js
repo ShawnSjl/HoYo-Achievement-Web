@@ -15,7 +15,20 @@ import {v7 as uuidv7} from 'uuid';
 export const useAccountStore = defineStore(
     'account',
     () => {
-        const accounts = ref([]);
+        const remoteAccounts = ref([]);
+        const localAccounts = ref([]);
+
+        /**
+         * Return the list of accounts. If the user is logged in, return the accounts from the backend; otherwise, return the local data.
+         * @returns {UnwrapRef<*[]>}
+         */
+        function getAccounts() {
+            if (localStorage.getItem('token')) {
+                return remoteAccounts.value;
+            } else {
+                return localAccounts.value;
+            }
+        }
 
         /**
          * Fetch accounts from the backend.
@@ -24,7 +37,7 @@ export const useAccountStore = defineStore(
         async function fetchAccounts() {
             try {
                 // Clean the current data first
-                accounts.value = [];
+                remoteAccounts.value = [];
 
                 // FIXME 登录时加载两次
 
@@ -63,7 +76,7 @@ export const useAccountStore = defineStore(
                     }
 
                     // Push the account to the list
-                    accounts.value.push(accountData);
+                    remoteAccounts.value.push(accountData);
                 }
             } catch (error) {
                 console.error('Fail to get accounts:', error);
@@ -122,11 +135,11 @@ export const useAccountStore = defineStore(
                 }
 
                 // Push the account to the list
-                accounts.value.push(newAccount);
-
                 if (localStorage.getItem('token')) {
+                    remoteAccounts.value.push(newAccount);
                     showSuccess("游戏账号创建成功")
                 } else {
+                    localAccounts.value.push(newAccount);
                     showSuccess("本地游戏账号创建成功")
                 }
             } catch (error) {
@@ -158,12 +171,13 @@ export const useAccountStore = defineStore(
                 }
 
                 // Update the account name in the local data
-                const target = accounts.value.find(item => item.uuid === uuid);
-                target.name = newName;
-
                 if (localStorage.getItem('token')) {
+                    const target = remoteAccounts.value.find(item => item.uuid === uuid);
+                    target.name = newName;
                     showSuccess("游戏账户名称更新成功")
                 } else {
+                    const target = localAccounts.value.find(item => item.uuid === uuid);
+                    target.name = newName;
                     showSuccess("本地游戏账户名称更新成功")
                 }
             } catch (error) {
@@ -195,12 +209,13 @@ export const useAccountStore = defineStore(
                 }
 
                 // Update the account in game uid in the local data
-                const target = accounts.value.find(item => item.uuid === uuid);
-                target.inGameUid = newInGameUid;
-
                 if (localStorage.getItem('token')) {
+                    const target = remoteAccounts.value.find(item => item.uuid === uuid);
+                    target.inGameUid = newInGameUid;
                     showSuccess("游戏账户uid更新成功")
                 } else {
+                    const target = localAccounts.value.find(item => item.uuid === uuid);
+                    target.inGameUid = newInGameUid;
                     showSuccess("本地游戏账户uid更新成功")
                 }
             } catch (error) {
@@ -230,12 +245,13 @@ export const useAccountStore = defineStore(
                 }
 
                 // Remove the account from the local data
-                const index = accounts.value.findIndex(item => item.uuid === uuid);
-                accounts.value.splice(index, 1);
-
                 if (localStorage.getItem('token')) {
+                    const index = remoteAccounts.value.findIndex(item => item.uuid === uuid);
+                    remoteAccounts.value.splice(index, 1);
                     showSuccess("游戏账户删除成功")
                 } else {
+                    const index = localAccounts.value.findIndex(item => item.uuid === uuid);
+                    localAccounts.value.splice(index, 1);
                     showSuccess("本地游戏账户删除成功")
                 }
             } catch (error) {
@@ -244,7 +260,15 @@ export const useAccountStore = defineStore(
             }
         }
 
-        return {accounts, fetchAccounts, createNew, updateName, deleteTargetAccount};
+        return {
+            remoteAccounts,
+            localAccounts,
+            getAccounts,
+            fetchAccounts,
+            createNew,
+            updateName,
+            deleteTargetAccount
+        };
     },
     {persist: true}
 );
