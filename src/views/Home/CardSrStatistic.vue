@@ -32,7 +32,7 @@ const completeNumber = computed(() => {
 
 const getLevel1Number = computed(() => {
   return account.achievements.filter(achievement => achievement.reward_level === 1).length
-      - achievementStore.getBranchAchievementNumberByLevel(1);
+      - achievementStore.getBranchAchievementNumberByLevel(account.achievements, 1);
 })
 const getCompleteLevel1Number = computed(() => {
   return account.achievements.filter(achievement => achievement.reward_level === 1
@@ -41,7 +41,7 @@ const getCompleteLevel1Number = computed(() => {
 
 const getLevel2Number = computed(() => {
   return account.achievements.filter(achievement => achievement.reward_level === 2).length
-      - achievementStore.getBranchAchievementNumberByLevel(2);
+      - achievementStore.getBranchAchievementNumberByLevel(account.achievements, 2);
 })
 const getCompleteLevel2Number = computed(() => {
   return account.achievements.filter(achievement => achievement.reward_level === 2
@@ -50,7 +50,7 @@ const getCompleteLevel2Number = computed(() => {
 
 const getLevel3Number = computed(() => {
   return account.achievements.filter(achievement => achievement.reward_level === 3).length
-      - achievementStore.getBranchAchievementNumberByLevel(3);
+      - achievementStore.getBranchAchievementNumberByLevel(account.achievements, 3);
 })
 const getCompleteLevel3Number = computed(() => {
   return account.achievements.filter(achievement => achievement.reward_level === 3

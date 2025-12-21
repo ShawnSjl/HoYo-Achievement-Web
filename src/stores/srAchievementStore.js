@@ -28,6 +28,14 @@ export const useSrAchievementStore = defineStore(
         }
 
         /**
+         * Ensure that the branches data is fetched from the backend.
+         * @returns {Promise<void>}
+         */
+        async function ensureBranchData() {
+            if (branches.value.length === 0) await fetchBranches();
+        }
+
+        /**
          * Process raw data from the backend into a format suitable for the frontend.
          * @param rawData
          * @returns {any[]}
@@ -142,11 +150,9 @@ export const useSrAchievementStore = defineStore(
 
         /**
          * Get the total number of additional achievements in all branches.
-         * @returns {Promise<number>}
+         * @returns number
          */
-        async function getBranchAchievementsNumber() {
-            if (branches.value.length === 0) await fetchBranches();
-
+        function getBranchAchievementsNumber() {
             let count = 0;
             for (const branch of branches.value) {
                 count = count + branch.achievement_id.length - 1;
@@ -158,16 +164,14 @@ export const useSrAchievementStore = defineStore(
          * Get the total number of additional achievements in all branches with the specified level.
          * @param achievements
          * @param level
-         * @returns {Promise<number>}
+         * @returns number
          */
-        async function getBranchAchievementNumberByLevel(achievements, level) {
-            if (branches.value.length === 0) await fetchBranches();
-
+        function getBranchAchievementNumberByLevel(achievements, level) {
             let count = 0;
             for (const branch of branches.value) {
                 // Get an example achievement from the branch
                 const achievement_id = branch.achievement_id[0];
-                const achievement = achievements.value.find(item => item.achievement_id === achievement_id);
+                const achievement = achievements.find(item => item.achievement_id === achievement_id);
 
                 // If the level matches, add to the total count
                 if (level === achievement.reward_level) {
@@ -181,16 +185,14 @@ export const useSrAchievementStore = defineStore(
          * Get the total number of additional achievements in all branches with the specified class.
          * @param achievements
          * @param sr_class
-         * @returns {Promise<number>}
+         * @returns number
          */
-        async function getBranchAchievementsNumberByClass(achievements, sr_class) {
-            if (branches.value.length === 0) await fetchBranches();
-
+        function getBranchAchievementsNumberByClass(achievements, sr_class) {
             let count = 0;
             for (const branch of branches.value) {
                 // Get an example achievement from the branch
                 const achievement_id = branch.achievement_id[0];
-                const achievement = achievements.value.find(item => item.achievement_id === achievement_id);
+                const achievement = achievements.find(item => item.achievement_id === achievement_id);
 
                 // If the class matches, add to the total count
                 if (sr_class === achievement.class_name) {
@@ -205,16 +207,14 @@ export const useSrAchievementStore = defineStore(
          * @param achievements
          * @param sr_class
          * @param level
-         * @returns {Promise<number>}
+         * @returns number
          */
-        async function getBranchAchievementNumberByClassAndLevel(achievements, sr_class, level) {
-            if (branches.value.length === 0) await fetchBranches();
-
+        function getBranchAchievementNumberByClassAndLevel(achievements, sr_class, level) {
             let count = 0;
             for (const branch of branches.value) {
                 // Get an example achievement from the branch
                 const achievement_id = branch.achievement_id[0];
-                const achievement = achievements.value.find(item => item.achievement_id === achievement_id);
+                const achievement = achievements.find(item => item.achievement_id === achievement_id);
 
                 // If the class and level matches, add to the total count
                 if (sr_class === achievement.class_name && level === achievement.reward_level) {
@@ -228,6 +228,7 @@ export const useSrAchievementStore = defineStore(
             branches,
             isCompleteFirst,
             completeAchievement,
+            ensureBranchData,
             getBranchAchievementsNumber,
             getBranchAchievementNumberByLevel,
             getBranchAchievementsNumberByClass,

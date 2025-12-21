@@ -9,10 +9,14 @@ import ButtonRegister from "@/components/ButtonRegister.vue";
 import ProfileCardsLayout from "@/views/Home/ProfileCardsLayout.vue";
 import {useIsMobileStore} from "@/stores/isMobileStore.js";
 import {useAccountStore} from "@/stores/accountStore.js";
+import {useSrAchievementStore} from "@/stores/srAchievementStore.js";
+import {useZzzAchievementStore} from "@/stores/zzzAchievementsStore.js";
 
 // 使用Pinia作为本地缓存
 const userStore = useUserStore();
 const accountStore = useAccountStore();
+const srAchievementStore = useSrAchievementStore();
+const zzzAchievementStore = useZzzAchievementStore();
 const isMobileStore = useIsMobileStore();
 
 // 获取用户是否login
@@ -30,6 +34,9 @@ const fetchRemoteData = async () => {
   if (isLoggedIn.value) {
     await accountStore.fetchAccounts();
   }
+  // Ensure branches are loaded
+  await srAchievementStore.ensureBranchData();
+  await zzzAchievementStore.ensureBranchData();
 };
 onMounted(() => {
   fetchRemoteData();
