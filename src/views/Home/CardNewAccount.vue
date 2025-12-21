@@ -1,5 +1,10 @@
 <script setup>
-import {onMounted, onUnmounted, ref} from "vue";
+import {onMounted, onUnmounted, reactive, ref} from "vue";
+import {showError} from "@/utils/notification.js";
+import {useAccountStore} from "@/stores/accountStore.js";
+
+// 使用Pinia作为本地缓存
+const accountStore = useAccountStore();
 
 // 计时轮换器变量
 const currentImageIndex = ref(0);
@@ -25,6 +30,64 @@ const stopCarousel = () => {
 onUnmounted(() => {
   stopCarousel();
 });
+
+// dialog可视性
+const dialogVisible = ref(false);
+
+// 表单变量
+const formRef = ref(null);
+const newAccountForm = reactive({
+  type: '',
+  accountName: '',
+  inGameUid: '',
+});
+
+// 表单规则
+const nameCharPattern = /^[\u4e00-\u9fa5_a-zA-Z0-9]{3,20}$/;  // 正则表达式：禁止输入包含特殊字符
+const uidCharPattern = /^[a-zA-Z0-9]{5,20}$/; // 正则表达式：只支持数字和英文字母
+const rules = {
+  type: [
+    {required: true, message: '请选择游戏类型', trigger: ['blur', 'change']},
+  ],
+  accountName: [
+    {required: true, message: '请输入账号名称', trigger: ['blur', 'change']},
+    {min: 3, max: 20, message: '长度在3到20个字符', trigger: ['blur', 'change']},
+    {
+      pattern: nameCharPattern,
+      message: '账户名称格式不正确,只能包含中文、字母、数字、下划线',
+      trigger: ['blur', 'change']
+    }
+  ],
+  inGameUid: [
+    {required: false, message: '请输入账号UID', trigger: ['blur', 'change']},
+    {min: 5, max: 20, message: '长度在5到20个字符', trigger: ['blur', 'change']},
+    {
+      pattern: uidCharPattern,
+      message: 'UID格式不正确,只能包含字母、数字',
+      trigger: ['blur', 'change']
+    }
+  ]
+}
+
+// 处理dialog关闭
+const handleClose = () => {
+  formRef.value.resetFields();
+  dialogVisible.value = false;
+}
+
+// 处理表单提交
+const handleSubmit = async () => {
+  formRef.value.validate((valid) => {
+    if (valid) {
+      handleAction();
+    } else {
+      showError("请填写要求的内容");
+    }
+  })
+}
+const handleAction = async () => {
+  await accountStore.createNew(newAccountForm.type, newAccountForm.accountName, newAccountForm.inGameUid);
+}
 </script>
 
 <template>
@@ -49,7 +112,7 @@ onUnmounted(() => {
           />
         </TransitionGroup>
 
-        <div class="hover-overlay">
+        <div class="hover-overlay" @click="dialogVisible = true">
           <div class="overlay-content">
             <span class="add-text">添加游戏账号</span>
           </div>
@@ -57,6 +120,42 @@ onUnmounted(() => {
 
       </div>
     </el-card>
+  </div>
+
+  <div class="add-account-dialog">
+    <el-dialog
+        v-model="dialogVisible"
+        :before-close="handleClose"
+        title="添加游戏账户"
+    >
+      <div>
+        <el-form
+            ref="formRef"
+            :model="newAccountForm"
+            :rules="rules"
+            label-width="auto"
+            @keyup.enter.native="handleSubmit"
+        >
+          <el-form-item label="游戏类型" prop="type">
+            <el-radio-group v-model="newAccountForm.type">
+              <el-radio border label="SR">崩坏：星穹铁道</el-radio>
+              <el-radio border label="ZZZ">绝区零</el-radio>
+            </el-radio-group>
+          </el-form-item>
+          <el-form-item label="游戏账户名" prop="accountName">
+            <el-input v-model="newAccountForm.accountName"/>
+          </el-form-item>
+          <el-form-item label="游戏UID" prop="inGameUid">
+            <el-input v-model="newAccountForm.inGameUid"/>
+          </el-form-item>
+        </el-form>
+      </div>
+
+      <template #footer>
+        <el-button @click="handleClose">取消</el-button>
+        <el-button style="margin-left: 10px" type="primary" @click="handleSubmit">添加</el-button>
+      </template>
+    </el-dialog>
   </div>
 </template>
 
@@ -147,5 +246,15 @@ onUnmounted(() => {
   font-size: 18px;
   font-weight: bold;
   letter-spacing: 2px;
+}
+
+/* --- 表单 --- */
+.add-user-dialog :deep(.el-dialog) {
+  min-width: 300px;
+  max-width: 500px;
+}
+
+.add-user-dialog :deep(.el-dialog__title) {
+  font-weight: bold;
 }
 </style>
