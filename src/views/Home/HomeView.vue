@@ -11,12 +11,14 @@ import {useIsMobileStore} from "@/stores/isMobileStore.js";
 import {useAccountStore} from "@/stores/accountStore.js";
 import {useSrAchievementStore} from "@/stores/srAchievementStore.js";
 import {useZzzAchievementStore} from "@/stores/zzzAchievementsStore.js";
+import {useServerInfoStore} from "@/stores/serverInfoStore.js";
 
 // 使用Pinia作为本地缓存
 const userStore = useUserStore();
 const accountStore = useAccountStore();
 const srAchievementStore = useSrAchievementStore();
 const zzzAchievementStore = useZzzAchievementStore();
+const serverInfoStore = useServerInfoStore();
 const isMobileStore = useIsMobileStore();
 
 // 获取用户是否login
@@ -31,12 +33,15 @@ const avatarSize = computed(() => {
 
 // 同步数据
 const fetchRemoteData = async () => {
-  if (isLoggedIn.value) {
-    await accountStore.fetchAccounts();
-  }
+  // If the current user is login, fetch accounts
+  // if (isLoggedIn.value) {
+  //   await accountStore.fetchAccounts();
+  // }
   // Ensure branches are loaded
   await srAchievementStore.ensureBranchData();
   await zzzAchievementStore.ensureBranchData();
+  // Fetch the server info
+  await serverInfoStore.ensureServerInfo();
 };
 onMounted(() => {
   fetchRemoteData();

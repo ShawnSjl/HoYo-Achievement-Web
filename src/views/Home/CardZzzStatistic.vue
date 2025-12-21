@@ -2,23 +2,29 @@
 import {computed} from 'vue';
 import router from "@/router/index.js";
 import {useZzzAchievementStore} from "@/stores/zzzAchievementsStore.js";
-import {zzzVersion} from "@/utils/config.js";
 import ZzzAchievementImg1 from '@/assets/zzz-image/zzz-achievement-level-1.png';
 import ZzzAchievementImg2 from '@/assets/zzz-image/zzz-achievement-level-2.png';
 import ZzzAchievementImg3 from '@/assets/zzz-image/zzz-achievement-level-3.png';
 import {useAccountStore} from "@/stores/accountStore.js";
+import {useServerInfoStore} from "@/stores/serverInfoStore.js";
 
 // 使用Pinia作为本地缓存
 const accountStore = useAccountStore();
 const achievementStore = useZzzAchievementStore();
+const serverInfoStore = useServerInfoStore();
 
 // 传入只读数据
 const props = defineProps({
   uuid: String,
 });
 
+// 获取账户列表
+const accounts = computed(() => {
+  return accountStore.getAccounts();
+})
+
 // 获取账号成就
-const account = accountStore.accounts.find(account => account.uuid === props.uuid);
+const account = accounts.value.find(account => account.uuid === props.uuid);
 
 // 计算成就数量
 const getTotalNumber = computed(() => {
@@ -70,7 +76,7 @@ const handleClick = () => {
     <el-card shadow="never" @click="handleClick">
       <template #header>
         <div slot="header">
-          绝区零成就完成度统计 游戏版本: {{ zzzVersion }}
+          绝区零成就完成度统计 游戏版本: {{ serverInfoStore.lastestInfo.zzz_version }}
         </div>
       </template>
 

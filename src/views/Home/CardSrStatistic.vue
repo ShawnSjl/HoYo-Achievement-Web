@@ -2,16 +2,17 @@
 import {computed} from "vue";
 import {useSrAchievementStore} from "@/stores/srAchievementStore.js";
 import router from "@/router/index.js";
-import {srVersion} from "@/utils/config.js";
 import SrAchievementImg3 from "@/assets/sr-image/sr-achievement-level-3.png";
 import SrAchievementImg2 from "@/assets/sr-image/sr-achievement-level-2.png";
 import SrAchievementImg1 from "@/assets/sr-image/sr-achievement-level-1.png";
 import SrAchievement from "@/assets/sr-image/sr-achievement.png";
 import {useAccountStore} from "@/stores/accountStore.js";
+import {useServerInfoStore} from "@/stores/serverInfoStore.js";
 
 // 使用Pinia作为本地缓存
 const accountStore = useAccountStore();
-const achievementStore = useSrAchievementStore()
+const achievementStore = useSrAchievementStore();
+const serverInfoStore = useServerInfoStore();
 
 // 传入只读数据
 const props = defineProps({
@@ -73,7 +74,7 @@ const handleClick = () => {
     <el-card shadow="never" @click="handleClick">
       <template #header>
         <div slot="header">
-          崩坏：星穹铁道 游戏版本：{{ srVersion }}
+          崩坏：星穹铁道 游戏版本：{{ serverInfoStore.lastestInfo.sr_version }}
           <br/>
           成就完成度统计
         </div>

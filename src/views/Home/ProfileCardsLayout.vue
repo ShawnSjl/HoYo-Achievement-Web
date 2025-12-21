@@ -5,6 +5,7 @@ import {useAccountStore} from "@/stores/accountStore.js";
 import CardZzzStatistic from "@/views/Home/CardZzzStatistic.vue";
 import CardSrStatistic from "@/views/Home/CardSrStatistic.vue";
 import CardEmpty from "@/views/Home/CardEmpty.vue";
+import CardServerInfo from "@/views/Home/CardServerInfo.vue";
 
 // 使用Pinia作为本地缓存
 const accountStore = useAccountStore();
@@ -49,6 +50,10 @@ onBeforeUnmount(() => {
         <div v-if="item.type === 'SR'">
           <card-sr-statistic :uuid="item.uuid" class="profile-card"/>
         </div>
+      </el-col>
+
+      <el-col>
+        <card-server-info class="profile-card"/>
       </el-col>
 
       <el-col>

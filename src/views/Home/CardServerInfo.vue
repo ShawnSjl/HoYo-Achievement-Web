@@ -1,5 +1,8 @@
 <script setup>
-import {siteVersion} from "@/utils/config.js";
+import {useServerInfoStore} from "@/stores/serverInfoStore.js";
+
+// 使用Pinia作为本地缓存
+const serverInfoStore = useServerInfoStore();
 </script>
 
 <template>
@@ -7,13 +10,14 @@ import {siteVersion} from "@/utils/config.js";
     <el-card shadow="never" style="height: 360px">
       <template #header>
         <div slot="header">
-          网站公告 版本：v{{ siteVersion }}
+          <b>网站公告</b>
+          版本：v{{ serverInfoStore.lastestInfo.server_version }}
         </div>
       </template>
 
       <div>
         <b>更新内容</b>
-        <p>1. 《崩坏：星穹铁道》3.7版本成就</p>
+        <p>{{ serverInfoStore.lastestInfo.update_description }}</p>
       </div>
     </el-card>
   </div>
