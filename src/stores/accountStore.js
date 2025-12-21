@@ -11,6 +11,7 @@ import {showError, showInfo, showSuccess} from "@/utils/notification.js";
 import {srGetAll, srGetAllEmpty} from "@/api/sr.js";
 import {zzzGetAll, zzzGetAllEmpty} from "@/api/zzz.js";
 import {v7 as uuidv7} from 'uuid';
+import {useUserStore} from "@/stores/userStore.js";
 
 export const useAccountStore = defineStore(
     'account',
@@ -23,7 +24,8 @@ export const useAccountStore = defineStore(
          * @returns {UnwrapRef<*[]>}
          */
         function getAccounts() {
-            if (localStorage.getItem('token')) {
+            const userStore = useUserStore();
+            if (userStore.token !== '') {
                 return remoteAccounts.value;
             } else {
                 return localAccounts.value;
@@ -38,8 +40,6 @@ export const useAccountStore = defineStore(
             try {
                 // Clean the current data first
                 remoteAccounts.value = [];
-
-                // FIXME 登录时加载两次
 
                 // Get accounts from the backend
                 const accountsResponse = await getAccountByUserId();

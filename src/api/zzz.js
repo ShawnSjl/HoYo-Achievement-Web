@@ -2,7 +2,7 @@ import api from "@/utils/request";
 
 // Get all ZZZ achievement
 export const zzzGetAll = (request) => {
-    return api.get('/api/zzz/all', request);
+    return api.get('/api/zzz/all', {params: request});
 }
 
 // Get all ZZZ achievement with empty record

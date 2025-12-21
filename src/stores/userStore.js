@@ -29,6 +29,7 @@ export const useUserStore = defineStore(
                     user.value = loginResponse.data.data.username;
                     admin.value = loginResponse.data.data.isAdmin;
 
+                    // Save the token in local storage for axios use
                     localStorage.setItem('token', token.value);
 
                     // Fetch accounts from the backend
@@ -86,10 +87,12 @@ export const useUserStore = defineStore(
                 showError("登出错误", error);
             }
 
-            // Remove data from local storage whatever the response is
+            // Remove data from the local store whatever the response is
             token.value = '';
             user.value = '';
             admin.value = false;
+
+            // Remove the token from local storage
             localStorage.removeItem('token');
 
             // Empty the account list in the account store

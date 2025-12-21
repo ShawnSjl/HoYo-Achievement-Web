@@ -44,7 +44,6 @@ const submitForm = () => {
 }
 const handleLogin = async () => {
   await userStore.loginUser(loginForm.username, loginForm.password)
-  handleClose()
 }
 </script>
 
