@@ -91,71 +91,73 @@ const handleAction = async () => {
 </script>
 
 <template>
-  <div class="card-bg">
-    <el-card shadow="never" style="height: 100%; border: none">
-      <div class="card-content-container">
+  <div>
+    <div class="card-bg">
+      <el-card shadow="never" style="height: 100%; border: none">
+        <div class="card-content-container">
 
-        <TransitionGroup class="image-wrapper" name="cross-fade" tag="div">
-          <img
-              v-if="currentImageIndex === 0"
-              key="img1"
-              alt="background 1"
-              class="bg-image"
-              src="@/assets/zzz-image/zzz-bg-2.png"
-          />
-          <img
-              v-if="currentImageIndex === 1"
-              key="img2"
-              alt="background 2"
-              class="bg-image"
-              src="@/assets/sr-image/sr-bg-2.png"
-          />
-        </TransitionGroup>
+          <TransitionGroup class="image-wrapper" name="cross-fade" tag="div">
+            <img
+                v-if="currentImageIndex === 0"
+                key="img1"
+                alt="background 1"
+                class="bg-image"
+                src="@/assets/zzz-image/zzz-bg-2.png"
+            />
+            <img
+                v-if="currentImageIndex === 1"
+                key="img2"
+                alt="background 2"
+                class="bg-image"
+                src="@/assets/sr-image/sr-bg-2.png"
+            />
+          </TransitionGroup>
 
-        <div class="hover-overlay" @click="dialogVisible = true">
-          <div class="overlay-content">
-            <span class="add-text">添加游戏账号</span>
+          <div class="hover-overlay" @click="dialogVisible = true">
+            <div class="overlay-content">
+              <span class="add-text">添加游戏账号</span>
+            </div>
           </div>
+
+        </div>
+      </el-card>
+    </div>
+
+    <div class="add-account-dialog">
+      <el-dialog
+          v-model="dialogVisible"
+          :before-close="handleClose"
+          title="添加游戏账户"
+      >
+        <div>
+          <el-form
+              ref="formRef"
+              :model="newAccountForm"
+              :rules="rules"
+              label-width="auto"
+              @keyup.enter.native="handleSubmit"
+          >
+            <el-form-item label="游戏类型" prop="type">
+              <el-radio-group v-model="newAccountForm.type">
+                <el-radio border label="SR">崩坏：星穹铁道</el-radio>
+                <el-radio border label="ZZZ">绝区零</el-radio>
+              </el-radio-group>
+            </el-form-item>
+            <el-form-item label="游戏账户名" prop="accountName">
+              <el-input v-model="newAccountForm.accountName"/>
+            </el-form-item>
+            <el-form-item label="游戏UID" prop="inGameUid">
+              <el-input v-model="newAccountForm.inGameUid"/>
+            </el-form-item>
+          </el-form>
         </div>
 
-      </div>
-    </el-card>
-  </div>
-
-  <div class="add-account-dialog">
-    <el-dialog
-        v-model="dialogVisible"
-        :before-close="handleClose"
-        title="添加游戏账户"
-    >
-      <div>
-        <el-form
-            ref="formRef"
-            :model="newAccountForm"
-            :rules="rules"
-            label-width="auto"
-            @keyup.enter.native="handleSubmit"
-        >
-          <el-form-item label="游戏类型" prop="type">
-            <el-radio-group v-model="newAccountForm.type">
-              <el-radio border label="SR">崩坏：星穹铁道</el-radio>
-              <el-radio border label="ZZZ">绝区零</el-radio>
-            </el-radio-group>
-          </el-form-item>
-          <el-form-item label="游戏账户名" prop="accountName">
-            <el-input v-model="newAccountForm.accountName"/>
-          </el-form-item>
-          <el-form-item label="游戏UID" prop="inGameUid">
-            <el-input v-model="newAccountForm.inGameUid"/>
-          </el-form-item>
-        </el-form>
-      </div>
-
-      <template #footer>
-        <el-button @click="handleClose">取消</el-button>
-        <el-button style="margin-left: 10px" type="primary" @click="handleSubmit">添加</el-button>
-      </template>
-    </el-dialog>
+        <template #footer>
+          <el-button @click="handleClose">取消</el-button>
+          <el-button style="margin-left: 10px" type="primary" @click="handleSubmit">添加</el-button>
+        </template>
+      </el-dialog>
+    </div>
   </div>
 </template>
 
@@ -249,12 +251,12 @@ const handleAction = async () => {
 }
 
 /* --- 表单 --- */
-.add-user-dialog :deep(.el-dialog) {
+.add-account-dialog :deep(.el-dialog) {
   min-width: 300px;
   max-width: 500px;
 }
 
-.add-user-dialog :deep(.el-dialog__title) {
+.add-account-dialog :deep(.el-dialog__title) {
   font-weight: bold;
 }
 </style>
