@@ -4,8 +4,8 @@ import {useIsMobileStore} from "@/stores/isMobileStore.js";
 import {useAccountStore} from "@/stores/accountStore.js";
 import CardZzzStatistic from "@/views/Home/CardZzzStatistic.vue";
 import CardSrStatistic from "@/views/Home/CardSrStatistic.vue";
-import CardEmpty from "@/views/Home/CardEmpty.vue";
 import CardServerInfo from "@/views/Home/CardServerInfo.vue";
+import CardNewAccount from "@/views/Home/CardNewAccount.vue";
 
 // 使用Pinia作为本地缓存
 const accountStore = useAccountStore();
@@ -53,13 +53,12 @@ onBeforeUnmount(() => {
       </el-col>
 
       <el-col>
-        <card-server-info class="profile-card"/>
+        <card-new-account class="profile-card"/>
       </el-col>
 
       <el-col>
-        <card-empty class="profile-card"/>
+        <card-server-info class="profile-card"/>
       </el-col>
-
 
     </el-row>
     <!--    <div v-if="!isMobileStore.isMobile" class="profile-card-layout">-->
