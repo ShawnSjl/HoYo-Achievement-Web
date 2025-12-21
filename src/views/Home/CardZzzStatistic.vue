@@ -2,6 +2,7 @@
 import {computed} from 'vue';
 import router from "@/router/index.js";
 import {useZzzAchievementStore} from "@/stores/zzzAchievementsStore.js";
+import ZzzLogo from '@/assets/zzz-image/zzz-logo.png';
 import ZzzAchievementImg1 from '@/assets/zzz-image/zzz-achievement-level-1.png';
 import ZzzAchievementImg2 from '@/assets/zzz-image/zzz-achievement-level-2.png';
 import ZzzAchievementImg3 from '@/assets/zzz-image/zzz-achievement-level-3.png';
@@ -76,25 +77,39 @@ const handleClick = () => {
     <el-card shadow="never" @click="handleClick">
       <template #header>
         <div slot="header">
-          绝区零成就完成度统计 游戏版本: {{ serverInfoStore.lastestInfo.zzz_version }}
+          <div style="display: flex; align-items: center">
+            <el-avatar :src="ZzzLogo" shape="square" size="default"/>
+            <div>
+              <p class="username">{{ account.name }}</p>
+              <p class="uid">UID: {{ account.inGameUid }} </p>
+            </div>
+          </div>
         </div>
       </template>
 
-      <div class="zzz-statistic-total">
-        <div style="align-self: center; margin-left: 11px">总计：</div>
-        <p> {{ getTotalCompleteNumber }} / {{ getTotalNumber }}</p>
-      </div>
-      <div class="zzz-statistic-total">
-        <img :src="ZzzAchievementImg1" alt="achievement image" class="zzz-achievement-image"/>
-        <p> {{ getCompleteLevel1Number }} / {{ getLevel1Number }}</p>
-      </div>
-      <div class="zzz-statistic-total">
-        <img :src="ZzzAchievementImg2" alt="achievement image" class="zzz-achievement-image"/>
-        <p> {{ getCompleteLevel2Number }} / {{ getLevel2Number }}</p>
-      </div>
-      <div class="zzz-statistic-total">
-        <img :src="ZzzAchievementImg3" alt="achievement image" class="zzz-achievement-image"/>
-        <p> {{ getCompleteLevel3Number }} / {{ getLevel3Number }}</p>
+      <div class="card-body">
+        <div>
+          <div class="zzz-statistic-total">
+            <div style="align-self: center; margin-left: 11px">总计：</div>
+            <p> {{ getTotalCompleteNumber }} / {{ getTotalNumber }}</p>
+          </div>
+          <div class="zzz-statistic-total">
+            <img :src="ZzzAchievementImg1" alt="achievement image" class="zzz-achievement-image"/>
+            <p> {{ getCompleteLevel1Number }} / {{ getLevel1Number }}</p>
+          </div>
+          <div class="zzz-statistic-total">
+            <img :src="ZzzAchievementImg2" alt="achievement image" class="zzz-achievement-image"/>
+            <p> {{ getCompleteLevel2Number }} / {{ getLevel2Number }}</p>
+          </div>
+          <div class="zzz-statistic-total">
+            <img :src="ZzzAchievementImg3" alt="achievement image" class="zzz-achievement-image"/>
+            <p> {{ getCompleteLevel3Number }} / {{ getLevel3Number }}</p>
+          </div>
+        </div>
+
+        <div style="display: flex; flex-direction: column-reverse">
+          <p class="version">版本： {{ serverInfoStore.lastestInfo.zzz_version }}</p>
+        </div>
       </div>
     </el-card>
   </div>
@@ -110,6 +125,32 @@ const handleClick = () => {
   overflow: hidden;
 }
 
+/* header文字样式 */
+.username {
+  margin-block-start: 0;
+  margin-block-end: 0;
+  margin-left: 20px;
+  padding-bottom: 5px;
+}
+
+.uid {
+  margin-block-start: 0;
+  margin-block-end: 0;
+  margin-left: 20px;
+
+  font-size: 12px;
+  color: #909399;
+  font-family: Consolas, monospace;
+}
+
+/* body布局样式 */
+.card-body {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
+
+/* body内容样式 */
 .zzz-statistic-total {
   display: flex;
   flex-direction: row;
@@ -126,6 +167,14 @@ const handleClick = () => {
   background-color: #000000;
 }
 
+.version {
+  margin-block-start: 0;
+  margin-block-end: 0;
+  font-size: 14px;
+  color: #909399;
+}
+
+/* 卡片样式 */
 .el-card {
   --el-card-bg-color: rgba(22, 24, 23, 0);
   --el-card-border-color: rgb(35, 37, 36);
@@ -133,9 +182,15 @@ const handleClick = () => {
   color: #f6f6f6;
 }
 
+:deep(.el-card__header) {
+  padding-bottom: 5px;
+  padding-top: 20px;
+  padding-left: 20px;
+}
+
 :deep(.el-card__body) {
-  padding-top: 15px !important;
-  padding-bottom: 15px !important;
+  padding-top: 5px;
+  padding-bottom: 15px;
 }
 
 p {

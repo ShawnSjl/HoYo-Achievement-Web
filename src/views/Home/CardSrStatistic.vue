@@ -2,6 +2,7 @@
 import {computed} from "vue";
 import {useSrAchievementStore} from "@/stores/srAchievementStore.js";
 import router from "@/router/index.js";
+import SrLogo from '@/assets/sr-image/sr-logo.png';
 import SrAchievementImg3 from "@/assets/sr-image/sr-achievement-level-3.png";
 import SrAchievementImg2 from "@/assets/sr-image/sr-achievement-level-2.png";
 import SrAchievementImg1 from "@/assets/sr-image/sr-achievement-level-1.png";
@@ -74,9 +75,13 @@ const handleClick = () => {
     <el-card shadow="never" @click="handleClick">
       <template #header>
         <div slot="header">
-          崩坏：星穹铁道 游戏版本：{{ serverInfoStore.lastestInfo.sr_version }}
-          <br/>
-          成就完成度统计
+          <div style="display: flex; align-items: center">
+            <el-avatar :src="SrLogo" shape="square" size="default"/>
+            <div>
+              <p class="username">{{ account.name }}</p>
+              <p class="uid">UID: {{ account.inGameUid }} </p>
+            </div>
+          </div>
         </div>
       </template>
 
@@ -101,6 +106,12 @@ const handleClick = () => {
           <p class="sr-statistic-level-count">{{ getCompleteLevel1Number }}/{{ getLevel1Number }}</p>
         </div>
       </div>
+
+      <template #footer>
+        <div style="display: flex; flex-direction: row-reverse">
+          <p class="version">版本： {{ serverInfoStore.lastestInfo.sr_version }}</p>
+        </div>
+      </template>
     </el-card>
   </div>
 </template>
@@ -115,17 +126,32 @@ const handleClick = () => {
   min-height: 360px;
 }
 
-.el-card {
-  --el-card-bg-color: rgba(22, 24, 23, 0);
-  --el-card-border-color: rgba(35, 37, 36, 0);
-  --el-card-border-width: 2px;
-  color: #f4f4f4;
+/* header文字样式 */
+.username {
+  margin-block-start: 0;
+  margin-block-end: 0;
+  margin-left: 20px;
+  padding-bottom: 5px;
 }
 
-:deep(.el-card__body) {
-  padding-top: 0 !important;
+.uid {
+  margin-block-start: 0;
+  margin-block-end: 0;
+  margin-left: 20px;
+
+  font-size: 12px;
+  color: #909399;
+  font-family: Consolas, monospace;
 }
 
+/* body布局样式 */
+.card-body {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
+
+/* body内容样式 */
 .sr-profile-statistic-wrapper {
   display: flex;
   flex-direction: column;
@@ -184,6 +210,37 @@ const handleClick = () => {
   color: #fae5c0;
   font-weight: bold;
   font-size: 18px;
+}
+
+/* footer样式 */
+.version {
+  margin-block-start: 0;
+  margin-block-end: 0;
+  font-size: 14px;
+  color: #909399;
+}
+
+/* 卡片样式 */
+.el-card {
+  --el-card-bg-color: rgba(22, 24, 23, 0);
+  --el-card-border-color: rgba(35, 37, 36, 0);
+  --el-card-border-width: 2px;
+  color: #f4f4f4;
+}
+
+:deep(.el-card__header) {
+  padding-bottom: 5px;
+  padding-top: 20px;
+  padding-left: 20px;
+}
+
+:deep(.el-card__body) {
+  padding-top: 5px;
+  padding-bottom: 5px;
+}
+
+:deep(.el-card__footer) {
+  padding: 0 20px 0 20px;
 }
 
 p {
