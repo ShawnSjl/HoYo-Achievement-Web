@@ -2,8 +2,8 @@
 import {computed, nextTick, onBeforeUnmount, onMounted, ref} from "vue";
 import {useIsMobileStore} from "@/stores/isMobileStore.js";
 import {useAccountStore} from "@/stores/accountStore.js";
-import CardZzzStatistic from "@/views/Home/CardZzzStatistic.vue";
-import CardSrStatistic from "@/views/Home/CardSrStatistic.vue";
+import CardZzzAccount from "@/views/Home/CardZzzAccount.vue";
+import CardSrAccount from "@/views/Home/CardSrAccount.vue";
 import CardServerInfo from "@/views/Home/CardServerInfo.vue";
 import CardNewAccount from "@/views/Home/CardNewAccount.vue";
 
@@ -47,10 +47,10 @@ onBeforeUnmount(() => {
           class="col-margin"
       >
         <div v-if="item.type === 'ZZZ'">
-          <card-zzz-statistic :uuid="item.uuid" class="profile-card"/>
+          <card-zzz-account :uuid="item.uuid" class="profile-card"/>
         </div>
         <div v-if="item.type === 'SR'">
-          <card-sr-statistic :uuid="item.uuid" class="profile-card"/>
+          <card-sr-account :uuid="item.uuid" class="profile-card"/>
         </div>
       </el-col>
 
