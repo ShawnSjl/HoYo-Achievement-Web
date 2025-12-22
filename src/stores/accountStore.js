@@ -19,6 +19,8 @@ export const useAccountStore = defineStore(
         const remoteAccounts = ref([]);
         const localAccounts = ref([]);
 
+        // TODO 将local的数据只保留record，就像后端一样，然后再通过srAchievementStore中存储的空数据结合
+
         /**
          * Return the list of accounts. If the user is logged in, return the accounts from the backend; otherwise, return the local data.
          * @returns {UnwrapRef<*[]>}
