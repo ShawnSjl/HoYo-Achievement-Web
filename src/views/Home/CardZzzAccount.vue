@@ -8,6 +8,7 @@ import ZzzAchievementImg2 from '@/assets/zzz-image/zzz-achievement-level-2.png';
 import ZzzAchievementImg3 from '@/assets/zzz-image/zzz-achievement-level-3.png';
 import {useAccountStore} from "@/stores/accountStore.js";
 import {useServerInfoStore} from "@/stores/serverInfoStore.js";
+import ButtonEditAccount from "@/views/Home/ButtonEditAccount.vue";
 
 // 使用Pinia作为本地缓存
 const accountStore = useAccountStore();
@@ -77,11 +78,16 @@ const handleClick = () => {
     <el-card shadow="never" @click="handleClick">
       <template #header>
         <div slot="header">
-          <div style="display: flex; align-items: center">
-            <el-avatar :src="ZzzLogo" shape="square" size="default"/>
-            <div>
-              <p class="username">{{ account.name }}</p>
-              <p class="uid">UID: {{ account.inGameUid }} </p>
+          <div style="display: flex; flex-direction: row; justify-content: space-between">
+            <div style="display: flex; align-items: center">
+              <el-avatar :src="ZzzLogo" shape="square" size="default"/>
+              <div>
+                <p class="username">{{ account.name }}</p>
+                <p class="uid">UID: {{ account.inGameUid }} </p>
+              </div>
+            </div>
+            <div style="display: flex; flex-direction: row-reverse">
+              <button-edit-account :uuid="props.uuid"/>
             </div>
           </div>
         </div>

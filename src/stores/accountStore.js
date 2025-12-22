@@ -267,6 +267,7 @@ export const useAccountStore = defineStore(
             fetchAccounts,
             createNew,
             updateName,
+            updateInGameUid,
             deleteTargetAccount
         };
     },
