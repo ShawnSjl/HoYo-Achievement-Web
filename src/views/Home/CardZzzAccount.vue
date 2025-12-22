@@ -69,7 +69,14 @@ const getCompleteLevel3Number = computed(() => {
 
 // 处理点击转跳
 const handleClick = () => {
-  router.push({path: '/zzz'});
+  const shortId = props.uuid.slice(-8);
+
+  router.push({
+    path: '/zzz',
+    query: {
+      id: shortId
+    }
+  });
 }
 </script>
 
