@@ -170,10 +170,12 @@ onBeforeUnmount(() => {
                        :uuid="currentAccount.uuid"/>
           </el-aside>
           <el-main class="zzz-container-main">
-            <zzz-table v-model="achievementClass"
-                       :sorted-achievements="sortedAchievements"
-                       :table-height="tableHeight"
-                       :uuid="currentAccount.uuid"/>
+            <div>
+              <zzz-table v-model="achievementClass"
+                         :sorted-achievements="sortedAchievements"
+                         :table-height="tableHeight"
+                         :uuid="currentAccount.uuid"/>
+            </div>
           </el-main>
         </el-container>
       </el-container>
