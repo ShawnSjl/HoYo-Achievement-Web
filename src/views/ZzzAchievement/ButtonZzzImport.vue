@@ -2,10 +2,29 @@
 import ExcelJS from 'exceljs';
 import {showError, showSuccess} from "@/utils/notification";
 import {useZzzAchievementStore} from "@/stores/zzzAchievementsStore";
+import {useAccountStore} from "@/stores/accountStore.js";
+import {computed} from "vue";
 
-// 获取数据
+// 传入只读数据
+const props = defineProps({
+  uuid: String,
+})
+
+// 使用Pinia作为本地缓存
+const accountStore = useAccountStore();
 const achievementStore = useZzzAchievementStore();
 
+// 获取账户列表
+const accounts = computed(() => {
+  return accountStore.getAccounts();
+})
+
+// 获取账号成就
+const account = computed(() =>
+    accounts.value.find(account => account.uuid === props.uuid)
+);
+
+// 匹配的列名
 const requiredFields = {
   achievement_id: ['ID', '成就ID', '编号'],
   complete: ['完成', '完成状态', '是否完成', '状态']
@@ -27,12 +46,12 @@ function matchRequiredHeaders(headers) {
     }
   }
 
-  return { matched: result, missing };
+  return {matched: result, missing};
 }
 
 // 获取要求的列
 function convertMinimalRows(headers, body) {
-  const { matched, missing } = matchRequiredHeaders(headers);
+  const {matched, missing} = matchRequiredHeaders(headers);
 
   if (missing.length) {
     const readable = missing.map(k => k === 'achievement_id' ? 'ID' : '完成');
@@ -69,7 +88,20 @@ async function handleFile(file) {
     // 更新记录
     for (const item of json) {
       const complete = Number(item.complete) === 1 || item.complete === '已完成' ? 1 : 0;
-      await achievementStore.completeAchievement(item.achievement_id, complete);
+      const target = account.value.achievements.find(achievement => achievement.achievement_id === item.achievement_id);
+      if (!target) {
+        showError('未知成就ID', item.achievement_id)
+        continue;
+      }
+      // 忽略未更改数据
+      if (target.complete === complete) {
+        continue;
+      }
+      // 防止被标记为未完成的分支成就清除了加载过的成就的状态
+      if (target.complete === 2 && complete === 0) {
+        continue;
+      }
+      await achievementStore.completeAchievement(props.uuid, item.achievement_id, complete);
     }
 
     showSuccess('成就表格导入成功')
@@ -83,15 +115,15 @@ async function handleFile(file) {
 
 <template>
   <el-upload
-    action=""
-    accept=".xlsx"
-    :auto-upload="true"
-    :before-upload="handleFile"
-    :show-file-list="false"
-    >
+      :auto-upload="true"
+      :before-upload="handleFile"
+      :show-file-list="false"
+      accept=".xlsx"
+      action=""
+  >
 
     <template #trigger>
-      <el-button type="primary" round dark>导入成就表格</el-button>
+      <el-button dark round type="primary">导入成就表格</el-button>
     </template>
 
     <template #tip>

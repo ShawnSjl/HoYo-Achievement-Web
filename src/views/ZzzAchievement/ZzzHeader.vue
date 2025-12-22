@@ -4,9 +4,16 @@ import Avatar from "@/components/Avatar.vue";
 import ButtonZzzSetting from "@/views/ZzzAchievement/ButtonZzzSetting.vue";
 import {useIsMobileStore} from "@/stores/isMobileStore";
 
-const isMobileStore = useIsMobileStore();
+// 传入只读数据
+const props = defineProps({
+  uuid: String,
+})
 
+// 传入可写数据
 const category = defineModel();
+
+// 使用Pinia作为本地缓存
+const isMobileStore = useIsMobileStore();
 </script>
 
 <template>
@@ -17,7 +24,7 @@ const category = defineModel();
         <!--        <game-switch style="margin-left: 30px" />-->
       </div>
       <div class="zzz-header-left-end">
-        <button-zzz-setting/>
+        <button-zzz-setting :uuid="props.uuid"/>
       </div>
     </div>
     <div v-if="!isMobileStore.isMobile" class="zzz-header-right">

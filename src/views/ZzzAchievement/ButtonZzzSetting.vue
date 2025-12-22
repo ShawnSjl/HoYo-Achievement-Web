@@ -8,10 +8,16 @@ import {useIsMobileStore} from "@/stores/isMobileStore";
 import {zzzExport} from "@/utils/zzzExport";
 import ButtonZzzImport from "@/views/ZzzAchievement/ButtonZzzImport.vue";
 
+// 传入只读数据
+const props = defineProps({
+  uuid: String,
+})
+
 // 使用Pinia作为本地缓存
 const achievementStore = useZzzAchievementStore();
 const isMobileStore = useIsMobileStore();
 
+// dialog可视性
 const dialogVisible = ref(false);
 
 // 移动端适配
@@ -19,10 +25,12 @@ const dialogWidth = computed(() => {
   return isMobileStore.isMobile ? '100%' : '500px'
 });
 
+// 处理按钮点击
 const handleClick = () => {
   dialogVisible.value = true;
 }
 
+// 处理dialog关闭
 const handleClose = () => {
   dialogVisible.value = false;
 }
@@ -82,7 +90,7 @@ const openWarn = () => {
       <div>
         <p>导入:</p>
         <div style="display: flex">
-          <button-zzz-import/>
+          <button-zzz-import :uuid="props.uuid"/>
           <el-tooltip placement="top">
             <el-button :icon="Warning" circle style="margin-left: 5px" text/>
             <template #content>
@@ -95,7 +103,7 @@ const openWarn = () => {
       </div>
       <div>
         <p>导出:</p>
-        <el-button dark round type="primary" @click="zzzExport()">导出成就表格</el-button>
+        <el-button dark round type="primary" @click="zzzExport(props.uuid)">导出成就表格</el-button>
       </div>
       <div>
         <p>强制更新数据:</p>

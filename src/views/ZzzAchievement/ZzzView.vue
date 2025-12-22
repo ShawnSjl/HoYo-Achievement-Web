@@ -160,7 +160,7 @@ onBeforeUnmount(() => {
     <div class="zzz-content">
       <el-container class="zzz-container" style="height: 100vh">
         <el-header class="zzz-container-header">
-          <zzz-header v-model="category"/>
+          <zzz-header v-model="category" :uuid="currentAccount.uuid"/>
         </el-header>
 
         <el-container>

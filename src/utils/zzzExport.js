@@ -1,15 +1,15 @@
 import ExcelJS from 'exceljs';
-import { saveAs } from 'file-saver';
-import {useZzzAchievementStore} from "@/stores/zzzAchievementsStore";
+import {saveAs} from 'file-saver';
 import {showError} from "@/utils/notification";
+import {useAccountStore} from "@/stores/accountStore.js";
 
-export const zzzExport = async () => {
+export const zzzExport = async (uuid) => {
     try {
         const workbook = new ExcelJS.Workbook();
         const worksheet = workbook.addWorksheet('ZZZ Achievements');
 
         // 表头
-        const columns = [
+        worksheet.columns = [
             {header: '成就ID', key: 'achievement_id', width: 15},
             {header: '类别', key: 'class_id', width: 10},
             {header: '名称', key: 'name', width: 20},
@@ -19,11 +19,10 @@ export const zzzExport = async () => {
             {header: '状态', key: 'complete', width: 10}
         ];
 
-        worksheet.columns = columns;
-
         // 获取数据
-        const achievementStore = useZzzAchievementStore();
-        const json_data = achievementStore.achievements
+        const accountStore = useAccountStore();
+        const account = accountStore.getAccounts().find(account => account.uuid === uuid);
+        const json_data = account.achievements;
 
         // 添加数据行
         json_data.forEach(item => {
