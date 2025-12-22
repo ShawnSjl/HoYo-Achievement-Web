@@ -2,6 +2,7 @@ import {defineStore} from 'pinia';
 import {ref} from 'vue';
 import {zzzGetAllBranch, zzzUpdateAchievement} from '@/api/zzz';
 import {showError, showInfo} from "@/utils/notification.js";
+import {useAccountStore} from "@/stores/accountStore.js";
 
 export const useZzzAchievementStore = defineStore(
     'zzz-achievement',
@@ -81,17 +82,22 @@ export const useZzzAchievementStore = defineStore(
 
         /**
          * Update achievement status in the backend and local data.
-         * @param achievements
+         * @param uuid
          * @param achievementId
          * @param complete
          * @returns {Promise<void>}
          */
-        async function completeAchievement(achievements, achievementId, complete) {
+        async function completeAchievement(uuid, achievementId, complete) {
             try {
                 if (branches.value.length === 0) await fetchBranches();
 
+                // Get achievements by given uuid
+                const accountStore = useAccountStore();
+                const account = accountStore.getAccounts().find(item => item.uuid === uuid);
+                const achievements = account.achievements;
+
                 // Get target achievement from the achievements list
-                const target = achievements.value.find(item => item.achievement_id === achievementId);
+                const target = achievements.find(item => item.achievement_id === achievementId);
                 if (!target) {
                     console.error('Fail to get achievements:', achievementId);
                     showError("目标成就获取失败");
@@ -122,10 +128,10 @@ export const useZzzAchievementStore = defineStore(
                 target.complete = complete;
 
                 // Update other achievements in the same branch
-                const branchAchievements = getOtherAchievements(achievements, achievementId);
+                const branchAchievements = await getOtherAchievements(achievements, achievementId);
                 const branchStatus = complete === 1 ? 2 : 0;
                 for (const branchAchievement of branchAchievements) {
-                    const branchTarget = achievements.value.find(item => item.achievement_id === branchAchievement);
+                    const branchTarget = achievements.find(item => item.achievement_id === branchAchievement);
                     branchTarget.complete = branchStatus;
                 }
             } catch (error) {
@@ -163,13 +169,18 @@ export const useZzzAchievementStore = defineStore(
 
         /**
          * Get the total number of additional achievements in all branches with the specified level.
-         * @param achievements
+         * @param uuid
          * @param level
          * @returns number
          */
-        function getBranchAchievementNumberByLevel(achievements, level) {
+        function getBranchAchievementNumberByLevel(uuid, level) {
             let count = 0;
             for (const branch of branches.value) {
+                // Get achievements by given uuid
+                const accountStore = useAccountStore();
+                const account = accountStore.getAccounts().find(item => item.uuid === uuid);
+                const achievements = account.achievements;
+
                 // Get an example achievement from the branch
                 const achievement_id = branch.achievement_id[0];
                 const achievement = achievements.find(item => item.achievement_id === achievement_id);
@@ -184,13 +195,18 @@ export const useZzzAchievementStore = defineStore(
 
         /**
          * Get the total number of additional achievements in all branches with the specified class.
-         * @param achievements
+         * @param uuid
          * @param zzz_class_id
          * @returns number
          */
-        function getBranchAchievementsNumberByClass(achievements, zzz_class_id) {
+        function getBranchAchievementsNumberByClass(uuid, zzz_class_id) {
             let count = 0;
             for (const branch of branches.value) {
+                // Get achievements by given uuid
+                const accountStore = useAccountStore();
+                const account = accountStore.getAccounts().find(item => item.uuid === uuid);
+                const achievements = account.achievements;
+
                 // Get an example achievement from the branch
                 const achievement_id = branch.achievement_id[0];
                 const achievement = achievements.find(item => item.achievement_id === achievement_id);
@@ -205,14 +221,19 @@ export const useZzzAchievementStore = defineStore(
 
         /**
          * Get the total number of additional achievements in all branches with the specified class and level.
-         * @param achievements
+         * @param uuid
          * @param zzz_class_id
          * @param level
          * @returns number
          */
-        function getBranchAchievementNumberByClassAndLevel(achievements, zzz_class_id, level) {
+        function getBranchAchievementNumberByClassAndLevel(uuid, zzz_class_id, level) {
             let count = 0;
             for (const branch of branches.value) {
+                // Get achievements by given uuid
+                const accountStore = useAccountStore();
+                const account = accountStore.getAccounts().find(item => item.uuid === uuid);
+                const achievements = account.achievements;
+
                 // Get an example achievement from the branch
                 const achievement_id = branch.achievement_id[0];
                 const achievement = achievements.find(item => item.achievement_id === achievement_id);

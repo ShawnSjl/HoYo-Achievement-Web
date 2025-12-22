@@ -17,44 +17,50 @@ const props = defineProps({
   uuid: String,
 });
 
+// 获取账户列表
+const accounts = computed(() => {
+  return accountStore.getAccounts();
+})
+
 // 获取账号成就
-const account = accounts.value.find(account => account.uuid === props.uuid);
+const account = computed(() =>
+    accounts.value.find(account => account.uuid === props.uuid)
+);
 
 // 计算成就数量
 const getTotalNumber = computed(() => {
-  return account.achievements.length
-      - achievementStore.getBranchAchievementsNumber();
+  return account.value.achievements.length - achievementStore.getBranchAchievementsNumber();
 })
 const getTotalCompleteNumber = computed(() => {
-  return account.achievements.filter(achievement => achievement.complete === 1).length;
+  return account.value.achievements.filter(achievement => achievement.complete === 1).length;
 })
 
 const getLevel1Number = computed(() => {
-  return account.achievements.filter(achievement => achievement.reward_level === 1).length
-      - achievementStore.getBranchAchievementNumberByLevel(account.achievements, 1);
+  return account.value.achievements.filter(achievement => achievement.reward_level === 1).length
+      - achievementStore.getBranchAchievementNumberByLevel(props.uuid, 1);
 })
 const getCompleteLevel1Number = computed(() => {
-  return account.achievements.filter(achievement => achievement.reward_level === 1 &&
+  return account.value.achievements.filter(achievement => achievement.reward_level === 1 &&
       achievement.complete === 1
   ).length;
 })
 
 const getLevel2Number = computed(() => {
-  return account.achievements.filter(achievement => achievement.reward_level === 2).length
-      - achievementStore.getBranchAchievementNumberByLevel(account.achievements, 2);
+  return account.value.achievements.filter(achievement => achievement.reward_level === 2).length
+      - achievementStore.getBranchAchievementNumberByLevel(props.uuid, 2);
 })
 const getCompleteLevel2Number = computed(() => {
-  return account.achievements.filter(achievement => achievement.reward_level === 2 &&
+  return account.value.achievements.filter(achievement => achievement.reward_level === 2 &&
       achievement.complete === 1
   ).length;
 })
 
 const getLevel3Number = computed(() => {
-  return account.achievements.filter(achievement => achievement.reward_level === 3).length
-      - achievementStore.getBranchAchievementNumberByLevel(account.achievements, 3);
+  return account.value.achievements.filter(achievement => achievement.reward_level === 3).length
+      - achievementStore.getBranchAchievementNumberByLevel(props.uuid, 3);
 })
 const getCompleteLevel3Number = computed(() => {
-  return account.achievements.filter(achievement => achievement.reward_level === 3 &&
+  return account.value.achievements.filter(achievement => achievement.reward_level === 3 &&
       achievement.complete === 1
   ).length;
 })

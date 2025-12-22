@@ -1,6 +1,6 @@
 <script setup>
 import {computed} from 'vue';
-import { useZzzAchievementStore } from "@/stores/zzzAchievementsStore";
+import {useZzzAchievementStore} from "@/stores/zzzAchievementsStore";
 import ZzzAchievementImg1 from '@/assets/zzz-image/zzz-achievement-level-1.png';
 import ZzzAchievementImg2 from '@/assets/zzz-image/zzz-achievement-level-2.png';
 import ZzzAchievementImg3 from '@/assets/zzz-image/zzz-achievement-level-3.png';
@@ -12,8 +12,9 @@ import {showInfo} from "@/utils/notification";
 const achievementStore = useZzzAchievementStore()
 const isMobileStore = useIsMobileStore();
 
-// 传入参数
+// 传入只读数据
 const props = defineProps({
+  uuid: String,
   achievement: Object,
 })
 
@@ -45,12 +46,20 @@ const achievementReward = computed(() => {
 
 // 获取按钮状态
 const completeButtonMsg = computed(() => {
-  if (props.achievement.complete === 0) {return "未完成"}
-  else if (props.achievement.complete === 1) {return "已完成"}
-  else {return "完成分支"}
+  if (props.achievement.complete === 0) {
+    return "未完成"
+  } else if (props.achievement.complete === 1) {
+    return "已完成"
+  } else {
+    return "完成分支"
+  }
 })
-const isComplete = computed(() => {return props.achievement.complete === 1});
-const disableButton = computed(() => {return props.achievement.complete === 2});
+const isComplete = computed(() => {
+  return props.achievement.complete === 1
+});
+const disableButton = computed(() => {
+  return props.achievement.complete === 2
+});
 
 const handleComplete = async () => {
   if (props.achievement.complete === 2) {
@@ -58,7 +67,7 @@ const handleComplete = async () => {
     return;
   }
   const newState = props.achievement.complete === 1 ? 0 : 1;
-  await achievementStore.completeAchievement(props.achievement.achievement_id, newState);
+  await achievementStore.completeAchievement(props.uuid, props.achievement.achievement_id, newState);
 }
 
 // 处理特殊文本
@@ -77,7 +86,7 @@ const getAchievementName = computed(() => {
   <div class="zzz-table-row">
     <div class="zzz-table-row-left">
       <div class="zzz-achievement-image-bg">
-        <img :src="achievementImg" alt="achievement image" class="zzz-achievement-image" />
+        <img :src="achievementImg" alt="achievement image" class="zzz-achievement-image"/>
       </div>
       <div class="zzz-detail">
         <div class="zzz-name">
@@ -88,13 +97,13 @@ const getAchievementName = computed(() => {
     </div>
 
     <div class="zzz-table-row-right">
-      <div class="zzz-game-version" >{{ props.achievement.game_version }}</div>
+      <div class="zzz-game-version">{{ props.achievement.game_version }}</div>
       <div v-if="!isMobileStore.isMobile" class="zzz-reward-bg">
-        <img :src="ZzzAchievementReward" alt="achievement reward" class="zzz-achievement-reward-image" />
-        <div class="zzz-achievement-reward-count">{{achievementReward}}</div>
+        <img :src="ZzzAchievementReward" alt="achievement reward" class="zzz-achievement-reward-image"/>
+        <div class="zzz-achievement-reward-count">{{ achievementReward }}</div>
       </div>
-      <el-button round :disabled="disableButton" :plain="!isComplete" color="#ffd100" dark @click="handleComplete"
-                 class="zzz-complete-button">
+      <el-button :disabled="disableButton" :plain="!isComplete" class="zzz-complete-button" color="#ffd100" dark round
+                 @click="handleComplete">
         {{ completeButtonMsg }}
       </el-button>
     </div>
@@ -133,7 +142,7 @@ const getAchievementName = computed(() => {
 }
 
 /* 成就图片 */
-.zzz-achievement-image-bg{
+.zzz-achievement-image-bg {
   width: 60px;
   height: 60px;
   flex-shrink: 0; /* 不允许收缩 */
@@ -148,11 +157,11 @@ const getAchievementName = computed(() => {
   width: 54px;
   height: 54px;
   border-radius: 50%; /* 核心代码：让图片变圆 */
-  object-fit: cover;   /* 保证图片不变形、居中裁剪 */
+  object-fit: cover; /* 保证图片不变形、居中裁剪 */
 }
 
 @media (max-width: 900px) {
-  .zzz-achievement-image-bg{
+  .zzz-achievement-image-bg {
     width: 40px;
     height: 40px;
   }
@@ -164,7 +173,7 @@ const getAchievementName = computed(() => {
 }
 
 /* 成就奖励图片 */
-.zzz-reward-bg{
+.zzz-reward-bg {
   position: relative;
   width: 78px;
   height: 50px;
@@ -192,11 +201,10 @@ const getAchievementName = computed(() => {
 
   color: white;
   font-size: 16px;
-  text-shadow:
-      -2px -2px 2px black,
-      2px -2px 2px black,
-      -2px 2px 2px black,
-      2px 2px 2px black;
+  text-shadow: -2px -2px 2px black,
+  2px -2px 2px black,
+  -2px 2px 2px black,
+  2px 2px 2px black;
   font-weight: bold;
   text-align: center;
 }

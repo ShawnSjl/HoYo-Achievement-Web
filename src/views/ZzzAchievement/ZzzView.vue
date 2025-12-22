@@ -1,10 +1,11 @@
 <script setup>
-import {ref, onMounted, onBeforeUnmount, nextTick, watch, computed} from "vue";
-import { useZzzAchievementStore } from "@/stores/zzzAchievementsStore";
-import { useUserStore } from '@/stores/userStore.js';
-import { useIsMobileStore } from '@/stores/isMobileStore';
+import {computed, nextTick, onBeforeUnmount, onMounted, ref, watch} from "vue";
+import {useZzzAchievementStore} from "@/stores/zzzAchievementsStore";
+import {useUserStore} from '@/stores/userStore.js';
+import {useIsMobileStore} from '@/stores/isMobileStore';
 import {
-  categories, cityClasses,
+  categories,
+  cityClasses,
   explorationClasses,
   storyClasses,
   tacticsClasses,
@@ -13,21 +14,42 @@ import {
 import ZzzTable from "@/views/ZzzAchievement/ZzzTable.vue";
 import ZzzHeader from "@/views/ZzzAchievement/ZzzHeader.vue";
 import ZzzAside from "@/views/ZzzAchievement/ZzzAside.vue";
+import {useAccountStore} from "@/stores/accountStore.js";
+import {useRoute} from "vue-router";
+import router from "@/router/index.js";
+
+// 创建Route
+const route = useRoute();
 
 // 使用Pinia作为本地缓存
+const userStore = useUserStore();
+const accountStore = useAccountStore();
 const achievementStore = useZzzAchievementStore()
-const authStore = useUserStore();
 const isMobileStore = useIsMobileStore();
 
+// 获取账号列表
+const accounts = computed(() => {
+  return accountStore.getAccounts();
+})
+
+// 当前账号
+const currentAccount = accounts.value.find(account => account.uuid === route.meta.uuid);
+
+// 如果用户变更，返回主页
+const userName = computed(() => userStore.getUserName());
+watch(userName, (_) => {
+  router.push({
+    path: '/',
+  })
+});
+
 /* 筛选和排序成就 */
-// 选择大类别
-const category = ref(categories[0]);
-// 选择小类别
-const achievementClass = ref(storyClasses[0]);
+const category = ref(categories[0]);  // 大类别
+const achievementClass = ref(storyClasses[0]);  // 小类别
 
 // 根据类别筛选成就
 const filteredAchievements = computed(() => {
-  return achievementStore.achievements.filter(achievement => achievement.class_id ===
+  return currentAccount.achievements.filter(achievement => achievement.class_id ===
       zzzGetClassIdByName(achievementClass.value))
 });
 
@@ -52,69 +74,46 @@ const sortedAchievements = computed(() => {
 });
 
 /* 根据hash定位内容 */
-async function syncWithHash() {
-  const hash = decodeURIComponent(window.location.hash.slice(1));
-  if (hash) {
-    if (storyClasses.includes(hash)) {
-      category.value = categories[0];
-    } else if (cityClasses.includes(hash)) {
-      category.value = categories[1];
-    } else if (tacticsClasses.includes(hash)) {
-      category.value = categories[2];
-    } else if (explorationClasses.includes(hash)) {
-      category.value = categories[3];
-    } else {
-      return;
-    }
-    await nextTick();
-    achievementClass.value = hash;
+const syncStateFromHash = (hashStr) => {
+  // 1. 去掉 # 并解码
+  const hash = decodeURIComponent(hashStr.replace(/^#/, ''));
+
+  if (!hash) return;
+
+  // 2. 如果当前状态已经和 URL 一致，什么都不做（防止死循环）
+  if (achievementClass.value === hash) return;
+
+  if (storyClasses.includes(hash)) {
+    category.value = categories[0];
+  } else if (cityClasses.includes(hash)) {
+    category.value = categories[1];
+  } else if (tacticsClasses.includes(hash)) {
+    category.value = categories[2];
+  } else if (explorationClasses.includes(hash)) {
+    category.value = categories[3];
+  } else {
+    return;
   }
-}
 
-onMounted(() => {
-  syncWithHash()
-});
-
-watch(achievementClass, (newVal) => {
-  window.location.hash = encodeURIComponent(newVal);
-});
-
-onMounted(() => {
-  window.addEventListener('hashchange', syncWithHash);
-});
-
-onBeforeUnmount(() => {
-  window.removeEventListener('hashchange', syncWithHash);
-});
-
-/* 根据条件更新/获取成就数据 */
-const loading = ref(true);
-const errorMessage = ref('');
-
-const fetchData = async () => {
-  try {
-    loading.value = true;
-    await achievementStore.updateAchievements();
-    errorMessage.value = '';
-  } catch (e) {
-    errorMessage.value = 'Load data failed';
-  } finally {
-    loading.value = false;
-  }
+  // 4. 同步选中项
+  achievementClass.value = hash;
 };
 
-onMounted(() => {
-  fetchData();
-});
+watch(
+    () => route.hash,
+    (newHash) => {
+      syncStateFromHash(newHash);
+    },
+    {immediate: true}
+);
+watch(achievementClass, (newVal) => {
+  // 1. 如果新值为空，或者和当前 URL 一样，就不推
+  if (!newVal || route.hash === `#${newVal}`) return;
 
-watch(achievementClass, async () => {
-  await fetchData();
-});
-
-const userName = computed(() => authStore.getUserName());
-watch(userName, async (newUserName) => {
-  console.log(newUserName);
-  await fetchData();
+  router.replace({
+    query: {...route.query},
+    hash: `#${newVal}`
+  });
 });
 
 /* 设置成就列表高度 */
@@ -136,7 +135,6 @@ onMounted(async () => {
   calculateTableHeight()
   window.addEventListener('resize', calculateTableHeight)
 });
-
 onBeforeUnmount(() => {
   window.removeEventListener('resize', calculateTableHeight)
 })
@@ -152,7 +150,6 @@ onMounted(() => {
   calculateAsideHeight();
   window.addEventListener('resize', calculateAsideHeight);
 })
-
 onBeforeUnmount(() => {
   window.removeEventListener('resize', calculateAsideHeight);
 })
@@ -163,22 +160,20 @@ onBeforeUnmount(() => {
     <div class="zzz-content">
       <el-container class="zzz-container" style="height: 100vh">
         <el-header class="zzz-container-header">
-          <zzz-header v-model="category" />
+          <zzz-header v-model="category"/>
         </el-header>
 
         <el-container>
-          <el-aside v-if="!isMobileStore.isMobile" class="zzz-container-aside" :style="{ height: `${asideHeight}px` }">
+          <el-aside v-if="!isMobileStore.isMobile" :style="{ height: `${asideHeight}px` }" class="zzz-container-aside">
             <zzz-aside v-model="achievementClass"
-                                 :category="category" />
+                       :category="category"
+                       :uuid="currentAccount.uuid"/>
           </el-aside>
           <el-main class="zzz-container-main">
-            <p v-if="loading">加载中...</p>
-            <p v-else-if="errorMessage">{{ errorMessage }}</p>
-            <div v-else >
-              <zzz-table v-model="achievementClass"
-                         :sorted-achievements="sortedAchievements"
-                         :table-height="tableHeight" />
-            </div>
+            <zzz-table v-model="achievementClass"
+                       :sorted-achievements="sortedAchievements"
+                       :table-height="tableHeight"
+                       :uuid="currentAccount.uuid"/>
           </el-main>
         </el-container>
       </el-container>

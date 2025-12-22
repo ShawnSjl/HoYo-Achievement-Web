@@ -1,36 +1,41 @@
 <script setup>
-import CardZzzStatisticClass from "@/views/ZzzAchievement/CardZzzStatisticClass.vue";
 import ZzzTableRow from "@/views/ZzzAchievement/ZzzTableRow.vue";
 import ZzzClassSelect from "@/views/ZzzAchievement/ZzzClassSelect.vue";
 import {useIsMobileStore} from "@/stores/isMobileStore";
+import CardZzzStatisticClass from "@/views/ZzzAchievement/CardZzzStatisticClass.vue";
 
-defineProps({
+// 传入只读数据
+const props = defineProps({
+  uuid: String,
   sortedAchievements: Array,
   tableHeight: Number,
 })
-const achievementClass = defineModel()
 
+// 传入可写数据
+const achievementClass = defineModel();
+
+// 使用Pinia作为本地缓存
 const isMobileStore = useIsMobileStore();
 </script>
 
 <template>
   <div v-if="isMobileStore.isMobile" class="zzz-table-header">
-    <zzz-class-select v-model="achievementClass" class="zzz-table-header-select"/>
-    <card-zzz-statistic-class :achievement-class="achievementClass" class="zzz-table-header-card"/>
+    <zzz-class-select v-model="achievementClass" :uuid="props.uuid" class="zzz-table-header-select"/>
+    <card-zzz-statistic-class :achievement-class="achievementClass" :uuid="props.uuid" class="zzz-table-header-card"/>
   </div>
   <div v-else>
-    <card-zzz-statistic-class :achievement-class="achievementClass" style="margin-bottom: 10px"/>
+    <card-zzz-statistic-class :achievement-class="achievementClass" :uuid="props.uuid" style="margin-bottom: 10px"/>
   </div>
 
-  <el-scrollbar :height="tableHeight">
+  <el-scrollbar :height="props.tableHeight">
     <div class="zzz-card-table">
       <el-card
-          v-for="(row, index) in sortedAchievements"
+          v-for="(row, index) in props.sortedAchievements"
           :key="index"
           class="zzz-card-row"
           shadow="hover"
       >
-        <zzz-table-row :achievement="row"/>
+        <zzz-table-row :achievement="row" :uuid="props.uuid"/>
       </el-card>
     </div>
   </el-scrollbar>
