@@ -23,6 +23,11 @@ const reverse = ref(false)
 const getTime = (timeStr) => {
   return dayjs(timeStr).format('YYYY-MM-DD HH:mm');
 }
+
+// 处理更新按钮
+const handleClick = async () => {
+  await serverInfoStore.fetchServerInfo();
+}
 </script>
 
 <template>
@@ -38,7 +43,10 @@ const getTime = (timeStr) => {
           :fullscreen="isMobileStore.isMobile"
           title="历史更新信息"
       >
-        <el-switch v-model="reverse" active-text="倒序"/>
+        <div style="display: flex; flex-direction: row; justify-content: space-between">
+          <el-switch v-model="reverse" active-text="倒序"/>
+          <el-button size="default" type="primary" @click="handleClick">获取更新</el-button>
+        </div>
 
         <el-divider/>
 

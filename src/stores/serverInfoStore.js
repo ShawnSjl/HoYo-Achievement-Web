@@ -44,7 +44,7 @@ export const useServerInfoStore = defineStore(
             if (allInfo.value.length === 0 || lastestInfo.value === null) await fetchServerInfo();
         }
 
-        return {allInfo, lastestInfo, ensureServerInfo};
+        return {allInfo, lastestInfo, ensureServerInfo, fetchServerInfo};
     },
     {
         persist: true,
