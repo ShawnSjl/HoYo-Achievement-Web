@@ -1,13 +1,13 @@
 import api from "@/utils/request"
 
 // Get all SR achievement
-export const srGetAll = (request) => {
-    return api.get('/api/sr/all', {params: request});
+export const srGetAllAchievement = () => {
+    return api.get('/api/sr/all');
 }
 
-// Get all SR achievement with empty record
-export const srGetAllEmpty = () => {
-    return api.get('/api/sr/all-empty-record');
+// Get account's SR records
+export const srGetAccountRecord = (request) => {
+    return api.get('/api/sr/account-records', {params: request});
 }
 
 // Update one SR achievement status

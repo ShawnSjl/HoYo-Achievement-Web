@@ -8,7 +8,7 @@ import {
     updateAccountName
 } from "@/api/account.js";
 import {showError, showInfo, showSuccess} from "@/utils/notification.js";
-import {srGetAll, srGetAllEmpty} from "@/api/sr.js";
+import {srGetAccountRecord} from "@/api/sr.js";
 import {zzzGetAccountRecord} from "@/api/zzz.js";
 import {v7 as uuidv7} from 'uuid';
 import {useUserStore} from "@/stores/userStore.js";
@@ -56,7 +56,7 @@ export const useAccountStore = defineStore(
                     let achievementResponse;
                     switch (account.game_type) {
                         case "SR":
-                            achievementResponse = await srGetAll(requestBody);
+                            achievementResponse = await srGetAccountRecord(requestBody);
                             break;
                         case "ZZZ":
                             achievementResponse = await zzzGetAccountRecord(requestBody);
@@ -109,20 +109,6 @@ export const useAccountStore = defineStore(
                         showInfo(createResponse.data.msg);
                         return;
                     }
-                }
-
-                // Get achievements with empty record from the backend
-                let achievementResponse;
-                switch (type) {
-                    case "SR":
-                        achievementResponse = await srGetAllEmpty();
-                        break;
-                    case "ZZZ":
-                        // achievementResponse = await zzzGetAllEmpty();
-                        break;
-                    default:
-                        showError("未知游戏类型");
-                        return;
                 }
 
                 // Create a new account data structure

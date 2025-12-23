@@ -33,7 +33,8 @@ const avatarSize = computed(() => {
 
 // 同步数据
 const fetchRemoteData = async () => {
-  // Ensure branches are loaded
+  // Ensure SR's data are loaded
+  await srAchievementStore.ensureAchievementData();
   await srAchievementStore.ensureBranchData();
 
   // Ensure ZZZ's data are loaded
