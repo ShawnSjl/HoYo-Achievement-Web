@@ -29,8 +29,11 @@ const filteredAchievements = computed(() => {
 const sortedAchievements = computed(() => {
   if (achievementStore.isCompleteFirst) {
     return [...filteredAchievements.value].sort((a, b) => {
-      const completeA = a.complete === 2 ? 1 : a.complete;
-      const completeB = b.complete === 2 ? 1 : b.complete;
+      const statusA = achievementStore.getAchievementStatus(props.uuid, a.achievement_id);
+      const statusB = achievementStore.getAchievementStatus(props.uuid, b.achievement_id);
+
+      const completeA = statusA === 2 ? 1 : statusA;
+      const completeB = statusB === 2 ? 1 : statusB;
 
       // 1️⃣ 优先按 complete 状态
       if (completeA !== completeB) {
@@ -58,12 +61,12 @@ const sortedAchievements = computed(() => {
   <el-scrollbar :height="props.tableHeight">
     <div class="zzz-card-table">
       <el-card
-          v-for="(row, index) in sortedAchievements"
-          :key="index"
+          v-for="achievement in sortedAchievements"
+          :key="achievement.achievement_id"
           class="zzz-card-row"
           shadow="hover"
       >
-        <zzz-table-row :achievement="row" :uuid="props.uuid"/>
+        <zzz-table-row :achievement="achievement" :uuid="props.uuid"/>
       </el-card>
     </div>
   </el-scrollbar>
