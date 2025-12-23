@@ -92,7 +92,7 @@ const handleFetch = async () => {
       </div>
       <div>
         <p>强制更新本地数据:</p>
-        <el-button color="red" dark round @click="handleFetch">更新</el-button>
+        <el-button dark round type="info" @click="handleFetch">更新</el-button>
       </div>
     </el-dialog>
   </div>

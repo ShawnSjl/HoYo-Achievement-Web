@@ -51,7 +51,7 @@ const achievementReward = computed(() => {
 
 // 获取按钮状态
 const completeButtonMsg = computed(() => {
-  switch (achievementStatus) {
+  switch (achievementStatus.value) {
     case 0:
       return "未完成";
     case 1:
@@ -63,18 +63,18 @@ const completeButtonMsg = computed(() => {
   }
 })
 const isComplete = computed(() => {
-  return achievementStatus === 1
+  return achievementStatus.value === 1
 });
 const disableButton = computed(() => {
-  return achievementStatus === 2
+  return achievementStatus.value === 2
 });
 
 const handleComplete = async () => {
-  if (achievementStatus === 2) {
+  if (achievementStatus.value === 2) {
     showInfo('该分支成就已完成，不可更改')
     return;
   }
-  const newState = achievementStatus === 1 ? 0 : 1;
+  const newState = achievementStatus.value === 1 ? 0 : 1;
   await achievementStore.completeAchievement(props.uuid, props.achievement.achievement_id, newState);
 }
 
