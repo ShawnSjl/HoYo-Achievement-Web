@@ -26,7 +26,7 @@ export const useZzzAchievementStore = defineStore(
                 }
             } catch (error) {
                 console.error("Fail to get ZZZ achievements:", error);
-                showError("成就列表获取失败", error);
+                showError("ZZZ成就列表获取失败", error);
             }
         }
 
@@ -52,7 +52,7 @@ export const useZzzAchievementStore = defineStore(
                 }
             } catch (error) {
                 console.error("Fail to get ZZZ achievements\' branches:", error);
-                showError("成就分支获取失败", error)
+                showError("ZZZ成就分支获取失败", error)
             }
         }
 

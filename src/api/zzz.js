@@ -5,9 +5,9 @@ export const zzzGetAllAchievement = () => {
     return api.get('/api/zzz/all');
 }
 
-// Get all ZZZ achievement with empty record
+// Get account's ZZZ records
 export const zzzGetAccountRecord = (request) => {
-    return api.get('/api/zzz/account-record', {params: request});
+    return api.get('/api/zzz/account-records', {params: request});
 }
 
 // Update one ZZZ achievement status
