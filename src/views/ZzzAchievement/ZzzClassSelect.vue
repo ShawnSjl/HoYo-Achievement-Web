@@ -2,7 +2,6 @@
 import {useZzzAchievementStore} from "@/stores/zzzAchievementsStore";
 import {categories, zzzGetClassByCategory, zzzGetClassIdByName} from "@/utils/zzzAchievementClass"
 import {computed} from "vue";
-import {useAccountStore} from "@/stores/accountStore.js";
 
 // 传入只读数据
 const props = defineProps({
@@ -13,29 +12,17 @@ const props = defineProps({
 const achievementClass = defineModel();
 
 // 使用Pinia作为本地缓存
-const accountStore = useAccountStore();
 const achievementStore = useZzzAchievementStore();
-
-// 获取账户列表
-const accounts = computed(() => {
-  return accountStore.getAccounts();
-})
-
-// 获取账号成就
-const account = computed(() =>
-    accounts.value.find(account => account.uuid === props.uuid)
-);
 
 // 计算完成百分比
 const completePercentage = computed(() => {
   return (className) => {
     const classId = zzzGetClassIdByName(className);
 
-    const numberTotal = account.value.achievements.filter(achievement => achievement.class_id === classId).length
-        - achievementStore.getBranchAchievementsNumberByClass(props.uuid, classId);
+    const numberTotal = achievementStore.achievements.filter(achievement => achievement.class_id === classId).length
+        - achievementStore.getBranchAchievementsNumberByClass(classId);
 
-    const numberComplete = account.value.achievements.filter(achievement => achievement.class_id === classId &&
-        achievement.complete === 1).length;
+    const numberComplete = achievementStore.getCompleteRecordNumberByClass(props.uuid, classId);
 
     if (numberTotal === 0) return 0; // 避免除以 0
 

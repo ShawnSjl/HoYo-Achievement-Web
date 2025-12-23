@@ -9,13 +9,18 @@ import {useIsMobileStore} from "@/stores/isMobileStore";
 import {showInfo} from "@/utils/notification";
 
 // 使用Pinia作为本地缓存
-const achievementStore = useZzzAchievementStore()
+const achievementStore = useZzzAchievementStore();
 const isMobileStore = useIsMobileStore();
 
 // 传入只读数据
 const props = defineProps({
   uuid: String,
   achievement: Object,
+})
+
+// 获取成就完成状态
+const achievementStatus = computed(() => {
+  return achievementStore.getAchievementStatus(props.uuid, props.achievement.achievement_id);
 })
 
 // 获取成就图片
@@ -46,27 +51,30 @@ const achievementReward = computed(() => {
 
 // 获取按钮状态
 const completeButtonMsg = computed(() => {
-  if (props.achievement.complete === 0) {
-    return "未完成"
-  } else if (props.achievement.complete === 1) {
-    return "已完成"
-  } else {
-    return "完成分支"
+  switch (achievementStatus) {
+    case 0:
+      return "未完成";
+    case 1:
+      return "已完成";
+    case 2:
+      return "完成分支";
+    default:
+      return "未完成";
   }
 })
 const isComplete = computed(() => {
-  return props.achievement.complete === 1
+  return achievementStatus === 1
 });
 const disableButton = computed(() => {
-  return props.achievement.complete === 2
+  return achievementStatus === 2
 });
 
 const handleComplete = async () => {
-  if (props.achievement.complete === 2) {
+  if (achievementStatus === 2) {
     showInfo('该分支成就已完成，不可更改')
     return;
   }
-  const newState = props.achievement.complete === 1 ? 0 : 1;
+  const newState = achievementStatus === 1 ? 0 : 1;
   await achievementStore.completeAchievement(props.uuid, props.achievement.achievement_id, newState);
 }
 

@@ -1,20 +1,11 @@
 <script setup>
 import {computed, nextTick, onBeforeUnmount, onMounted, ref, watch} from "vue";
-import {useZzzAchievementStore} from "@/stores/zzzAchievementsStore";
 import {useUserStore} from '@/stores/userStore.js';
 import {useIsMobileStore} from '@/stores/isMobileStore';
-import {
-  categories,
-  cityClasses,
-  explorationClasses,
-  storyClasses,
-  tacticsClasses,
-  zzzGetClassIdByName
-} from "@/utils/zzzAchievementClass";
+import {categories, cityClasses, explorationClasses, storyClasses, tacticsClasses} from "@/utils/zzzAchievementClass";
 import ZzzTable from "@/views/ZzzAchievement/ZzzTable.vue";
 import ZzzHeader from "@/views/ZzzAchievement/ZzzHeader.vue";
 import ZzzAside from "@/views/ZzzAchievement/ZzzAside.vue";
-import {useAccountStore} from "@/stores/accountStore.js";
 import {useRoute} from "vue-router";
 import router from "@/router/index.js";
 
@@ -23,17 +14,10 @@ const route = useRoute();
 
 // 使用Pinia作为本地缓存
 const userStore = useUserStore();
-const accountStore = useAccountStore();
-const achievementStore = useZzzAchievementStore()
 const isMobileStore = useIsMobileStore();
 
-// 获取账号列表
-const accounts = computed(() => {
-  return accountStore.getAccounts();
-})
-
-// 当前账号
-const currentAccount = accounts.value.find(account => account.uuid === route.meta.uuid);
+// 当前账号UUID
+const currentUUID = route.meta.uuid;
 
 // 如果用户变更，返回主页
 const userName = computed(() => userStore.getUserName());
@@ -46,32 +30,6 @@ watch(userName, (_) => {
 /* 筛选和排序成就 */
 const category = ref(categories[0]);  // 大类别
 const achievementClass = ref(storyClasses[0]);  // 小类别
-
-// 根据类别筛选成就
-const filteredAchievements = computed(() => {
-  return currentAccount.achievements.filter(achievement => achievement.class_id ===
-      zzzGetClassIdByName(achievementClass.value))
-});
-
-// 根据条件排序
-const sortedAchievements = computed(() => {
-  if (achievementStore.isCompleteFirst) {
-    return [...filteredAchievements.value].sort((a, b) => {
-      const completeA = a.complete === 2 ? 1 : a.complete;
-      const completeB = b.complete === 2 ? 1 : b.complete;
-
-      // 1️⃣ 优先按 complete 状态
-      if (completeA !== completeB) {
-        return completeA - completeB;
-      }
-
-      // 2️⃣ 如果 complete 相同，按 id 升序排序
-      return a.id - b.id;
-    });
-  } else {
-    return filteredAchievements.value;
-  }
-});
 
 /* 根据hash定位内容 */
 const syncStateFromHash = (hashStr) => {
@@ -160,21 +118,20 @@ onBeforeUnmount(() => {
     <div class="zzz-content">
       <el-container class="zzz-container" style="height: 100vh">
         <el-header class="zzz-container-header">
-          <zzz-header v-model="category" :uuid="currentAccount.uuid"/>
+          <zzz-header v-model="category" :uuid="currentUUID"/>
         </el-header>
 
         <el-container>
           <el-aside v-if="!isMobileStore.isMobile" :style="{ height: `${asideHeight}px` }" class="zzz-container-aside">
             <zzz-aside v-model="achievementClass"
                        :category="category"
-                       :uuid="currentAccount.uuid"/>
+                       :uuid="currentUUID"/>
           </el-aside>
           <el-main class="zzz-container-main">
             <div>
               <zzz-table v-model="achievementClass"
-                         :sorted-achievements="sortedAchievements"
                          :table-height="tableHeight"
-                         :uuid="currentAccount.uuid"/>
+                         :uuid="currentUUID"/>
             </div>
           </el-main>
         </el-container>

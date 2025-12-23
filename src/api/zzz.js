@@ -1,13 +1,13 @@
 import api from "@/utils/request";
 
 // Get all ZZZ achievement
-export const zzzGetAll = (request) => {
-    return api.get('/api/zzz/all', {params: request});
+export const zzzGetAllAchievement = () => {
+    return api.get('/api/zzz/all');
 }
 
 // Get all ZZZ achievement with empty record
-export const zzzGetAllEmpty = () => {
-    return api.get('/api/zzz/all-empty-record');
+export const zzzGetAccountRecord = (request) => {
+    return api.get('/api/zzz/account-record', {params: request});
 }
 
 // Update one ZZZ achievement status

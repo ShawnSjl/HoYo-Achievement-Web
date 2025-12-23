@@ -33,12 +33,11 @@ const avatarSize = computed(() => {
 
 // 同步数据
 const fetchRemoteData = async () => {
-  // If the current user is login, fetch accounts
-  // if (isLoggedIn.value) {
-  //   await accountStore.fetchAccounts();
-  // }
   // Ensure branches are loaded
   await srAchievementStore.ensureBranchData();
+
+  // Ensure ZZZ's data are loaded
+  await zzzAchievementStore.ensureAchievementData();
   await zzzAchievementStore.ensureBranchData();
   // Fetch the server info
   await serverInfoStore.ensureServerInfo();

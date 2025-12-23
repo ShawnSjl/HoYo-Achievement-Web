@@ -1,15 +1,42 @@
 import {defineStore} from 'pinia';
 import {ref} from 'vue';
-import {zzzGetAllBranch, zzzUpdateAchievement} from '@/api/zzz';
-import {showError, showInfo} from "@/utils/notification.js";
+import {zzzGetAllAchievement, zzzGetAllBranch, zzzUpdateAchievement} from '@/api/zzz';
+import {showError, showInfo, showWarn} from "@/utils/notification.js";
 import {useAccountStore} from "@/stores/accountStore.js";
 
 export const useZzzAchievementStore = defineStore(
     'zzz-achievement',
     () => {
+        const achievements = ref([]);
         const branches = ref([]);
         const isMale = ref(true);
         const isCompleteFirst = ref(false);
+
+        /**
+         * Fetch achievements from the backend.
+         * @returns {Promise<void>}
+         */
+        async function fetchAchievements() {
+            try {
+                const response = await zzzGetAllAchievement();
+                if (response.data.code === 200) {
+                    achievements.value = response.data.data;
+                } else {
+                    showInfo(response.data.msg);
+                }
+            } catch (error) {
+                console.error("Fail to get ZZZ achievements:", error);
+                showError("成就列表获取失败", error);
+            }
+        }
+
+        /**
+         * Ensure that the achievements data is fetched from the backend.
+         * @returns {Promise<void>}
+         */
+        async function ensureAchievementData() {
+            if (achievements.value.length === 0) await fetchAchievements();
+        }
 
         /**
          * Fetch branches from the backend.
@@ -81,6 +108,30 @@ export const useZzzAchievementStore = defineStore(
         }
 
         /**
+         * Get the complete status of the target achievement.
+         * @param uuid
+         * @param achievementId
+         * @returns {number|*|number}
+         */
+        function getAchievementStatus(uuid, achievementId) {
+            // Check if the target achievement exists in the achievements list
+            const targetAchievement = achievements.value.find(item => item.achievement_id === achievementId);
+            if (!targetAchievement) {
+                showWarn("未知成就ID");
+                return 0;
+            }
+
+            // Get records by given uuid
+            const accountStore = useAccountStore();
+            const account = accountStore.getAccounts().find(item => item.uuid === uuid);
+            const records = account.records;
+
+            // Get the target record from the record list
+            const targetRecord = records.find(record => record.achievement_id === achievementId);
+            return targetRecord?.complete ?? 0;
+        }
+
+        /**
          * Update achievement status in the backend and local data.
          * @param uuid
          * @param achievementId
@@ -89,30 +140,40 @@ export const useZzzAchievementStore = defineStore(
          */
         async function completeAchievement(uuid, achievementId, complete) {
             try {
-                if (branches.value.length === 0) await fetchBranches();
+                // Ensure data is fetched from the backend before updating
+                await ensureBranchData();
+                await ensureAchievementData();
 
-                // Get achievements by given uuid
-                const accountStore = useAccountStore();
-                const account = accountStore.getAccounts().find(item => item.uuid === uuid);
-                const achievements = account.achievements;
-
-                // Get target achievement from the achievements list
-                const target = achievements.find(item => item.achievement_id === achievementId);
-                if (!target) {
-                    console.error('Fail to get achievements:', achievementId);
-                    showError("目标成就获取失败");
+                // Ignore complete status other than 1 and 0
+                if (complete !== 1 || complete !== 0) {
+                    showWarn("未知完成状态");
                     return;
                 }
 
-                // Ignore unchanged data
-                if (target.complete === complete) {
+                // Check if the target achievement exists in the achievements list
+                const targetAchievement = achievements.value.find(item => item.achievement_id === achievementId);
+                if (!targetAchievement) {
+                    showWarn("未知成就ID");
+                    return;
+                }
+
+                // Get records by given uuid
+                const accountStore = useAccountStore();
+                const account = accountStore.getAccounts().find(item => item.uuid === uuid);
+                const records = account.records;
+
+                // Get the target record from the record list
+                const targetRecord = records.find(record => record.achievement_id === achievementId);
+
+                // If the target record exists and the complete status is the same, ignore the update
+                if (targetRecord && targetRecord.complete === complete) {
                     return;
                 }
 
                 // Update achievement in the backend if the user is logged in
                 if (localStorage.getItem('token')) {
                     const requestBody = {
-                        uuid: "",
+                        uuid: uuid,
                         achievement_id: `${achievementId}`,
                         complete_status: `${complete}`
                     }
@@ -124,15 +185,33 @@ export const useZzzAchievementStore = defineStore(
                     }
                 }
 
-                // Update local data
-                target.complete = complete;
+                // If the target record does not exist, add a new record to the record list
+                if (!targetRecord) {
+                    records.push({
+                        account_uuid: uuid,
+                        achievement_id: achievementId,
+                        complete: complete,
+                    })
+                }
+                // If the target record exists but the complete status is different, update the complete status
+                else {
+                    targetRecord.complete = complete;
+                }
 
                 // Update other achievements in the same branch
-                const branchAchievements = await getOtherAchievements(achievements, achievementId);
+                const branchAchievements = getOtherAchievements(achievementId);
                 const branchStatus = complete === 1 ? 2 : 0;
                 for (const branchAchievement of branchAchievements) {
-                    const branchTarget = achievements.find(item => item.achievement_id === branchAchievement);
-                    branchTarget.complete = branchStatus;
+                    const branchTarget = records.find(record => record.achievement_id === branchAchievement);
+                    if (branchTarget) {
+                        branchTarget.complete = branchStatus;
+                    } else {
+                        records.push({
+                            account_uuid: uuid,
+                            achievement_id: branchAchievement,
+                            complete: branchStatus,
+                        })
+                    }
                 }
             } catch (error) {
                 console.error("Fail to update achievements:", error);
@@ -142,13 +221,10 @@ export const useZzzAchievementStore = defineStore(
 
         /**
          * Get other achievements in the same branch out of the target achievement.
-         * @param achievements
          * @param targetId
-         * @returns {Promise<*|*[]>}
+         * @returns []
          */
-        async function getOtherAchievements(achievements, targetId) {
-            if (branches.value.length === 0) await fetchBranches();
-
+        function getOtherAchievements(targetId) {
             const branch = branches.value.find(item => item.achievement_id.includes(targetId));
             if (!branch) return []; // return empty array if not found
 
@@ -169,21 +245,15 @@ export const useZzzAchievementStore = defineStore(
 
         /**
          * Get the total number of additional achievements in all branches with the specified level.
-         * @param uuid
          * @param level
          * @returns number
          */
-        function getBranchAchievementNumberByLevel(uuid, level) {
+        function getBranchAchievementNumberByLevel(level) {
             let count = 0;
             for (const branch of branches.value) {
-                // Get achievements by given uuid
-                const accountStore = useAccountStore();
-                const account = accountStore.getAccounts().find(item => item.uuid === uuid);
-                const achievements = account.achievements;
-
                 // Get an example achievement from the branch
                 const achievement_id = branch.achievement_id[0];
-                const achievement = achievements.find(item => item.achievement_id === achievement_id);
+                const achievement = achievements.value.find(item => item.achievement_id === achievement_id);
 
                 // If the level matches, add to the total count
                 if (level === achievement.reward_level) {
@@ -195,21 +265,15 @@ export const useZzzAchievementStore = defineStore(
 
         /**
          * Get the total number of additional achievements in all branches with the specified class.
-         * @param uuid
          * @param zzz_class_id
          * @returns number
          */
-        function getBranchAchievementsNumberByClass(uuid, zzz_class_id) {
+        function getBranchAchievementsNumberByClass(zzz_class_id) {
             let count = 0;
             for (const branch of branches.value) {
-                // Get achievements by given uuid
-                const accountStore = useAccountStore();
-                const account = accountStore.getAccounts().find(item => item.uuid === uuid);
-                const achievements = account.achievements;
-
                 // Get an example achievement from the branch
                 const achievement_id = branch.achievement_id[0];
-                const achievement = achievements.find(item => item.achievement_id === achievement_id);
+                const achievement = achievements.value.find(item => item.achievement_id === achievement_id);
 
                 // If the class matches, add to the total count
                 if (zzz_class_id === achievement.class_id) {
@@ -221,22 +285,16 @@ export const useZzzAchievementStore = defineStore(
 
         /**
          * Get the total number of additional achievements in all branches with the specified class and level.
-         * @param uuid
          * @param zzz_class_id
          * @param level
          * @returns number
          */
-        function getBranchAchievementNumberByClassAndLevel(uuid, zzz_class_id, level) {
+        function getBranchAchievementNumberByClassAndLevel(zzz_class_id, level) {
             let count = 0;
             for (const branch of branches.value) {
-                // Get achievements by given uuid
-                const accountStore = useAccountStore();
-                const account = accountStore.getAccounts().find(item => item.uuid === uuid);
-                const achievements = account.achievements;
-
                 // Get an example achievement from the branch
                 const achievement_id = branch.achievement_id[0];
-                const achievement = achievements.find(item => item.achievement_id === achievement_id);
+                const achievement = achievements.value.find(item => item.achievement_id === achievement_id);
 
                 // If the class and level matches, add to the total count
                 if (zzz_class_id === achievement.class_id && level === achievement.reward_level) {
@@ -246,16 +304,97 @@ export const useZzzAchievementStore = defineStore(
             return count;
         }
 
+        /**
+         * Get the total number of complete records in a given level.
+         * @param uuid
+         * @param level
+         * @returns {number}
+         */
+        function getCompleteRecordNumberByLevel(uuid, level) {
+            // Get records by given uuid
+            const accountStore = useAccountStore();
+            const account = accountStore.getAccounts().find(item => item.uuid === uuid);
+            const records = account.records;
+
+            // Get the number of complete records by the given level
+            const completeRecords = records.filter(record => record.complete === 1);
+            let count = 0;
+            for (const completeRecord of completeRecords) {
+                const achievement = achievements.value.find(item => item.achievement_id === completeRecord.achievement_id);
+                if (achievement.reward_level === level) {
+                    count = count + 1;
+                }
+            }
+            return count;
+        }
+
+        /**
+         * Get the total number of complete records in a given class id.
+         * @param uuid
+         * @param zzz_class_id
+         * @returns {number}
+         */
+        function getCompleteRecordNumberByClass(uuid, zzz_class_id) {
+            // Get records by given uuid
+            const accountStore = useAccountStore();
+            const account = accountStore.getAccounts().find(item => item.uuid === uuid);
+            const records = account.records;
+
+            // Get the number of complete records by the given level
+            const completeRecords = records.filter(record => record.complete === 1);
+            let count = 0;
+            for (const completeRecord of completeRecords) {
+                const achievement = achievements.value.find(item => item.achievement_id === completeRecord.achievement_id);
+                if (achievement.class_id === zzz_class_id) {
+                    count = count + 1;
+                }
+            }
+            return count;
+        }
+
+        /**
+         * Get the total number of complete records in a given class id.
+         * @param uuid
+         * @param zzz_class_id
+         * @param level
+         * @returns {number}
+         */
+        function getCompleteRecordNumberByClassAndLevel(uuid, zzz_class_id, level) {
+            // Get records by given uuid
+            const accountStore = useAccountStore();
+            const account = accountStore.getAccounts().find(item => item.uuid === uuid);
+            const records = account.records;
+
+            // Get the number of complete records by the given level
+            const completeRecords = records.filter(record => record.complete === 1);
+            let count = 0;
+            for (const completeRecord of completeRecords) {
+                const achievement = achievements.value.find(item => item.achievement_id === completeRecord.achievement_id);
+                if (achievement.class_id === zzz_class_id && achievement.reward_level === level) {
+                    count = count + 1;
+                }
+            }
+            return count;
+        }
+
         return {
+            achievements,
             branches,
             isMale,
             isCompleteFirst,
-            completeAchievement,
+            fetchAchievements,
+            ensureAchievementData,
+            fetchBranches,
             ensureBranchData,
+            getAchievementStatus,
+            completeAchievement,
             getBranchAchievementsNumber,
             getBranchAchievementNumberByLevel,
             getBranchAchievementsNumberByClass,
-            getBranchAchievementNumberByClassAndLevel
+            getBranchAchievementNumberByClassAndLevel,
+            getCompleteRecordNumberByLevel,
+            getCompleteRecordNumberByClass,
+            getCompleteRecordNumberByClassAndLevel
         };
     },
     {

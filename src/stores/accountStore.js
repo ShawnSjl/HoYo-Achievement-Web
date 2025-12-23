@@ -9,7 +9,7 @@ import {
 } from "@/api/account.js";
 import {showError, showInfo, showSuccess} from "@/utils/notification.js";
 import {srGetAll, srGetAllEmpty} from "@/api/sr.js";
-import {zzzGetAll, zzzGetAllEmpty} from "@/api/zzz.js";
+import {zzzGetAccountRecord} from "@/api/zzz.js";
 import {v7 as uuidv7} from 'uuid';
 import {useUserStore} from "@/stores/userStore.js";
 
@@ -18,8 +18,6 @@ export const useAccountStore = defineStore(
     () => {
         const remoteAccounts = ref([]);
         const localAccounts = ref([]);
-
-        // TODO 将local的数据只保留record，就像后端一样，然后再通过srAchievementStore中存储的空数据结合
 
         /**
          * Return the list of accounts. If the user is logged in, return the accounts from the backend; otherwise, return the local data.
@@ -61,7 +59,7 @@ export const useAccountStore = defineStore(
                             achievementResponse = await srGetAll(requestBody);
                             break;
                         case "ZZZ":
-                            achievementResponse = await zzzGetAll(requestBody);
+                            achievementResponse = await zzzGetAccountRecord(requestBody);
                             break;
                         default:
                             showError("未知游戏类型");
@@ -74,7 +72,7 @@ export const useAccountStore = defineStore(
                         type: account.game_type,
                         name: account.account_name,
                         inGameUid: account.account_in_game_uid,
-                        achievements: achievementResponse.data.data,
+                        records: achievementResponse.data.data,
                     }
 
                     // Push the account to the list
@@ -120,7 +118,7 @@ export const useAccountStore = defineStore(
                         achievementResponse = await srGetAllEmpty();
                         break;
                     case "ZZZ":
-                        achievementResponse = await zzzGetAllEmpty();
+                        // achievementResponse = await zzzGetAllEmpty();
                         break;
                     default:
                         showError("未知游戏类型");
@@ -133,7 +131,7 @@ export const useAccountStore = defineStore(
                     type: type,
                     name: accountName,
                     inGameUid: inGameUid,
-                    achievements: achievementResponse.data.data,
+                    records: [],
                 }
 
                 // Push the account to the list

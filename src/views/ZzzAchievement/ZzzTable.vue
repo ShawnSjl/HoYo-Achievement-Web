@@ -3,11 +3,13 @@ import ZzzTableRow from "@/views/ZzzAchievement/ZzzTableRow.vue";
 import ZzzClassSelect from "@/views/ZzzAchievement/ZzzClassSelect.vue";
 import {useIsMobileStore} from "@/stores/isMobileStore";
 import CardZzzStatisticClass from "@/views/ZzzAchievement/CardZzzStatisticClass.vue";
+import {computed} from "vue";
+import {useZzzAchievementStore} from "@/stores/zzzAchievementsStore.js";
+import {zzzGetClassIdByName} from "@/utils/zzzAchievementClass.js";
 
 // 传入只读数据
 const props = defineProps({
   uuid: String,
-  sortedAchievements: Array,
   tableHeight: Number,
 })
 
@@ -15,7 +17,33 @@ const props = defineProps({
 const achievementClass = defineModel();
 
 // 使用Pinia作为本地缓存
+const achievementStore = useZzzAchievementStore();
 const isMobileStore = useIsMobileStore();
+
+// 根据类别筛选成就
+const filteredAchievements = computed(() => {
+  return achievementStore.achievements.filter(achievement => achievement.class_id === zzzGetClassIdByName(achievementClass.value))
+});
+
+// 根据条件排序
+const sortedAchievements = computed(() => {
+  if (achievementStore.isCompleteFirst) {
+    return [...filteredAchievements.value].sort((a, b) => {
+      const completeA = a.complete === 2 ? 1 : a.complete;
+      const completeB = b.complete === 2 ? 1 : b.complete;
+
+      // 1️⃣ 优先按 complete 状态
+      if (completeA !== completeB) {
+        return completeA - completeB;
+      }
+
+      // 2️⃣ 如果 complete 相同，按 id 升序排序
+      return a.id - b.id;
+    });
+  } else {
+    return filteredAchievements.value;
+  }
+});
 </script>
 
 <template>
@@ -30,7 +58,7 @@ const isMobileStore = useIsMobileStore();
   <el-scrollbar :height="props.tableHeight">
     <div class="zzz-card-table">
       <el-card
-          v-for="(row, index) in props.sortedAchievements"
+          v-for="(row, index) in sortedAchievements"
           :key="index"
           class="zzz-card-row"
           shadow="hover"
