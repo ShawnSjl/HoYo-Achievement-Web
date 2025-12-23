@@ -145,7 +145,7 @@ export const useZzzAchievementStore = defineStore(
                 await ensureAchievementData();
 
                 // Ignore complete status other than 1 and 0
-                if (complete !== 1 || complete !== 0) {
+                if (complete !== 1 && complete !== 0) {
                     showWarn("未知完成状态");
                     return;
                 }
