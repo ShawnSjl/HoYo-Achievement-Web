@@ -4,8 +4,8 @@ import {useSrAchievementStore} from "@/stores/srAchievementStore";
 import SrAchievementImg3 from "@/assets/sr-image/sr-achievement-level-3.png";
 import SrAchievementImg2 from "@/assets/sr-image/sr-achievement-level-2.png";
 import SrAchievementImg1 from "@/assets/sr-image/sr-achievement-level-1.png";
-import {branchAchievementCount, branchAchievementCountByLevel} from "@/utils/countBranchAchievement.js";
-import {completeAchievementCount, completeAchievementCountByLevel} from "@/utils/countCompleteAchievement.js";
+import {branchAchievementCountByLevel} from "@/utils/countBranchAchievement.js";
+import {completeAchievementCountByLevel} from "@/utils/countCompleteAchievement.js";
 
 // 使用Pinia作为本地缓存
 const achievementStore = useSrAchievementStore();
@@ -17,11 +17,10 @@ const props = defineProps({
 
 // 计算成就数量
 const totalNumber = computed(() => {
-  return achievementStore.achievements.length
-      - branchAchievementCount('SR');
+  return getLevel1Number.value + getLevel2Number.value + getLevel3Number.value;
 })
 const completeNumber = computed(() => {
-  return completeAchievementCount(props.uuid);
+  return getCompleteLevel1Number.value + getCompleteLevel2Number.value + getCompleteLevel3Number.value;
 })
 
 const getLevel1Number = computed(() => {

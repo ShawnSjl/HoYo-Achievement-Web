@@ -4,19 +4,6 @@ import {useZzzAchievementStore} from "@/stores/zzzAchievementsStore.js";
 import {showError} from "@/utils/notification.js";
 
 /**
- * Get the total number of complete records.
- * @param uuid
- * @returns {number}
- */
-export const completeAchievementCount = (uuid) => {
-    // Get records by given uuid
-    const accountStore = useAccountStore();
-    const account = accountStore.getAccounts().find(item => item.uuid === uuid);
-
-    return account.records.filter(record => record.complete === 1).length;
-}
-
-/**
  * Get the total number of complete records in a given level.
  * @param type
  * @param uuid

@@ -9,8 +9,8 @@ import ZzzAchievementImg3 from '@/assets/zzz-image/zzz-achievement-level-3.png';
 import {useAccountStore} from "@/stores/accountStore.js";
 import {useServerInfoStore} from "@/stores/serverInfoStore.js";
 import ButtonEditAccount from "@/views/Home/ButtonEditAccount.vue";
-import {branchAchievementCount, branchAchievementCountByLevel} from "@/utils/countBranchAchievement.js";
-import {completeAchievementCount, completeAchievementCountByLevel} from "@/utils/countCompleteAchievement.js";
+import {branchAchievementCountByLevel} from "@/utils/countBranchAchievement.js";
+import {completeAchievementCountByLevel} from "@/utils/countCompleteAchievement.js";
 
 // 使用Pinia作为本地缓存
 const accountStore = useAccountStore();
@@ -32,11 +32,10 @@ const account = accounts.value.find(account => account.uuid === props.uuid);
 
 // 计算成就数量
 const getTotalNumber = computed(() => {
-  return achievementStore.achievements.length
-      - branchAchievementCount('ZZZ');
+  return getLevel1Number.value + getLevel2Number.value + getLevel3Number.value;
 })
 const getTotalCompleteNumber = computed(() => {
-  return completeAchievementCount(props.uuid);
+  return getCompleteLevel1Number.value + getCompleteLevel2Number.value + getCompleteLevel3Number.value;
 })
 
 const getLevel1Number = computed(() => {

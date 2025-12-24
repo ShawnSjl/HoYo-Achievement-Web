@@ -3,34 +3,6 @@ import {useSrAchievementStore} from "@/stores/srAchievementStore.js";
 import {useZzzAchievementStore} from "@/stores/zzzAchievementsStore.js";
 
 /**
- * Get the total number of additional achievements in all branches.
- * @param type 'SR' or 'ZZZ'
- * @returns number
- */
-export const branchAchievementCount = (type) => {
-    let branches;
-    switch (type) {
-        case 'SR':
-            const srStore = useSrAchievementStore();
-            branches = srStore.branches;
-            break;
-        case 'ZZZ':
-            const zzzStore = useZzzAchievementStore();
-            branches = zzzStore.branches;
-            break;
-        default:
-            showError("未知游戏类型");
-            return 0;
-    }
-
-    let count = 0;
-    for (const branch of branches) {
-        count = count + branch.achievement_id.length - 1;
-    }
-    return count;
-}
-
-/**
  * Get the total number of additional achievements in all branches with the specified level.
  * @param type 'SR' or 'ZZZ'
  * @param level

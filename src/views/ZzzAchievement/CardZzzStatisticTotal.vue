@@ -5,8 +5,8 @@ import ZzzAchievementImg1 from '@/assets/zzz-image/zzz-achievement-level-1.png';
 import ZzzAchievementImg2 from '@/assets/zzz-image/zzz-achievement-level-2.png';
 import ZzzAchievementImg3 from '@/assets/zzz-image/zzz-achievement-level-3.png';
 import {useServerInfoStore} from "@/stores/serverInfoStore.js";
-import {branchAchievementCount, branchAchievementCountByLevel} from "@/utils/countBranchAchievement.js";
-import {completeAchievementCount, completeAchievementCountByLevel} from "@/utils/countCompleteAchievement.js";
+import {branchAchievementCountByLevel} from "@/utils/countBranchAchievement.js";
+import {completeAchievementCountByLevel} from "@/utils/countCompleteAchievement.js";
 
 // 使用Pinia作为本地缓存
 const achievementStore = useZzzAchievementStore();
@@ -19,11 +19,10 @@ const props = defineProps({
 
 // 计算成就数量
 const getTotalNumber = computed(() => {
-  return achievementStore.achievements.length
-      - branchAchievementCount('ZZZ');
+  return getLevel1Number.value + getLevel2Number.value + getLevel3Number.value;
 })
 const getTotalCompleteNumber = computed(() => {
-  return completeAchievementCount(props.uuid);
+  return getCompleteLevel1Number.value + getCompleteLevel2Number.value + getCompleteLevel3Number.value;
 })
 
 const getLevel1Number = computed(() => {

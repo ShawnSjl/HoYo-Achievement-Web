@@ -5,11 +5,8 @@ import {zzzGetClassIdByName} from "@/utils/zzzAchievementClass";
 import ZzzAchievementImg1 from '@/assets/zzz-image/zzz-achievement-level-1.png';
 import ZzzAchievementImg2 from '@/assets/zzz-image/zzz-achievement-level-2.png';
 import ZzzAchievementImg3 from '@/assets/zzz-image/zzz-achievement-level-3.png';
-import {branchAchievementCountByClass, branchAchievementCountByClassAndLevel} from "@/utils/countBranchAchievement.js";
-import {
-  completeAchievementCountByClass,
-  completeAchievementCountByClassAndLevel
-} from "@/utils/countCompleteAchievement.js";
+import {branchAchievementCountByClassAndLevel} from "@/utils/countBranchAchievement.js";
+import {completeAchievementCountByClassAndLevel} from "@/utils/countCompleteAchievement.js";
 
 // 使用Pinia作为本地缓存
 const achievementStore = useZzzAchievementStore();
@@ -27,11 +24,10 @@ const classId = computed(() => {
 
 // 计算成就数量
 const totalNumber = computed(() => {
-  return achievementStore.achievements.filter(achievement => achievement.class_id === classId.value).length
-      - branchAchievementCountByClass('ZZZ', classId.value);
+  return getLevel1Number.value + getLevel2Number.value + getLevel3Number.value;
 })
 const completeNumber = computed(() => {
-  return completeAchievementCountByClass('ZZZ', props.uuid, props.achievementClass);
+  return getCompleteLevel1Number.value + getCompleteLevel2Number.value + getCompleteLevel3Number.value;
 })
 
 const getLevel1Number = computed(() => {
