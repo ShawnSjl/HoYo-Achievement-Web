@@ -14,11 +14,7 @@ const achievementStore = useSrAchievementStore();
 const props = defineProps({
   uuid: String,
   achievement: Object,
-})
-
-// 获取成就完成状态
-const achievementStatus = computed(() => {
-  return achievementStore.getAchievementStatus(props.uuid, props.achievement.achievement_id);
+  status: Number,
 })
 
 // 获取成就图片
@@ -43,7 +39,7 @@ const achievementReward = computed(() => {
 
 // 获取按钮状态
 const completeButtonMsg = computed(() => {
-  switch (achievementStatus.value) {
+  switch (props.status) {
     case 0:
       return "未完成";
     case 1:
@@ -55,18 +51,18 @@ const completeButtonMsg = computed(() => {
   }
 })
 const isComplete = computed(() => {
-  return achievementStatus.value === 1
+  return props.status === 1
 });
 const disableButton = computed(() => {
-  return achievementStatus.value === 2
+  return props.status === 2
 });
 
 const handleComplete = async () => {
-  if (achievementStatus.value === 2) {
+  if (props.status === 2) {
     showInfo('该分支成就已完成，不可更改')
     return;
   }
-  const newState = achievementStatus.value === 1 ? 0 : 1;
+  const newState = props.status === 1 ? 0 : 1;
   await achievementStore.completeAchievement(props.uuid, props.achievement.achievement_id, newState);
 }
 </script>

@@ -6,6 +6,7 @@ import CardZzzStatisticClass from "@/views/ZzzAchievement/CardZzzStatisticClass.
 import {computed} from "vue";
 import {useZzzAchievementStore} from "@/stores/zzzAchievementsStore.js";
 import {zzzGetClassIdByName} from "@/utils/zzzAchievementClass.js";
+import {useAccountStore} from "@/stores/accountStore.js";
 
 // 传入只读数据
 const props = defineProps({
@@ -17,8 +18,34 @@ const props = defineProps({
 const achievementClass = defineModel();
 
 // 使用Pinia作为本地缓存
+const accountStore = useAccountStore();
 const achievementStore = useZzzAchievementStore();
 const isMobileStore = useIsMobileStore();
+
+// 获取账户列表
+const accounts = computed(() => {
+  return accountStore.getAccounts();
+})
+
+// 获取账号成就
+const account = computed(() =>
+    accounts.value.find(account => account.uuid === props.uuid)
+);
+
+// 计算records的map
+const recordMap = computed(() => {
+  const map = new Map();
+
+  account.value.records.forEach(r => {
+    map.set(r.achievement_id, r);
+  })
+
+  return map;
+})
+
+function getProgress(achievementId) {
+  return recordMap.value.get(achievementId)?.complete || 0;
+}
 
 // 根据类别筛选成就
 const filteredAchievements = computed(() => {
@@ -29,8 +56,8 @@ const filteredAchievements = computed(() => {
 const sortedAchievements = computed(() => {
   if (achievementStore.isCompleteFirst) {
     return [...filteredAchievements.value].sort((a, b) => {
-      const statusA = achievementStore.getAchievementStatus(props.uuid, a.achievement_id);
-      const statusB = achievementStore.getAchievementStatus(props.uuid, b.achievement_id);
+      const statusA = getProgress(a.achievement_id);
+      const statusB = getProgress(b.achievement_id);
 
       const completeA = statusA === 2 ? 1 : statusA;
       const completeB = statusB === 2 ? 1 : statusB;
@@ -66,7 +93,7 @@ const sortedAchievements = computed(() => {
           class="zzz-card-row"
           shadow="hover"
       >
-        <zzz-table-row :achievement="achievement" :uuid="props.uuid"/>
+        <zzz-table-row :achievement="achievement" :status="getProgress(achievement.achievement_id)" :uuid="props.uuid"/>
       </el-card>
     </div>
   </el-scrollbar>

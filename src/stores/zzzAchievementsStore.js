@@ -108,30 +108,6 @@ export const useZzzAchievementStore = defineStore(
         }
 
         /**
-         * Get the complete status of the target achievement.
-         * @param uuid
-         * @param achievementId
-         * @returns {number|*|number}
-         */
-        function getAchievementStatus(uuid, achievementId) {
-            // Check if the target achievement exists in the achievements list
-            const targetAchievement = achievements.value.find(item => item.achievement_id === achievementId);
-            if (!targetAchievement) {
-                showWarn("未知成就ID");
-                return 0;
-            }
-
-            // Get records by given uuid
-            const accountStore = useAccountStore();
-            const account = accountStore.getAccounts().find(item => item.uuid === uuid);
-            const records = account.records;
-
-            // Get the target record from the record list
-            const targetRecord = records.find(record => record.achievement_id === achievementId);
-            return targetRecord?.complete ?? 0;
-        }
-
-        /**
          * Update achievement status in the backend and local data.
          * @param uuid
          * @param achievementId
@@ -386,7 +362,6 @@ export const useZzzAchievementStore = defineStore(
             ensureAchievementData,
             fetchBranches,
             ensureBranchData,
-            getAchievementStatus,
             completeAchievement,
             getBranchAchievementsNumber,
             getBranchAchievementNumberByLevel,
