@@ -2,7 +2,7 @@
 import {useZzzAchievementStore} from "@/stores/zzzAchievementsStore";
 import {categories, zzzGetClassByCategory, zzzGetClassIdByName} from "@/utils/zzzAchievementClass"
 import {computed} from "vue";
-import {branchAchievementCountByClass} from "@/utils/achievementCount.js";
+import {branchAchievementCountByClass} from "@/utils/countBranchAchievement.js";
 
 // 传入只读数据
 const props = defineProps({

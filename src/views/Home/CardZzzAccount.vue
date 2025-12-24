@@ -9,7 +9,7 @@ import ZzzAchievementImg3 from '@/assets/zzz-image/zzz-achievement-level-3.png';
 import {useAccountStore} from "@/stores/accountStore.js";
 import {useServerInfoStore} from "@/stores/serverInfoStore.js";
 import ButtonEditAccount from "@/views/Home/ButtonEditAccount.vue";
-import {branchAchievementCount, branchAchievementCountByLevel} from "@/utils/achievementCount.js";
+import {branchAchievementCount, branchAchievementCountByLevel} from "@/utils/countBranchAchievement.js";
 
 // 使用Pinia作为本地缓存
 const accountStore = useAccountStore();

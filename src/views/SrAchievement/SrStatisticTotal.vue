@@ -5,7 +5,7 @@ import SrAchievementImg3 from "@/assets/sr-image/sr-achievement-level-3.png";
 import SrAchievementImg2 from "@/assets/sr-image/sr-achievement-level-2.png";
 import SrAchievementImg1 from "@/assets/sr-image/sr-achievement-level-1.png";
 import {useAccountStore} from "@/stores/accountStore.js";
-import {branchAchievementCount, branchAchievementCountByLevel} from "@/utils/achievementCount.js";
+import {branchAchievementCount, branchAchievementCountByLevel} from "@/utils/countBranchAchievement.js";
 
 // 使用Pinia作为本地缓存
 const accountStore = useAccountStore();

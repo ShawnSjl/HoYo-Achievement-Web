@@ -5,7 +5,7 @@ import {zzzGetClassIdByName} from "@/utils/zzzAchievementClass";
 import ZzzAchievementImg1 from '@/assets/zzz-image/zzz-achievement-level-1.png';
 import ZzzAchievementImg2 from '@/assets/zzz-image/zzz-achievement-level-2.png';
 import ZzzAchievementImg3 from '@/assets/zzz-image/zzz-achievement-level-3.png';
-import {branchAchievementCountByClass, branchAchievementCountByClassAndLevel} from "@/utils/achievementCount.js";
+import {branchAchievementCountByClass, branchAchievementCountByClassAndLevel} from "@/utils/countBranchAchievement.js";
 
 // 使用Pinia作为本地缓存
 const achievementStore = useZzzAchievementStore();

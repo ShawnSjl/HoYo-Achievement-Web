@@ -2,7 +2,7 @@
 import {computed} from "vue";
 import {srClasses} from "@/utils/srAchievementClass";
 import {useSrAchievementStore} from "@/stores/srAchievementStore";
-import {branchAchievementCountByClass} from "@/utils/achievementCount.js";
+import {branchAchievementCountByClass} from "@/utils/countBranchAchievement.js";
 
 // 传入只读数据
 const props = defineProps({
