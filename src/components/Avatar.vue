@@ -21,6 +21,8 @@ const avatarSize = computed(() => {
 const avatarTrigger = computed(() => {
   return isMobileStore.isMobile ? 'click' : 'hover'
 })
+
+// TODO 显示账号名称和uid
 </script>
 
 <template>

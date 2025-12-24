@@ -45,6 +45,8 @@ const achievementClass = ref(storyClasses[0]);  // 小类别
 
 /* 根据hash定位内容 */
 const syncStateFromHash = (hashStr) => {
+  // FIXME
+
   // 1. 去掉 # 并解码
   const hash = decodeURIComponent(hashStr.replace(/^#/, ''));
 
