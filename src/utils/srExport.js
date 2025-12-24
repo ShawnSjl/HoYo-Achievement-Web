@@ -1,17 +1,18 @@
 import ExcelJS from 'exceljs';
-import { saveAs } from 'file-saver';
-import {useSrAchievementStore} from "@/stores/srAchievementStore";
+import {saveAs} from 'file-saver';
 import {showError} from "@/utils/notification";
+import {useAccountStore} from "@/stores/accountStore.js";
+import {useSrAchievementStore} from "@/stores/srAchievementStore";
 
-export const srExport = async () => {
+export const srExport = async (uuid) => {
     try {
         const workbook = new ExcelJS.Workbook();
         const worksheet = workbook.addWorksheet('SR Achievements');
 
         // 表头
-        const columns = [
+        worksheet.columns = [
             {header: '成就ID', key: 'achievement_id', width: 15},
-            {header: '类别', key: 'class', width: 10},
+            {header: '类别', key: 'class_name', width: 10},
             {header: '名称', key: 'name', width: 20},
             {header: '描述', key: 'description', width: 40},
             {header: '奖励等级', key: 'reward_level', width: 15},
@@ -19,11 +20,25 @@ export const srExport = async () => {
             {header: '状态', key: 'complete', width: 10}
         ];
 
-        worksheet.columns = columns;
-
         // 获取数据
         const achievementStore = useSrAchievementStore();
-        const json_data = achievementStore.achievements
+        const accountStore = useAccountStore();
+        const account = accountStore.getAccounts().find(account => account.uuid === uuid);
+
+        // 处理数据
+        const recordMap = new Map();
+        account.records.forEach(record => {
+            recordMap.set(record.achievement_id, record.complete)
+        });
+
+        const json_data = achievementStore.achievements.map(achievement => {
+            const status = recordMap.get(achievement.achievement_id) ?? 0;
+
+            return {
+                ...achievement,
+                complete: status
+            };
+        })
 
         // 添加数据行
         json_data.forEach(item => {

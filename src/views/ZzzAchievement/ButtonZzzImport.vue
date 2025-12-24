@@ -88,17 +88,27 @@ async function handleFile(file) {
     // 更新记录
     for (const item of json) {
       const complete = Number(item.complete) === 1 || item.complete === '已完成' ? 1 : 0;
-      const target = account.value.achievements.find(achievement => achievement.achievement_id === item.achievement_id);
-      if (!target) {
+
+      // 检查成就是否存在
+      const targetAchievement = achievementStore.achievementMap.get(item.achievement_id);
+      if (!targetAchievement) {
         showError('未知成就ID', item.achievement_id)
         continue;
       }
+
+      // 获取本地记录
+      const records = account.value.records;
+
+      // 查找目标记录
+      const targetRecord = records.find(record => record.achievement_id === item.achievement_id);
+
       // 忽略未更改数据
-      if (target.complete === complete) {
+      if (targetRecord && targetRecord.complete === complete) {
         continue;
       }
+
       // 防止被标记为未完成的分支成就清除了加载过的成就的状态
-      if (target.complete === 2 && complete === 0) {
+      if (targetRecord.complete === 2 && complete === 0) {
         continue;
       }
       await achievementStore.completeAchievement(props.uuid, item.achievement_id, complete);

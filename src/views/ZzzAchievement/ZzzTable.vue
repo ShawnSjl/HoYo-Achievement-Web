@@ -3,11 +3,14 @@ import ZzzTableRow from "@/views/ZzzAchievement/ZzzTableRow.vue";
 import ZzzClassSelect from "@/views/ZzzAchievement/ZzzClassSelect.vue";
 import {useIsMobileStore} from "@/stores/isMobileStore";
 import CardZzzStatisticClass from "@/views/ZzzAchievement/CardZzzStatisticClass.vue";
+import {computed} from "vue";
+import {useZzzAchievementStore} from "@/stores/zzzAchievementsStore.js";
+import {zzzGetClassIdByName} from "@/utils/zzzAchievementClass.js";
+import {useAccountStore} from "@/stores/accountStore.js";
 
 // 传入只读数据
 const props = defineProps({
   uuid: String,
-  sortedAchievements: Array,
   tableHeight: Number,
 })
 
@@ -15,7 +18,62 @@ const props = defineProps({
 const achievementClass = defineModel();
 
 // 使用Pinia作为本地缓存
+const accountStore = useAccountStore();
+const achievementStore = useZzzAchievementStore();
 const isMobileStore = useIsMobileStore();
+
+// 获取账户列表
+const accounts = computed(() => {
+  return accountStore.getAccounts();
+})
+
+// 获取账号成就
+const account = computed(() =>
+    accounts.value.find(account => account.uuid === props.uuid)
+);
+
+// 计算records的map
+const recordMap = computed(() => {
+  const map = new Map();
+
+  account.value.records.forEach(r => {
+    map.set(r.achievement_id, r);
+  })
+
+  return map;
+})
+
+function getProgress(achievementId) {
+  return recordMap.value.get(achievementId)?.complete || 0;
+}
+
+// 根据类别筛选成就
+const filteredAchievements = computed(() => {
+  return achievementStore.achievements.filter(achievement => achievement.class_id === zzzGetClassIdByName(achievementClass.value))
+});
+
+// 根据条件排序
+const sortedAchievements = computed(() => {
+  if (achievementStore.isCompleteFirst) {
+    return [...filteredAchievements.value].sort((a, b) => {
+      const statusA = getProgress(a.achievement_id);
+      const statusB = getProgress(b.achievement_id);
+
+      const completeA = statusA === 2 ? 1 : statusA;
+      const completeB = statusB === 2 ? 1 : statusB;
+
+      // 1️⃣ 优先按 complete 状态
+      if (completeA !== completeB) {
+        return completeA - completeB;
+      }
+
+      // 2️⃣ 如果 complete 相同，按 id 升序排序
+      return a.id - b.id;
+    });
+  } else {
+    return filteredAchievements.value;
+  }
+});
 </script>
 
 <template>
@@ -30,12 +88,12 @@ const isMobileStore = useIsMobileStore();
   <el-scrollbar :height="props.tableHeight">
     <div class="zzz-card-table">
       <el-card
-          v-for="(row, index) in props.sortedAchievements"
-          :key="index"
+          v-for="achievement in sortedAchievements"
+          :key="achievement.achievement_id"
           class="zzz-card-row"
           shadow="hover"
       >
-        <zzz-table-row :achievement="row" :uuid="props.uuid"/>
+        <zzz-table-row :achievement="achievement" :status="getProgress(achievement.achievement_id)" :uuid="props.uuid"/>
       </el-card>
     </div>
   </el-scrollbar>

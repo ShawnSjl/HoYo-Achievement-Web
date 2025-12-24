@@ -2,8 +2,6 @@
 import {computed, ref} from 'vue';
 import {useZzzAchievementStore} from "@/stores/zzzAchievementsStore";
 import {Check, Close, Warning} from '@element-plus/icons-vue';
-import {ElMessageBox} from "element-plus";
-import {showError, showSuccess} from "@/utils/notification";
 import {useIsMobileStore} from "@/stores/isMobileStore";
 import {zzzExport} from "@/utils/zzzExport";
 import ButtonZzzImport from "@/views/ZzzAchievement/ButtonZzzImport.vue";
@@ -35,23 +33,10 @@ const handleClose = () => {
   dialogVisible.value = false;
 }
 
-const openWarn = () => {
-  ElMessageBox.confirm(
-      '强制更新会清理本地缓存数据，确认是否继续？',
-      '警告',
-      {
-        confirmButtonText: '确认',
-        cancelButtonText: '取消',
-        type: 'warning'
-      }
-  )
-      .then(() => {
-        achievementStore.fetchAchievements()
-        showSuccess('强制更新成功')
-      })
-      .catch(() => {
-        showError('强制更新失败')
-      })
+// 处理强制刷新
+const handleFetch = async () => {
+  await achievementStore.fetchAchievements();
+  await achievementStore.fetchBranches();
 }
 </script>
 
@@ -106,8 +91,8 @@ const openWarn = () => {
         <el-button dark round type="primary" @click="zzzExport(props.uuid)">导出成就表格</el-button>
       </div>
       <div>
-        <p>强制更新数据:</p>
-        <el-button color="red" dark round @click="openWarn">更新</el-button>
+        <p>强制更新本地数据:</p>
+        <el-button dark round type="info" @click="handleFetch">更新</el-button>
       </div>
     </el-dialog>
   </div>

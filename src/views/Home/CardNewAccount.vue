@@ -127,6 +127,7 @@ const handleAction = async () => {
       <el-dialog
           v-model="dialogVisible"
           :before-close="handleClose"
+          class="add-account-dialog"
           title="添加游戏账户"
       >
         <div>

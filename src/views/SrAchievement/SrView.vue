@@ -1,6 +1,5 @@
 <script setup>
 import {useUserStore} from "@/stores/userStore.js";
-import {useSrAchievementStore} from "@/stores/srAchievementStore";
 import {useIsMobileStore} from "@/stores/isMobileStore";
 import {computed, nextTick, onBeforeUnmount, onMounted, ref, watch} from "vue";
 import {srClasses} from "@/utils/srAchievementClass";
@@ -8,92 +7,71 @@ import SrTable from "@/views/SrAchievement/SrTable.vue";
 import SrHeader from "@/views/SrAchievement/SrHeader.vue";
 import SrAside from "@/views/SrAchievement/SrAside.vue";
 import SrStatisticClass from "@/views/SrAchievement/SrStatisticClass.vue";
+import {useRoute} from "vue-router";
+import router from "@/router/index.js";
+import {useSrAchievementStore} from "@/stores/srAchievementStore.js";
+
+// 创建Route
+const route = useRoute();
 
 // 使用Pinia作为本地缓存
-const authStore = useUserStore()
-const srAchievementStore = useSrAchievementStore()
-const isMobileStore = useIsMobileStore()
+const userStore = useUserStore();
+const achievementStore = useSrAchievementStore();
+const isMobileStore = useIsMobileStore();
+
+// 当前账号UUID
+const currentUUID = route.meta.uuid;
+
+// 如果用户变更，返回主页
+const userName = computed(() => userStore.getUserName());
+watch(userName, (_) => {
+  router.push({
+    path: '/',
+  })
+});
+
+// 同步数据
+const fetchRemoteData = async () => {
+  // Ensure SR's data are loaded
+  await achievementStore.ensureAchievementData();
+  await achievementStore.ensureBranchData();
+};
+onMounted(() => {
+  fetchRemoteData();
+});
 
 /* 筛选和排序成就 */
 const achievementClass = ref(srClasses[0])
 
-// 根据类别筛选成就
-const filteredAchievements = computed(() => {
-  return srAchievementStore.achievements.filter(achievement => achievement.class === achievementClass.value)
-})
-
-// 根据条件排序
-const sortedAchievements = computed(() => {
-  if (srAchievementStore.isCompleteFirst) {
-    return [...filteredAchievements.value].sort((a, b) => {
-      const completeA = a.complete === 2 ? 1 : a.complete;
-      const completeB = b.complete === 2 ? 1 : b.complete;
-
-      // 1️⃣ 优先按 complete 状态
-      if (completeA !== completeB) {
-        return completeA - completeB;
-      }
-
-      // 2️⃣ complete 相同，按 id 升序
-      return a.id - b.id;
-    });
-  } else {
-    return filteredAchievements.value;
-  }
-})
-
 /* 根据hash定位内容 */
-function syncWithHash() {
-  const hash = decodeURIComponent(window.location.hash.slice(1));
-  if (hash && srClasses.includes(hash)) {
-    achievementClass.value = hash;
-  }
-}
+const syncStateFromHash = (hashStr) => {
+  // 1. 去掉 # 并解码
+  const hash = decodeURIComponent(hashStr.replace(/^#/, ''));
 
-onMounted(() => {
-  syncWithHash()
-});
+  if (!hash) return;
 
+  // 2. 如果当前状态已经和 URL 一致，什么都不做（防止死循环）
+  if (achievementClass.value === hash) return;
+
+  // 3. 同步选中项
+  achievementClass.value = hash;
+};
+
+watch(
+    () => route.hash,
+    (newHash) => {
+      syncStateFromHash(newHash);
+    },
+    {immediate: true}
+);
 watch(achievementClass, (newVal) => {
-  window.location.hash = encodeURIComponent(newVal);
-});
+  // 1. 如果新值为空，或者和当前 URL 一样，就不推
+  if (!newVal || route.hash === `#${newVal}`) return;
 
-onMounted(() => {
-  window.addEventListener('hashchange', syncWithHash);
-});
-
-onBeforeUnmount(() => {
-  window.removeEventListener('hashchange', syncWithHash);
-});
-
-/* 根据条件更新/获取成就数据 */
-const loading = ref(true);
-const errorMessage = ref('');
-
-const fetchData = async () => {
-  try {
-    loading.value = true;
-    await srAchievementStore.updateAchievements();
-    errorMessage.value = "";
-  } catch (e) {
-    errorMessage.value = 'Load data failed';
-  } finally {
-    loading.value = false;
-  }
-}
-
-onMounted(() => {
-  fetchData();
-});
-
-watch(achievementClass, async () => {
-  await fetchData();
-});
-
-const userName = computed(() => authStore.getUserName());
-watch(userName, async (newUserName) => {
-  console.log(newUserName);
-  await fetchData();
+  router.replace({
+    query: {...route.query},
+    hash: `#${newVal}`
+  });
 });
 
 /* 设置成就列表高度 */
@@ -115,7 +93,6 @@ onMounted(async () => {
   calculateTableHeight()
   window.addEventListener('resize', calculateTableHeight)
 });
-
 onBeforeUnmount(() => {
   window.removeEventListener('resize', calculateTableHeight)
 })
@@ -131,7 +108,6 @@ onMounted(() => {
   calculateAsideHeight();
   window.addEventListener('resize', calculateAsideHeight);
 })
-
 onBeforeUnmount(() => {
   window.removeEventListener('resize', calculateAsideHeight);
 })
@@ -142,25 +118,27 @@ onBeforeUnmount(() => {
     <div class="sr-content">
       <el-container style="height: 100vh">
         <el-header class="sr-container-header">
-          <sr-header />
+          <sr-header :uuid="currentUUID"/>
         </el-header>
 
         <el-container>
-          <el-aside v-if="!isMobileStore.isMobile" class="sr-container-aside" :style="{ height: asideHeight }">
-            <sr-aside v-model="achievementClass" />
+          <el-aside v-if="!isMobileStore.isMobile"
+                    :style="{ height: asideHeight }"
+                    class="sr-container-aside">
+            <sr-aside v-model="achievementClass"
+                      :uuid="currentUUID"/>
           </el-aside>
           <el-main class="sr-container-main">
-            <sr-aside v-if="isMobileStore.isMobile" v-model="achievementClass" />
+            <sr-aside v-if="isMobileStore.isMobile" v-model="achievementClass"/>
             <sr-statistic-class
-                      :achievementClass="achievementClass"
-                      style="margin-left: 10px" />
-            <el-divider />
-            <p v-if="loading">加载中...</p>
-            <p v-else-if="errorMessage">{{ errorMessage }}</p>
-            <div v-else >
+                :achievementClass="achievementClass"
+                :uuid="currentUUID"
+                style="margin-left: 10px"/>
+            <el-divider/>
+            <div>
               <sr-table v-model="achievementClass"
-                        :sortedAchievements="sortedAchievements"
-                        :table-height="tableHeight" />
+                        :table-height="tableHeight"
+                        :uuid="currentUUID"/>
             </div>
           </el-main>
         </el-container>

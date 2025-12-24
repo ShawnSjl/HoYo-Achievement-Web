@@ -4,11 +4,11 @@ import {useZzzAchievementStore} from "@/stores/zzzAchievementsStore";
 import ZzzAchievementImg1 from '@/assets/zzz-image/zzz-achievement-level-1.png';
 import ZzzAchievementImg2 from '@/assets/zzz-image/zzz-achievement-level-2.png';
 import ZzzAchievementImg3 from '@/assets/zzz-image/zzz-achievement-level-3.png';
-import {useAccountStore} from "@/stores/accountStore.js";
 import {useServerInfoStore} from "@/stores/serverInfoStore.js";
+import {branchAchievementCount, branchAchievementCountByLevel} from "@/utils/countBranchAchievement.js";
+import {completeAchievementCount, completeAchievementCountByLevel} from "@/utils/countCompleteAchievement.js";
 
 // 使用Pinia作为本地缓存
-const accountStore = useAccountStore();
 const achievementStore = useZzzAchievementStore();
 const serverInfoStore = useServerInfoStore();
 
@@ -17,54 +17,38 @@ const props = defineProps({
   uuid: String,
 });
 
-// 获取账户列表
-const accounts = computed(() => {
-  return accountStore.getAccounts();
-})
-
-// 获取账号成就
-const account = computed(() =>
-    accounts.value.find(account => account.uuid === props.uuid)
-);
-
 // 计算成就数量
 const getTotalNumber = computed(() => {
-  return account.value.achievements.length - achievementStore.getBranchAchievementsNumber();
+  return achievementStore.achievements.length
+      - branchAchievementCount('ZZZ');
 })
 const getTotalCompleteNumber = computed(() => {
-  return account.value.achievements.filter(achievement => achievement.complete === 1).length;
+  return completeAchievementCount(props.uuid);
 })
 
 const getLevel1Number = computed(() => {
-  return account.value.achievements.filter(achievement => achievement.reward_level === 1).length
-      - achievementStore.getBranchAchievementNumberByLevel(props.uuid, 1);
+  return achievementStore.achievements.filter(achievement => achievement.reward_level === 1).length
+      - branchAchievementCountByLevel('ZZZ', 1);
 })
 const getCompleteLevel1Number = computed(() => {
-  return account.value.achievements.filter(achievement => achievement.reward_level === 1 &&
-      achievement.complete === 1
-  ).length;
+  return completeAchievementCountByLevel('ZZZ', props.uuid, 1);
 })
 
 const getLevel2Number = computed(() => {
-  return account.value.achievements.filter(achievement => achievement.reward_level === 2).length
-      - achievementStore.getBranchAchievementNumberByLevel(props.uuid, 2);
+  return achievementStore.achievements.filter(achievement => achievement.reward_level === 2).length
+      - branchAchievementCountByLevel('ZZZ', 2);
 })
 const getCompleteLevel2Number = computed(() => {
-  return account.value.achievements.filter(achievement => achievement.reward_level === 2 &&
-      achievement.complete === 1
-  ).length;
+  return completeAchievementCountByLevel('ZZZ', props.uuid, 2);
 })
 
 const getLevel3Number = computed(() => {
-  return account.value.achievements.filter(achievement => achievement.reward_level === 3).length
-      - achievementStore.getBranchAchievementNumberByLevel(props.uuid, 3);
+  return achievementStore.achievements.filter(achievement => achievement.reward_level === 3).length
+      - branchAchievementCountByLevel('ZZZ', 3);
 })
 const getCompleteLevel3Number = computed(() => {
-  return account.value.achievements.filter(achievement => achievement.reward_level === 3 &&
-      achievement.complete === 1
-  ).length;
+  return completeAchievementCountByLevel('ZZZ', props.uuid, 3);
 })
-
 </script>
 
 <template>

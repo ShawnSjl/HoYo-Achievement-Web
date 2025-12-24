@@ -5,7 +5,7 @@ import {showError, showInfo, showSuccess} from "@/utils/notification.js";
 import {useAccountStore} from "@/stores/accountStore.js";
 
 export const useUserStore = defineStore(
-    "user",
+    "userStore",
     () => {
         const token = ref('');
         const user = ref('');

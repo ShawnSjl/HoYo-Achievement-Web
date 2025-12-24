@@ -2,6 +2,7 @@ import ExcelJS from 'exceljs';
 import {saveAs} from 'file-saver';
 import {showError} from "@/utils/notification";
 import {useAccountStore} from "@/stores/accountStore.js";
+import {useZzzAchievementStore} from "@/stores/zzzAchievementsStore.js";
 
 export const zzzExport = async (uuid) => {
     try {
@@ -20,9 +21,24 @@ export const zzzExport = async (uuid) => {
         ];
 
         // 获取数据
+        const achievementStore = useZzzAchievementStore();
         const accountStore = useAccountStore();
         const account = accountStore.getAccounts().find(account => account.uuid === uuid);
-        const json_data = account.achievements;
+
+        // 处理数据
+        const recordMap = new Map();
+        account.records.forEach(record => {
+            recordMap.set(record.achievement_id, record.complete)
+        });
+
+        const json_data = achievementStore.achievements.map(achievement => {
+            const status = recordMap.get(achievement.achievement_id) ?? 0;
+
+            return {
+                ...achievement,
+                complete: status
+            };
+        })
 
         // 添加数据行
         json_data.forEach(item => {

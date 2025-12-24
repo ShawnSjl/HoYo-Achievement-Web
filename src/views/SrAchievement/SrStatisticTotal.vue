@@ -4,46 +4,52 @@ import {useSrAchievementStore} from "@/stores/srAchievementStore";
 import SrAchievementImg3 from "@/assets/sr-image/sr-achievement-level-3.png";
 import SrAchievementImg2 from "@/assets/sr-image/sr-achievement-level-2.png";
 import SrAchievementImg1 from "@/assets/sr-image/sr-achievement-level-1.png";
+import {branchAchievementCount, branchAchievementCountByLevel} from "@/utils/countBranchAchievement.js";
+import {completeAchievementCount, completeAchievementCountByLevel} from "@/utils/countCompleteAchievement.js";
 
 // 使用Pinia作为本地缓存
-const achievementStore = useSrAchievementStore()
+const achievementStore = useSrAchievementStore();
 
+// 传入只读数据
+const props = defineProps({
+  uuid: String,
+});
+
+// 计算成就数量
 const totalNumber = computed(() => {
   return achievementStore.achievements.length
-      - achievementStore.getBranchAchievementsNumber();
+      - branchAchievementCount('SR');
 })
 const completeNumber = computed(() => {
-  return achievementStore.achievements.filter(achievement => achievement.complete === 1).length;
+  return completeAchievementCount(props.uuid);
 })
 
 const getLevel1Number = computed(() => {
   return achievementStore.achievements.filter(achievement => achievement.reward_level === 1).length
-      - achievementStore.getBranchAchievementNumberByLevel(1);
+      - branchAchievementCountByLevel('SR', 1);
 })
 const getCompleteLevel1Number = computed(() => {
-  return achievementStore.achievements.filter(achievement => achievement.reward_level === 1
-      && achievement.complete === 1).length;
+  return completeAchievementCountByLevel('SR', props.uuid, 1);
 })
 
 const getLevel2Number = computed(() => {
   return achievementStore.achievements.filter(achievement => achievement.reward_level === 2).length
-      - achievementStore.getBranchAchievementNumberByLevel(2);
+      - branchAchievementCountByLevel('SR', 2);
 })
 const getCompleteLevel2Number = computed(() => {
-  return achievementStore.achievements.filter(achievement => achievement.reward_level === 2
-      && achievement.complete === 1).length;
+  return completeAchievementCountByLevel('SR', props.uuid, 2);
 })
 
 const getLevel3Number = computed(() => {
   return achievementStore.achievements.filter(achievement => achievement.reward_level === 3).length
-      - achievementStore.getBranchAchievementNumberByLevel(3);
+      - branchAchievementCountByLevel('SR', 3);
 })
 const getCompleteLevel3Number = computed(() => {
-  return achievementStore.achievements.filter(achievement => achievement.reward_level === 3
-      && achievement.complete === 1).length;
+  return completeAchievementCountByLevel('SR', props.uuid, 3);
 })
 
-const extendVisible = ref(false);
+// 处理隐藏和显示
+const extendVisible = ref(true);
 const handleClick = () => {
   extendVisible.value = !extendVisible.value;
 }
@@ -53,22 +59,22 @@ const handleClick = () => {
   <div :class="['sr-statistic-total-wrapper', { active: extendVisible}]" @click="handleClick">
     <div class="sr-statistic-total">
       <p class="sr-statistic-total-title">达成成就</p>
-      <p class="sr-statistic-total-count">{{completeNumber}}/{{totalNumber}}</p>
+      <p class="sr-statistic-total-count">{{ completeNumber }}/{{ totalNumber }}</p>
     </div>
 
     <div v-if="extendVisible" class="sr-statistic-detail-wrapper">
       <div class="vertical-divider"></div>
       <div class="sr-statistic-level">
-        <img :src="SrAchievementImg3" alt="achievement image" class="sr-statistic-img" />
-        <p class="sr-statistic-level-count">{{getCompleteLevel3Number}}/{{getLevel3Number}}</p>
+        <img :src="SrAchievementImg3" alt="achievement image" class="sr-statistic-img"/>
+        <p class="sr-statistic-level-count">{{ getCompleteLevel3Number }}/{{ getLevel3Number }}</p>
       </div>
       <div class="sr-statistic-level">
-        <img :src="SrAchievementImg2" alt="achievement image" class="sr-statistic-img" />
-        <p class="sr-statistic-level-count">{{getCompleteLevel2Number}}/{{getLevel2Number}}</p>
+        <img :src="SrAchievementImg2" alt="achievement image" class="sr-statistic-img"/>
+        <p class="sr-statistic-level-count">{{ getCompleteLevel2Number }}/{{ getLevel2Number }}</p>
       </div>
       <div class="sr-statistic-level">
-        <img :src="SrAchievementImg1" alt="achievement image" class="sr-statistic-img" />
-        <p class="sr-statistic-level-count">{{getCompleteLevel1Number}}/{{getLevel1Number}}</p>
+        <img :src="SrAchievementImg1" alt="achievement image" class="sr-statistic-img"/>
+        <p class="sr-statistic-level-count">{{ getCompleteLevel1Number }}/{{ getLevel1Number }}</p>
       </div>
     </div>
   </div>
@@ -106,8 +112,8 @@ const handleClick = () => {
 
 /* 分割线 */
 .vertical-divider {
-  width: 1px;        /* 很细 */
-  height: 80%;      /* 撑满父容器高度 */
+  width: 1px; /* 很细 */
+  height: 80%; /* 撑满父容器高度 */
   background-color: rgba(204, 204, 204, 0.64); /* 灰色，可以换别的颜色 */
 }
 
@@ -126,7 +132,7 @@ const handleClick = () => {
   display: flex;
 }
 
-.sr-statistic-level+.sr-statistic-level {
+.sr-statistic-level + .sr-statistic-level {
   margin-left: 15px;
 }
 

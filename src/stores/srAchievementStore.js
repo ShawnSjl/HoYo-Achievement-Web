@@ -1,13 +1,55 @@
 import {defineStore} from "pinia";
-import {ref} from "vue";
-import {srGetAllBranch, srUpdateAchievement} from "@/api/sr";
-import {showError, showInfo} from "@/utils/notification.js";
+import {computed, ref} from "vue";
+import {srGetAllAchievement, srGetAllBranch, srUpdateAchievement} from "@/api/sr";
+import {showError, showInfo, showWarn} from "@/utils/notification.js";
+import {useAccountStore} from "@/stores/accountStore.js";
 
 export const useSrAchievementStore = defineStore(
-    'sr-achievement',
+    'srAchievementStore',
     () => {
+        const achievements = ref([]);
         const branches = ref([]);
         const isCompleteFirst = ref(false);
+
+        /**
+         * Fetch achievements from the backend.
+         * @returns {Promise<void>}
+         */
+        async function fetchAchievements() {
+            try {
+                const response = await srGetAllAchievement();
+                if (response.data.code === 200) {
+                    achievements.value = response.data.data;
+                } else {
+                    showInfo(response.data.msg);
+                }
+            } catch (error) {
+                console.error("Fail to get SR achievements:", error);
+                showError("SR成就列表获取失败", error);
+            }
+        }
+
+        /**
+         * Map achievement_id to an achievement object.
+         * @type {ComputedRef<Map<any, any>>}
+         */
+        const achievementMap = computed(() => {
+            const map = new Map();
+            if (achievements.value && achievements.value.length > 0) {
+                achievements.value.forEach(item => {
+                    map.set(item.achievement_id, item);
+                });
+            }
+            return map;
+        });
+
+        /**
+         * Ensure that the achievements data is fetched from the backend.
+         * @returns {Promise<void>}
+         */
+        async function ensureAchievementData() {
+            if (achievements.value.length === 0) await fetchAchievements();
+        }
 
         /**
          * Fetch branches from the backend.
@@ -23,7 +65,7 @@ export const useSrAchievementStore = defineStore(
                 }
             } catch (error) {
                 console.error("Fail to get SR achievements\' branches:", error);
-                showError("成就分支获取失败", error)
+                showError("SR成就分支获取失败", error)
             }
         }
 
@@ -80,32 +122,47 @@ export const useSrAchievementStore = defineStore(
 
         /**
          * Update achievement status in the backend and local data.
-         * @param achievements
+         * @param uuid
          * @param achievementId
          * @param complete
          * @returns {Promise<void>}
          */
-        async function completeAchievement(achievements, achievementId, complete) {
+        async function completeAchievement(uuid, achievementId, complete) {
             try {
-                if (branches.value.length === 0) await fetchBranches();
+                // Ensure data is fetched from the backend before updating
+                await ensureBranchData();
+                await ensureAchievementData();
 
-                // Get target achievement from the achievements list
-                const target = achievements.value.find(item => item.achievement_id === achievementId);
-                if (!target) {
-                    console.error('Fail to get achievements:', achievementId);
-                    showError("目标成就获取失败");
+                // Ignore complete status other than 1 and 0
+                if (complete !== 1 && complete !== 0) {
+                    showWarn("未知完成状态");
                     return;
                 }
 
-                // Ignore unchanged data
-                if (target.complete === complete) {
+                // Check if the target achievement exists in the achievements list
+                const targetAchievement = achievementMap.value.get(achievementId);
+                if (!targetAchievement) {
+                    showWarn("未知成就ID");
+                    return;
+                }
+
+                // Get records by given uuid
+                const accountStore = useAccountStore();
+                const account = accountStore.getAccounts().find(item => item.uuid === uuid);
+                const records = account.records;
+
+                // Get the target record from the record list
+                const targetRecord = records.find(record => record.achievement_id === achievementId);
+
+                // If the target record exists and the complete status is the same, ignore the update
+                if (targetRecord && targetRecord.complete === complete) {
                     return;
                 }
 
                 // Update achievement in the backend if the user is logged in
                 if (localStorage.getItem('token')) {
                     const requestBody = {
-                        uuid: "",
+                        uuid: uuid,
                         achievement_id: `${achievementId}`,
                         complete_status: `${complete}`
                     }
@@ -117,15 +174,33 @@ export const useSrAchievementStore = defineStore(
                     }
                 }
 
-                // Update local data
-                target.complete = complete;
+                // If the target record does not exist, add a new record to the record list
+                if (!targetRecord) {
+                    records.push({
+                        account_uuid: uuid,
+                        achievement_id: achievementId,
+                        complete: complete,
+                    })
+                }
+                // If the target record exists but the complete status is different, update the complete status
+                else {
+                    targetRecord.complete = complete;
+                }
 
                 // Update other achievements in the same branch
-                const branchAchievements = getOtherAchievements(achievements, achievementId);
+                const branchAchievements = getOtherAchievements(achievementId);
                 const branchStatus = complete === 1 ? 2 : 0;
                 for (const branchAchievement of branchAchievements) {
-                    const branchTarget = achievements.value.find(item => item.achievement_id === branchAchievement);
-                    branchTarget.complete = branchStatus;
+                    const branchTarget = records.find(record => record.achievement_id === branchAchievement);
+                    if (branchTarget) {
+                        branchTarget.complete = branchStatus;
+                    } else {
+                        records.push({
+                            account_uuid: uuid,
+                            achievement_id: branchAchievement,
+                            complete: branchStatus,
+                        })
+                    }
                 }
             } catch (error) {
                 console.error("Fail to update achievements:", error);
@@ -135,104 +210,26 @@ export const useSrAchievementStore = defineStore(
 
         /**
          * Get other achievements in the same branch out of the target achievement.
-         * @param achievements
          * @param targetId
-         * @returns {Promise<*|*[]>}
+         * @returns []
          */
-        async function getOtherAchievements(achievements, targetId) {
-            if (branches.value.length === 0) await fetchBranches();
-
+        function getOtherAchievements(targetId) {
             const branch = branches.value.find(item => item.achievement_id.includes(targetId));
             if (!branch) return []; // return empty array if not found
 
             return branch.achievement_id.filter(id => id !== targetId);
         }
 
-        /**
-         * Get the total number of additional achievements in all branches.
-         * @returns number
-         */
-        function getBranchAchievementsNumber() {
-            let count = 0;
-            for (const branch of branches.value) {
-                count = count + branch.achievement_id.length - 1;
-            }
-            return count;
-        }
-
-        /**
-         * Get the total number of additional achievements in all branches with the specified level.
-         * @param achievements
-         * @param level
-         * @returns number
-         */
-        function getBranchAchievementNumberByLevel(achievements, level) {
-            let count = 0;
-            for (const branch of branches.value) {
-                // Get an example achievement from the branch
-                const achievement_id = branch.achievement_id[0];
-                const achievement = achievements.find(item => item.achievement_id === achievement_id);
-
-                // If the level matches, add to the total count
-                if (level === achievement.reward_level) {
-                    count = count + branch.achievement_id.length - 1;
-                }
-            }
-            return count;
-        }
-
-        /**
-         * Get the total number of additional achievements in all branches with the specified class.
-         * @param achievements
-         * @param sr_class
-         * @returns number
-         */
-        function getBranchAchievementsNumberByClass(achievements, sr_class) {
-            let count = 0;
-            for (const branch of branches.value) {
-                // Get an example achievement from the branch
-                const achievement_id = branch.achievement_id[0];
-                const achievement = achievements.find(item => item.achievement_id === achievement_id);
-
-                // If the class matches, add to the total count
-                if (sr_class === achievement.class_name) {
-                    count = count + branch.achievement_id.length - 1;
-                }
-            }
-            return count;
-        }
-
-        /**
-         * Get the total number of additional achievements in all branches with the specified class and level.
-         * @param achievements
-         * @param sr_class
-         * @param level
-         * @returns number
-         */
-        function getBranchAchievementNumberByClassAndLevel(achievements, sr_class, level) {
-            let count = 0;
-            for (const branch of branches.value) {
-                // Get an example achievement from the branch
-                const achievement_id = branch.achievement_id[0];
-                const achievement = achievements.find(item => item.achievement_id === achievement_id);
-
-                // If the class and level matches, add to the total count
-                if (sr_class === achievement.class_name && level === achievement.reward_level) {
-                    count = count + branch.achievement_id.length - 1;
-                }
-            }
-            return count;
-        }
-
         return {
+            achievements,
+            achievementMap,
             branches,
             isCompleteFirst,
-            completeAchievement,
+            fetchAchievements,
+            ensureAchievementData,
+            fetchBranches,
             ensureBranchData,
-            getBranchAchievementsNumber,
-            getBranchAchievementNumberByLevel,
-            getBranchAchievementsNumberByClass,
-            getBranchAchievementNumberByClassAndLevel
+            completeAchievement,
         };
     },
     {
