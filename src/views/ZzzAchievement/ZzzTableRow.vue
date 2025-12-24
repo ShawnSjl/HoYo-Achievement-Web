@@ -65,6 +65,7 @@ const disableButton = computed(() => {
   return props.status === 2
 });
 
+// 处理按钮点击
 const handleComplete = async () => {
   if (props.status === 2) {
     showInfo('该分支成就已完成，不可更改')
@@ -101,15 +102,15 @@ const getAchievementName = computed(() => {
     </div>
 
     <div class="zzz-table-row-right">
-      <div class="zzz-game-version">{{ props.achievement.game_version }}</div>
-      <div v-if="!isMobileStore.isMobile" class="zzz-reward-bg">
-        <img :src="ZzzAchievementReward" alt="achievement reward" class="zzz-achievement-reward-image"/>
-        <div class="zzz-achievement-reward-count">{{ achievementReward }}</div>
-      </div>
       <el-button :disabled="disableButton" :plain="!isComplete" class="zzz-complete-button" color="#ffd100" dark round
                  @click="handleComplete">
         {{ completeButtonMsg }}
       </el-button>
+      <div v-if="!isMobileStore.isMobile" class="zzz-reward-bg">
+        <img :src="ZzzAchievementReward" alt="achievement reward" class="zzz-achievement-reward-image"/>
+        <div class="zzz-achievement-reward-count">{{ achievementReward }}</div>
+      </div>
+      <div class="zzz-game-version">{{ props.achievement.game_version }}</div>
     </div>
   </div>
 </template>
@@ -139,10 +140,9 @@ const getAchievementName = computed(() => {
 
 .zzz-table-row-right {
   display: flex;
-  flex-direction: row;
-  justify-content: flex-end;
+  flex-direction: row-reverse;
   align-items: center;
-  flex: 1;
+  margin-left: 10px;
 }
 
 /* 成就图片 */

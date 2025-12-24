@@ -57,6 +57,7 @@ const disableButton = computed(() => {
   return props.status === 2
 });
 
+// 处理按钮点击
 const handleComplete = async () => {
   if (props.status === 2) {
     showInfo('该分支成就已完成，不可更改')
@@ -65,6 +66,28 @@ const handleComplete = async () => {
   const newState = props.status === 1 ? 0 : 1;
   await achievementStore.completeAchievement(props.uuid, props.achievement.achievement_id, newState);
 }
+
+// 处理特殊文本
+const textBefore = computed(() => {
+  const str = props.achievement.description || '';
+  const index = str.indexOf('※');
+
+  // 没找到就返回整个字符串
+  if (index === -1) return str;
+
+  return str.slice(0, index);
+});
+
+const textAfter = computed(() => {
+  const str = props.achievement.description || '';
+  const index = str.indexOf('※');
+
+  // 如果没找到符号，这里返回空字符串
+  if (index === -1) return '';
+
+  // slice(index) 会从该索引开始截取直到末尾，正好包含索引处的字符 '※'
+  return str.slice(index);
+});
 </script>
 
 <template>
@@ -75,20 +98,21 @@ const handleComplete = async () => {
         <div class="sr-name">
           {{ props.achievement.name }}
         </div>
-        <div class="sr-desc">{{ props.achievement.description }}</div>
+        <div class="sr-desc">{{ textBefore }}</div>
+        <div class="sr-sub-desc">{{ textAfter }}</div>
       </div>
     </div>
 
     <div class="sr-table-row-right">
-      <div class="sr-game-version">{{ props.achievement.game_version }}</div>
-      <div v-if="!isMobileStore.isMobile" class="sr-achievement-reward-bg">
-        <img :src="SrAchievementReward" alt="achievement reward" class="sr-achievement-reward-image"/>
-        <div class="sr-achievement-reward-count">{{ achievementReward }}</div>
-      </div>
       <el-button :disabled="disableButton" :plain="!isComplete" class="sr-complete-button" round type="primary"
                  @click="handleComplete">
         {{ completeButtonMsg }}
       </el-button>
+      <div v-if="!isMobileStore.isMobile" class="sr-achievement-reward-bg">
+        <img :src="SrAchievementReward" alt="achievement reward" class="sr-achievement-reward-image"/>
+        <div class="sr-achievement-reward-count">{{ achievementReward }}</div>
+      </div>
+      <div class="sr-game-version">{{ props.achievement.game_version }}</div>
     </div>
   </div>
 </template>
@@ -122,10 +146,9 @@ const handleComplete = async () => {
 
 .sr-table-row-right {
   display: flex;
-  flex-direction: row;
-  justify-content: flex-end;
+  flex-direction: row-reverse;
   align-items: center;
-  flex: 1;
+  margin-left: 10px;
 }
 
 /* 成就图片 */
@@ -187,8 +210,7 @@ const handleComplete = async () => {
   display: flex;
   flex-direction: column;
   align-content: flex-start;
-  gap: 10px;
-  padding: 15px;
+  padding: 10px 15px 10px 15px;
 }
 
 .sr-name {
@@ -203,7 +225,20 @@ const handleComplete = async () => {
   flex: 1;
   text-align: left;
   word-break: break-word;
-  color: #757575;
+  color: #716f6f;
+}
+
+.sr-sub-desc {
+  flex: 1;
+  text-align: left;
+  word-break: break-word;
+  color: #8790ab;
+}
+
+.sr-sub-desc:empty::before {
+  content: "\00a0";
+  display: inline-block;
+  width: 0;
 }
 
 @media (max-width: 900px) {
