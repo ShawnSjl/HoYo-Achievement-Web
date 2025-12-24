@@ -68,7 +68,7 @@ const handleFetch = async () => {
       <div>
         <p>导入:</p>
         <div style="display: flex">
-          <button-sr-import/>
+          <button-sr-import :uuid="props.uuid"/>
           <el-tooltip effect="light" placement="top">
             <el-button :icon="Warning" circle style="margin-left: 5px" text/>
             <template #content>

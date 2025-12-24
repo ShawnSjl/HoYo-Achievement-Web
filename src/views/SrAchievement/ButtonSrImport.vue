@@ -85,14 +85,22 @@ async function handleFile(file) {
     const [headers, ...body] = rows;
     const json = convertMinimalRows(headers, body);
 
+    // 记录错误次数
+    let missCount = 0;
+
     // 更新记录
     for (const item of json) {
       const complete = Number(item.complete) === 1 || item.complete === '已完成' ? 1 : 0;
 
       // 检查成就是否存在
-      const targetAchievement = achievementStore.achievementMap.get(item.achievement_id);
+      const targetAchievement = achievementStore.achievements.find(achievement => achievement.name === item.name);
       if (!targetAchievement) {
-        showError('未知成就ID', item.achievement_id)
+        debugger
+        showError('未知成就名', item.name);
+        missCount++;
+        if (missCount >= 10) {
+          showError('成就表格导入失败', '错误次数过多');
+        }
         continue;
       }
 
@@ -100,7 +108,7 @@ async function handleFile(file) {
       const records = account.value.records;
 
       // 查找目标记录
-      const targetRecord = records.find(record => record.achievement_id === item.achievement_id);
+      const targetRecord = records.find(record => record.achievement_id === targetAchievement.achievement_id);
 
       // 忽略未更改数据
       if (targetRecord && targetRecord.complete === complete) {
@@ -112,7 +120,7 @@ async function handleFile(file) {
         continue;
       }
 
-      await achievementStore.completeAchievement(props.uuid, item.achievement_id, complete);
+      await achievementStore.completeAchievement(props.uuid, targetAchievement.achievement_id, complete);
     }
 
     showSuccess('成就表格导入成功')

@@ -85,6 +85,9 @@ async function handleFile(file) {
     const [headers, ...body] = rows;
     const json = convertMinimalRows(headers, body);
 
+    // 记录错误次数
+    let missCount = 0;
+
     // 更新记录
     for (const item of json) {
       const complete = Number(item.complete) === 1 || item.complete === '已完成' ? 1 : 0;
@@ -92,7 +95,11 @@ async function handleFile(file) {
       // 检查成就是否存在
       const targetAchievement = achievementStore.achievementMap.get(item.achievement_id);
       if (!targetAchievement) {
-        showError('未知成就ID', item.achievement_id)
+        showError('未知成就ID', item.achievement_id);
+        missCount++;
+        if (missCount >= 10) {
+          showError('成就表格导入失败', '错误次数过多');
+        }
         continue;
       }
 
