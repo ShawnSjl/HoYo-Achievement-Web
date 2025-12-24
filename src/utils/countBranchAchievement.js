@@ -57,9 +57,8 @@ export const branchAchievementCountByLevel = (type, level) => {
         const achievement = store.achievementMap.get(achievementId);
 
         // If the level matches, add to the total count
-        if (level === achievement.reward_level) {
-            count = count + branch.achievement_id.length - 1;
-        }
+        if (achievement.reward_level !== level) continue;
+        count = count + branch.achievement_id.length - 1;
     }
     return count;
 }
@@ -92,14 +91,11 @@ export const branchAchievementCountByClass = (type, achievement_class) => {
 
         // If the level matches, add to the total count
         if (type === 'SR') {
-            if (achievement.class_name === achievement_class) {
-                count = count + branch.achievement_id.length - 1;
-            }
+            if (achievement.class_name !== achievement_class) continue;
         } else {
-            if (achievement.class_id === achievement_class) {
-                count = count + branch.achievement_id.length - 1;
-            }
+            if (achievement.class_id !== achievement_class) continue;
         }
+        count = count + branch.achievement_id.length - 1;
     }
     return count;
 }
@@ -134,14 +130,11 @@ export const branchAchievementCountByClassAndLevel = (type, achievement_class, l
         // If the level matches, add to the total count
         if (achievement.reward_level !== level) continue;
         if (type === 'SR') {
-            if (achievement.class_name === achievement_class) {
-                count = count + branch.achievement_id.length - 1;
-            }
+            if (achievement.class_name !== achievement_class) continue;
         } else {
-            if (achievement.class_id === achievement_class) {
-                count = count + branch.achievement_id.length - 1;
-            }
+            if (achievement.class_id !== achievement_class) continue;
         }
+        count = count + branch.achievement_id.length - 1;
     }
     return count;
 }
