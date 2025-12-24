@@ -23,41 +23,38 @@ const classId = computed(() => {
 
 // 计算成就数量
 const totalNumber = computed(() => {
-  return achievementStore.achievements.filter(achievement => achievement.class_id === classId).length
-      - branchAchievementCountByClass('ZZZ', classId);
+  return achievementStore.achievements.filter(achievement => achievement.class_id === classId.value).length
+      - branchAchievementCountByClass('ZZZ', classId.value);
 })
 const completeNumber = computed(() => {
-  return achievementStore.getCompleteRecordNumberByClass(props.uuid, classId);
+  return achievementStore.getCompleteRecordNumberByClass(props.uuid, classId.value);
 })
 
 const getLevel1Number = computed(() => {
   return achievementStore.achievements.filter(achievement =>
-          achievement.reward_level === 1 && achievement.class_id === classId).length
-      - branchAchievementCountByClassAndLevel('ZZZ', classId, 1);
+          achievement.reward_level === 1 && achievement.class_id === classId.value).length
+      - branchAchievementCountByClassAndLevel('ZZZ', classId.value, 1);
 })
 const getCompleteLevel1Number = computed(() => {
-  return achievementStore.getCompleteRecordNumberByClassAndLevel(props.uuid,
-      classId, 1);
+  return achievementStore.getCompleteRecordNumberByClassAndLevel(props.uuid, classId.value, 1);
 })
 
 const getLevel2Number = computed(() => {
   return achievementStore.achievements.filter(achievement =>
-          achievement.reward_level === 2 && achievement.class_id === classId).length
-      - branchAchievementCountByClassAndLevel('ZZZ', classId, 2);
+          achievement.reward_level === 2 && achievement.class_id === classId.value).length
+      - branchAchievementCountByClassAndLevel('ZZZ', classId.value, 2);
 })
 const getCompleteLevel2Number = computed(() => {
-  return achievementStore.getCompleteRecordNumberByClassAndLevel(props.uuid,
-      classId, 2);
+  return achievementStore.getCompleteRecordNumberByClassAndLevel(props.uuid, classId.value, 2);
 })
 
 const getLevel3Number = computed(() => {
   return achievementStore.achievements.filter(achievement =>
-          achievement.reward_level === 3 && achievement.class_id === classId).length
-      - branchAchievementCountByClassAndLevel('ZZZ', classId, 3);
+          achievement.reward_level === 3 && achievement.class_id === classId.value).length
+      - branchAchievementCountByClassAndLevel('ZZZ', classId.value, 3);
 })
 const getCompleteLevel3Number = computed(() => {
-  return achievementStore.getCompleteRecordNumberByClassAndLevel(props.uuid,
-      classId, 3);
+  return achievementStore.getCompleteRecordNumberByClassAndLevel(props.uuid, classId.value, 3);
 })
 </script>
 
