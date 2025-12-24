@@ -1,7 +1,7 @@
 <script setup>
 import SrTableRow from "@/views/SrAchievement/SrTableRow.vue";
 import {useSrAchievementStore} from "@/stores/srAchievementStore.js";
-import {computed} from "vue";
+import {computed, ref} from "vue";
 import {useAccountStore} from "@/stores/accountStore.js";
 
 // 传入只读数据
@@ -69,13 +69,23 @@ const sortedAchievements = computed(() => {
     return filteredAchievements.value;
   }
 })
+
+// 渲染优化部分
+const num = ref(30);
+const displayList = computed(() => sortedAchievements.value.slice(0, num.value));
+
+const loadMore = (direction) => {
+  if (direction === 'bottom') {
+    num.value += 10
+  }
+}
 </script>
 
 <template>
-  <el-scrollbar :height="tableHeight">
+  <el-scrollbar :height="tableHeight" @end-reached="loadMore">
     <div class="sr-table">
       <el-card
-          v-for="(row, index) in sortedAchievements"
+          v-for="(row, index) in displayList"
           :key="index"
           class="sr-table-row"
           shadow="hover"

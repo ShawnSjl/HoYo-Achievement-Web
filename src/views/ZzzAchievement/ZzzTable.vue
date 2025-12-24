@@ -3,7 +3,7 @@ import ZzzTableRow from "@/views/ZzzAchievement/ZzzTableRow.vue";
 import ZzzClassSelect from "@/views/ZzzAchievement/ZzzClassSelect.vue";
 import {useIsMobileStore} from "@/stores/isMobileStore";
 import CardZzzStatisticClass from "@/views/ZzzAchievement/CardZzzStatisticClass.vue";
-import {computed} from "vue";
+import {computed, ref} from "vue";
 import {useZzzAchievementStore} from "@/stores/zzzAchievementsStore.js";
 import {zzzGetClassIdByName} from "@/utils/zzzAchievementClass.js";
 import {useAccountStore} from "@/stores/accountStore.js";
@@ -74,6 +74,16 @@ const sortedAchievements = computed(() => {
     return filteredAchievements.value;
   }
 });
+
+// 渲染优化部分
+const num = ref(30);
+const displayList = computed(() => sortedAchievements.value.slice(0, num.value));
+
+const loadMore = (direction) => {
+  if (direction === 'bottom') {
+    num.value += 10
+  }
+}
 </script>
 
 <template>
@@ -85,10 +95,10 @@ const sortedAchievements = computed(() => {
     <card-zzz-statistic-class :achievement-class="achievementClass" :uuid="props.uuid" style="margin-bottom: 10px"/>
   </div>
 
-  <el-scrollbar :height="props.tableHeight">
+  <el-scrollbar :height="props.tableHeight" @end-reached="loadMore">
     <div class="zzz-card-table">
       <el-card
-          v-for="achievement in sortedAchievements"
+          v-for="achievement in displayList"
           :key="achievement.achievement_id"
           class="zzz-card-row"
           shadow="hover"
