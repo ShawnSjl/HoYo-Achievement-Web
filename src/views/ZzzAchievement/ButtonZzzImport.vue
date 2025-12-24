@@ -90,8 +90,7 @@ async function handleFile(file) {
       const complete = Number(item.complete) === 1 || item.complete === '已完成' ? 1 : 0;
 
       // 检查成就是否存在
-      const targetAchievement = achievementStore.achievements.find(achievement => achievement.achievement_id ===
-          item.achievement_id);
+      const targetAchievement = achievementStore.achievementMap.get(item.achievement_id);
       if (!targetAchievement) {
         showError('未知成就ID', item.achievement_id)
         continue;

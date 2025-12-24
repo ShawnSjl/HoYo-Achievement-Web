@@ -1,9 +1,9 @@
-import { defineStore } from "pinia";
+import {defineStore} from "pinia";
 import {ref} from "vue";
 
 export const useIsMobileStore = defineStore(
-    'isMobile',
-    ()=> {
+    'isMobileStore',
+    () => {
         const match = window.matchMedia('(max-width: 900px)');
         const isMobile = ref(match.matches);
 
@@ -11,7 +11,7 @@ export const useIsMobileStore = defineStore(
             isMobile.value = match.matches;
         })
 
-        return { isMobile };
+        return {isMobile};
     },
     {
         persist: true,

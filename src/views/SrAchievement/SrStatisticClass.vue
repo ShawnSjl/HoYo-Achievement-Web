@@ -4,6 +4,11 @@ import {computed} from "vue";
 import SrAchievementImg1 from '@/assets/sr-image/sr-achievement-level-1.png';
 import SrAchievementImg2 from '@/assets/sr-image/sr-achievement-level-2.png';
 import SrAchievementImg3 from '@/assets/sr-image/sr-achievement-level-3.png';
+import {branchAchievementCountByClass, branchAchievementCountByClassAndLevel} from "@/utils/countBranchAchievement.js";
+import {
+  completeAchievementCountByClass,
+  completeAchievementCountByClassAndLevel
+} from "@/utils/countCompleteAchievement.js";
 
 // 使用Pinia作为本地缓存
 const achievementStore = useSrAchievementStore()
@@ -17,37 +22,37 @@ const props = defineProps({
 // 计算成就数量
 const totalNumber = computed(() => {
   return achievementStore.achievements.filter(achievement => achievement.class_name === props.achievementClass).length
-      - achievementStore.getBranchAchievementsNumberByClass(props.achievementClass);
+      - branchAchievementCountByClass('SR', props.achievementClass);
 })
 const completeNumber = computed(() => {
-  return achievementStore.getCompleteRecordNumberByClass(props.uuid, props.achievementClass);
+  return completeAchievementCountByClass('SR', props.uuid, props.achievementClass);
 })
 
 const getLevel1Number = computed(() => {
   return achievementStore.achievements.filter(achievement => achievement.reward_level === 1
           && achievement.class_name === props.achievementClass).length
-      - achievementStore.getBranchAchievementNumberByClassAndLevel(props.achievementClass, 1);
+      - branchAchievementCountByClassAndLevel('SR', props.achievementClass, 1);
 })
 const getCompleteLevel1Number = computed(() => {
-  return achievementStore.getCompleteRecordNumberByClassAndLevel(props.uuid, props.achievementClass, 1);
+  return completeAchievementCountByClassAndLevel('SR', props.uuid, props.achievementClass, 1);
 })
 
 const getLevel2Number = computed(() => {
   return achievementStore.achievements.filter(achievement => achievement.reward_level === 2
           && achievement.class_name === props.achievementClass).length
-      - achievementStore.getBranchAchievementNumberByClassAndLevel(props.achievementClass, 2);
+      - branchAchievementCountByClassAndLevel('SR', props.achievementClass, 2);
 })
 const getCompleteLevel2Number = computed(() => {
-  return achievementStore.getCompleteRecordNumberByClassAndLevel(props.uuid, props.achievementClass, 2);
+  return completeAchievementCountByClassAndLevel('SR', props.uuid, props.achievementClass, 2);
 })
 
 const getLevel3Number = computed(() => {
   return achievementStore.achievements.filter(achievement => achievement.reward_level === 3
           && achievement.class_name === props.achievementClass).length
-      - achievementStore.getBranchAchievementNumberByClassAndLevel(props.achievementClass, 3);
+      - branchAchievementCountByClassAndLevel('SR', props.achievementClass, 3);
 })
 const getCompleteLevel3Number = computed(() => {
-  return achievementStore.getCompleteRecordNumberByClassAndLevel(props.uuid, props.achievementClass, 3);
+  return completeAchievementCountByClassAndLevel('SR', props.uuid, props.achievementClass, 3);
 })
 </script>
 

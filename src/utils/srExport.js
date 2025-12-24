@@ -12,7 +12,7 @@ export const srExport = async (uuid) => {
         // 表头
         worksheet.columns = [
             {header: '成就ID', key: 'achievement_id', width: 15},
-            {header: '类别', key: 'class', width: 10},
+            {header: '类别', key: 'class_name', width: 10},
             {header: '名称', key: 'name', width: 20},
             {header: '描述', key: 'description', width: 40},
             {header: '奖励等级', key: 'reward_level', width: 15},

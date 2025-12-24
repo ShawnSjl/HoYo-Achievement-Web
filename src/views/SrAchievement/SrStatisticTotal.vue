@@ -4,10 +4,10 @@ import {useSrAchievementStore} from "@/stores/srAchievementStore";
 import SrAchievementImg3 from "@/assets/sr-image/sr-achievement-level-3.png";
 import SrAchievementImg2 from "@/assets/sr-image/sr-achievement-level-2.png";
 import SrAchievementImg1 from "@/assets/sr-image/sr-achievement-level-1.png";
-import {useAccountStore} from "@/stores/accountStore.js";
+import {branchAchievementCount, branchAchievementCountByLevel} from "@/utils/countBranchAchievement.js";
+import {completeAchievementCount, completeAchievementCountByLevel} from "@/utils/countCompleteAchievement.js";
 
 // 使用Pinia作为本地缓存
-const accountStore = useAccountStore();
 const achievementStore = useSrAchievementStore();
 
 // 传入只读数据
@@ -15,46 +15,37 @@ const props = defineProps({
   uuid: String,
 });
 
-// 获取账户列表
-const accounts = computed(() => {
-  return accountStore.getAccounts();
-})
-
-// 获取账号成就
-const account = computed(() =>
-    accounts.value.find(account => account.uuid === props.uuid)
-);
-
 // 计算成就数量
 const totalNumber = computed(() => {
-  return achievementStore.achievements.length - achievementStore.getBranchAchievementsNumber();
+  return achievementStore.achievements.length
+      - branchAchievementCount('SR');
 })
 const completeNumber = computed(() => {
-  return account.value.records.filter(record => record.complete === 1).length;
+  return completeAchievementCount(props.uuid);
 })
 
 const getLevel1Number = computed(() => {
   return achievementStore.achievements.filter(achievement => achievement.reward_level === 1).length
-      - achievementStore.getBranchAchievementNumberByLevel(1);
+      - branchAchievementCountByLevel('SR', 1);
 })
 const getCompleteLevel1Number = computed(() => {
-  return achievementStore.getCompleteRecordNumberByLevel(props.uuid, 1);
+  return completeAchievementCountByLevel('SR', props.uuid, 1);
 })
 
 const getLevel2Number = computed(() => {
   return achievementStore.achievements.filter(achievement => achievement.reward_level === 2).length
-      - achievementStore.getBranchAchievementNumberByLevel(2);
+      - branchAchievementCountByLevel('SR', 2);
 })
 const getCompleteLevel2Number = computed(() => {
-  return achievementStore.getCompleteRecordNumberByLevel(props.uuid, 2);
+  return completeAchievementCountByLevel('SR', props.uuid, 2);
 })
 
 const getLevel3Number = computed(() => {
   return achievementStore.achievements.filter(achievement => achievement.reward_level === 3).length
-      - achievementStore.getBranchAchievementNumberByLevel(3);
+      - branchAchievementCountByLevel('SR', 3);
 })
 const getCompleteLevel3Number = computed(() => {
-  return achievementStore.getCompleteRecordNumberByLevel(props.uuid, 3);
+  return completeAchievementCountByLevel('SR', props.uuid, 3);
 })
 
 // 处理隐藏和显示

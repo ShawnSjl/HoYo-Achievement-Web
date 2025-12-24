@@ -2,6 +2,8 @@
 import {computed} from "vue";
 import {srClasses} from "@/utils/srAchievementClass";
 import {useSrAchievementStore} from "@/stores/srAchievementStore";
+import {branchAchievementCountByClass} from "@/utils/countBranchAchievement.js";
+import {completeAchievementCountByClass} from "@/utils/countCompleteAchievement.js";
 
 // 传入只读数据
 const props = defineProps({
@@ -29,9 +31,9 @@ const handleSelect = async (srClass) => {
 const completePercentage = computed(() => {
   return (sr_class) => {
     const totalNumber = achievementStore.achievements.filter(achievement => achievement.class_name === sr_class).length
-        - achievementStore.getBranchAchievementsNumberByClass(sr_class);
+        - branchAchievementCountByClass('SR', sr_class);
 
-    const completeNumber = achievementStore.getCompleteRecordNumberByClass(props.uuid, sr_class);
+    const completeNumber = completeAchievementCountByClass('SR', props.uuid, sr_class);
 
     if (totalNumber === 0) return 0; // 避免除以 0
 

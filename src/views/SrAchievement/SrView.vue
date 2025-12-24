@@ -9,12 +9,14 @@ import SrAside from "@/views/SrAchievement/SrAside.vue";
 import SrStatisticClass from "@/views/SrAchievement/SrStatisticClass.vue";
 import {useRoute} from "vue-router";
 import router from "@/router/index.js";
+import {useSrAchievementStore} from "@/stores/srAchievementStore.js";
 
 // 创建Route
 const route = useRoute();
 
 // 使用Pinia作为本地缓存
 const userStore = useUserStore();
+const achievementStore = useSrAchievementStore();
 const isMobileStore = useIsMobileStore();
 
 // 当前账号UUID
@@ -26,6 +28,16 @@ watch(userName, (_) => {
   router.push({
     path: '/',
   })
+});
+
+// 同步数据
+const fetchRemoteData = async () => {
+  // Ensure SR's data are loaded
+  await achievementStore.ensureAchievementData();
+  await achievementStore.ensureBranchData();
+};
+onMounted(() => {
+  fetchRemoteData();
 });
 
 /* 筛选和排序成就 */

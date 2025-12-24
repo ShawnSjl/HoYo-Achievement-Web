@@ -5,6 +5,11 @@ import {zzzGetClassIdByName} from "@/utils/zzzAchievementClass";
 import ZzzAchievementImg1 from '@/assets/zzz-image/zzz-achievement-level-1.png';
 import ZzzAchievementImg2 from '@/assets/zzz-image/zzz-achievement-level-2.png';
 import ZzzAchievementImg3 from '@/assets/zzz-image/zzz-achievement-level-3.png';
+import {branchAchievementCountByClass, branchAchievementCountByClassAndLevel} from "@/utils/countBranchAchievement.js";
+import {
+  completeAchievementCountByClass,
+  completeAchievementCountByClassAndLevel
+} from "@/utils/countCompleteAchievement.js";
 
 // 使用Pinia作为本地缓存
 const achievementStore = useZzzAchievementStore();
@@ -15,44 +20,45 @@ const props = defineProps({
   achievementClass: String,
 })
 
+// 获得classID
+const classId = computed(() => {
+  return zzzGetClassIdByName(props.achievementClass);
+});
+
 // 计算成就数量
 const totalNumber = computed(() => {
-  return achievementStore.achievements.filter(achievement =>
-          achievement.class_id === zzzGetClassIdByName(props.achievementClass)).length
-      - achievementStore.getBranchAchievementsNumberByClass(zzzGetClassIdByName(props.achievementClass));
+  return achievementStore.achievements.filter(achievement => achievement.class_id === classId.value).length
+      - branchAchievementCountByClass('ZZZ', classId.value);
 })
 const completeNumber = computed(() => {
-  return achievementStore.getCompleteRecordNumberByClass(props.uuid, zzzGetClassIdByName(props.achievementClass));
+  return completeAchievementCountByClass('ZZZ', props.uuid, props.achievementClass);
 })
 
 const getLevel1Number = computed(() => {
-  return achievementStore.achievements.filter(achievement => achievement.reward_level === 1
-          && achievement.class_id === zzzGetClassIdByName(props.achievementClass)).length
-      - achievementStore.getBranchAchievementNumberByClassAndLevel(zzzGetClassIdByName(props.achievementClass), 1);
+  return achievementStore.achievements.filter(achievement =>
+          achievement.reward_level === 1 && achievement.class_id === classId.value).length
+      - branchAchievementCountByClassAndLevel('ZZZ', classId.value, 1);
 })
 const getCompleteLevel1Number = computed(() => {
-  return achievementStore.getCompleteRecordNumberByClassAndLevel(props.uuid,
-      zzzGetClassIdByName(props.achievementClass), 1);
+  return completeAchievementCountByClassAndLevel('ZZZ', props.uuid, classId.value, 1);
 })
 
 const getLevel2Number = computed(() => {
-  return achievementStore.achievements.filter(achievement => achievement.reward_level === 2
-          && achievement.class_id === zzzGetClassIdByName(props.achievementClass)).length
-      - achievementStore.getBranchAchievementNumberByClassAndLevel(zzzGetClassIdByName(props.achievementClass), 2);
+  return achievementStore.achievements.filter(achievement =>
+          achievement.reward_level === 2 && achievement.class_id === classId.value).length
+      - branchAchievementCountByClassAndLevel('ZZZ', classId.value, 2);
 })
 const getCompleteLevel2Number = computed(() => {
-  return achievementStore.getCompleteRecordNumberByClassAndLevel(props.uuid,
-      zzzGetClassIdByName(props.achievementClass), 2);
+  return completeAchievementCountByClassAndLevel('ZZZ', props.uuid, classId.value, 2);
 })
 
 const getLevel3Number = computed(() => {
-  return achievementStore.achievements.filter(achievement => achievement.reward_level === 3
-          && achievement.class_id === zzzGetClassIdByName(props.achievementClass)).length
-      - achievementStore.getBranchAchievementNumberByClassAndLevel(zzzGetClassIdByName(props.achievementClass), 3);
+  return achievementStore.achievements.filter(achievement =>
+          achievement.reward_level === 3 && achievement.class_id === classId.value).length
+      - branchAchievementCountByClassAndLevel('ZZZ', classId.value, 3);
 })
 const getCompleteLevel3Number = computed(() => {
-  return achievementStore.getCompleteRecordNumberByClassAndLevel(props.uuid,
-      zzzGetClassIdByName(props.achievementClass), 3);
+  return completeAchievementCountByClassAndLevel('ZZZ', props.uuid, classId.value, 3);
 })
 </script>
 

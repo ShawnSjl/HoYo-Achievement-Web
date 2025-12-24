@@ -8,12 +8,14 @@ import ZzzHeader from "@/views/ZzzAchievement/ZzzHeader.vue";
 import ZzzAside from "@/views/ZzzAchievement/ZzzAside.vue";
 import {useRoute} from "vue-router";
 import router from "@/router/index.js";
+import {useZzzAchievementStore} from "@/stores/zzzAchievementsStore.js";
 
 // 创建Route
 const route = useRoute();
 
 // 使用Pinia作为本地缓存
 const userStore = useUserStore();
+const achievementStore = useZzzAchievementStore();
 const isMobileStore = useIsMobileStore();
 
 // 当前账号UUID
@@ -25,6 +27,16 @@ watch(userName, (_) => {
   router.push({
     path: '/',
   })
+});
+
+// 同步数据
+const fetchRemoteData = async () => {
+  // Ensure ZZZ's data are loaded
+  await achievementStore.ensureAchievementData();
+  await achievementStore.ensureBranchData();
+};
+onMounted(() => {
+  fetchRemoteData();
 });
 
 /* 筛选和排序成就 */

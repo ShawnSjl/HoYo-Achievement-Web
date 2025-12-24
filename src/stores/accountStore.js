@@ -14,7 +14,7 @@ import {v7 as uuidv7} from 'uuid';
 import {useUserStore} from "@/stores/userStore.js";
 
 export const useAccountStore = defineStore(
-    'account',
+    'accountStore',
     () => {
         const remoteAccounts = ref([]);
         const localAccounts = ref([]);
