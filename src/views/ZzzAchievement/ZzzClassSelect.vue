@@ -2,6 +2,7 @@
 import {useZzzAchievementStore} from "@/stores/zzzAchievementsStore";
 import {categories, zzzGetClassByCategory, zzzGetClassIdByName} from "@/utils/zzzAchievementClass"
 import {computed} from "vue";
+import {branchAchievementCountByClass} from "@/utils/achievementCount.js";
 
 // 传入只读数据
 const props = defineProps({
@@ -20,7 +21,7 @@ const completePercentage = computed(() => {
     const classId = zzzGetClassIdByName(className);
 
     const numberTotal = achievementStore.achievements.filter(achievement => achievement.class_id === classId).length
-        - achievementStore.getBranchAchievementsNumberByClass(classId);
+        - branchAchievementCountByClass('ZZZ', classId);
 
     const numberComplete = achievementStore.getCompleteRecordNumberByClass(props.uuid, classId);
 

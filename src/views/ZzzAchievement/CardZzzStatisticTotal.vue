@@ -6,6 +6,7 @@ import ZzzAchievementImg2 from '@/assets/zzz-image/zzz-achievement-level-2.png';
 import ZzzAchievementImg3 from '@/assets/zzz-image/zzz-achievement-level-3.png';
 import {useAccountStore} from "@/stores/accountStore.js";
 import {useServerInfoStore} from "@/stores/serverInfoStore.js";
+import {branchAchievementCount, branchAchievementCountByLevel} from "@/utils/achievementCount.js";
 
 // 使用Pinia作为本地缓存
 const accountStore = useAccountStore();
@@ -29,7 +30,7 @@ const account = computed(() =>
 
 // 计算成就数量
 const getTotalNumber = computed(() => {
-  return achievementStore.achievements.length - achievementStore.getBranchAchievementsNumber();
+  return achievementStore.achievements.length - branchAchievementCount('ZZZ');
 })
 const getTotalCompleteNumber = computed(() => {
   return account.value.records.filter(record => record.complete === 1).length;
@@ -37,7 +38,7 @@ const getTotalCompleteNumber = computed(() => {
 
 const getLevel1Number = computed(() => {
   return achievementStore.achievements.filter(achievement => achievement.reward_level === 1).length
-      - achievementStore.getBranchAchievementNumberByLevel(1);
+      - branchAchievementCountByLevel('ZZZ', 1);
 })
 const getCompleteLevel1Number = computed(() => {
   return achievementStore.getCompleteRecordNumberByLevel(props.uuid, 1);
@@ -45,7 +46,7 @@ const getCompleteLevel1Number = computed(() => {
 
 const getLevel2Number = computed(() => {
   return achievementStore.achievements.filter(achievement => achievement.reward_level === 2).length
-      - achievementStore.getBranchAchievementNumberByLevel(2);
+      - branchAchievementCountByLevel('ZZZ', 2);
 })
 const getCompleteLevel2Number = computed(() => {
   return achievementStore.getCompleteRecordNumberByLevel(props.uuid, 2);
@@ -53,7 +54,7 @@ const getCompleteLevel2Number = computed(() => {
 
 const getLevel3Number = computed(() => {
   return achievementStore.achievements.filter(achievement => achievement.reward_level === 3).length
-      - achievementStore.getBranchAchievementNumberByLevel(3);
+      - branchAchievementCountByLevel('ZZZ', 3);
 })
 const getCompleteLevel3Number = computed(() => {
   return achievementStore.getCompleteRecordNumberByLevel(props.uuid, 3);

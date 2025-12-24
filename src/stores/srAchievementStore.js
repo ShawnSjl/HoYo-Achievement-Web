@@ -221,79 +221,6 @@ export const useSrAchievementStore = defineStore(
         }
 
         /**
-         * Get the total number of additional achievements in all branches.
-         * @returns number
-         */
-        function getBranchAchievementsNumber() {
-            let count = 0;
-            for (const branch of branches.value) {
-                count = count + branch.achievement_id.length - 1;
-            }
-            return count;
-        }
-
-        /**
-         * Get the total number of additional achievements in all branches with the specified level.
-         * @param level
-         * @returns number
-         */
-        function getBranchAchievementNumberByLevel(level) {
-            let count = 0;
-            for (const branch of branches.value) {
-                // Get an example achievement from the branch
-                const achievementId = branch.achievement_id[0];
-                const achievement = achievementMap.value.get(achievementId);
-
-                // If the level matches, add to the total count
-                if (level === achievement.reward_level) {
-                    count = count + branch.achievement_id.length - 1;
-                }
-            }
-            return count;
-        }
-
-        /**
-         * Get the total number of additional achievements in all branches with the specified class.
-         * @param sr_class
-         * @returns number
-         */
-        function getBranchAchievementsNumberByClass(sr_class) {
-            let count = 0;
-            for (const branch of branches.value) {
-                // Get an example achievement from the branch
-                const achievementId = branch.achievement_id[0];
-                const achievement = achievementMap.value.get(achievementId);
-
-                // If the class matches, add to the total count
-                if (sr_class === achievement.class_name) {
-                    count = count + branch.achievement_id.length - 1;
-                }
-            }
-            return count;
-        }
-
-        /**
-         * Get the total number of additional achievements in all branches with the specified class and level.
-         * @param sr_class
-         * @param level
-         * @returns number
-         */
-        function getBranchAchievementNumberByClassAndLevel(sr_class, level) {
-            let count = 0;
-            for (const branch of branches.value) {
-                // Get an example achievement from the branch
-                const achievementId = branch.achievement_id[0];
-                const achievement = achievementMap.value.get(achievementId);
-
-                // If the class and level matches, add to the total count
-                if (sr_class === achievement.class_name && level === achievement.reward_level) {
-                    count = count + branch.achievement_id.length - 1;
-                }
-            }
-            return count;
-        }
-
-        /**
          * Get the total number of complete records in a given level.
          * @param uuid
          * @param level
@@ -376,10 +303,6 @@ export const useSrAchievementStore = defineStore(
             fetchBranches,
             ensureBranchData,
             completeAchievement,
-            getBranchAchievementsNumber,
-            getBranchAchievementNumberByLevel,
-            getBranchAchievementsNumberByClass,
-            getBranchAchievementNumberByClassAndLevel,
             getCompleteRecordNumberByLevel,
             getCompleteRecordNumberByClass,
             getCompleteRecordNumberByClassAndLevel
