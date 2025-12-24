@@ -34,7 +34,8 @@ export const completeAchievementCountByLevel = (type, uuid, level) => {
         if (record.complete !== 1) continue;
 
         const achievement = store.achievementMap.get(record.achievement_id);
-        if (achievement && achievement.reward_level !== level) continue;
+        if (!achievement) continue;
+        if (achievement.reward_level !== level) continue;
         count++;
     }
     return count;
@@ -72,6 +73,7 @@ export const completeAchievementCountByClass = (type, uuid, achievement_class) =
 
         // If the class matches, add to the total count
         const achievement = store.achievementMap.get(record.achievement_id);
+        if (!achievement) continue;
         if (type === 'SR') {
             if (achievement.class_name !== achievement_class) continue;
         } else {
@@ -115,7 +117,8 @@ export const completeAchievementCountByClassAndLevel = (type, uuid, achievement_
 
         // If the class matches, add to the total count
         const achievement = store.achievementMap.get(record.achievement_id);
-        if (achievement && achievement.reward_level !== level) continue;
+        if (!achievement) continue;
+        if (achievement.reward_level !== level) continue;
         if (type === 'SR') {
             if (achievement.class_name !== achievement_class) continue;
         } else {

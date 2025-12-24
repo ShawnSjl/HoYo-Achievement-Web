@@ -29,6 +29,7 @@ export const branchAchievementCountByLevel = (type, level) => {
         const achievement = store.achievementMap.get(achievementId);
 
         // If the level matches, add to the total count
+        if (!achievement) continue;
         if (achievement.reward_level !== level) continue;
         count = count + branch.achievement_id.length - 1;
     }
@@ -62,6 +63,7 @@ export const branchAchievementCountByClass = (type, achievement_class) => {
         const achievement = store.achievementMap.get(achievementId);
 
         // If the level matches, add to the total count
+        if (!achievement) continue;
         if (type === 'SR') {
             if (achievement.class_name !== achievement_class) continue;
         } else {
@@ -101,6 +103,7 @@ export const branchAchievementCountByClassAndLevel = (type, achievement_class, l
 
         // If the level matches, add to the total count
         if (achievement.reward_level !== level) continue;
+        if (!achievement) continue;
         if (type === 'SR') {
             if (achievement.class_name !== achievement_class) continue;
         } else {
