@@ -6,6 +6,10 @@ import ZzzAchievementImg1 from '@/assets/zzz-image/zzz-achievement-level-1.png';
 import ZzzAchievementImg2 from '@/assets/zzz-image/zzz-achievement-level-2.png';
 import ZzzAchievementImg3 from '@/assets/zzz-image/zzz-achievement-level-3.png';
 import {branchAchievementCountByClass, branchAchievementCountByClassAndLevel} from "@/utils/countBranchAchievement.js";
+import {
+  completeAchievementCountByClass,
+  completeAchievementCountByClassAndLevel
+} from "@/utils/countCompleteAchievement.js";
 
 // 使用Pinia作为本地缓存
 const achievementStore = useZzzAchievementStore();
@@ -27,7 +31,7 @@ const totalNumber = computed(() => {
       - branchAchievementCountByClass('ZZZ', classId.value);
 })
 const completeNumber = computed(() => {
-  return achievementStore.getCompleteRecordNumberByClass(props.uuid, classId.value);
+  return completeAchievementCountByClass('ZZZ', props.uuid, props.achievementClass);
 })
 
 const getLevel1Number = computed(() => {
@@ -36,7 +40,7 @@ const getLevel1Number = computed(() => {
       - branchAchievementCountByClassAndLevel('ZZZ', classId.value, 1);
 })
 const getCompleteLevel1Number = computed(() => {
-  return achievementStore.getCompleteRecordNumberByClassAndLevel(props.uuid, classId.value, 1);
+  return completeAchievementCountByClassAndLevel('ZZZ', props.uuid, classId.value, 1);
 })
 
 const getLevel2Number = computed(() => {
@@ -45,7 +49,7 @@ const getLevel2Number = computed(() => {
       - branchAchievementCountByClassAndLevel('ZZZ', classId.value, 2);
 })
 const getCompleteLevel2Number = computed(() => {
-  return achievementStore.getCompleteRecordNumberByClassAndLevel(props.uuid, classId.value, 2);
+  return completeAchievementCountByClassAndLevel('ZZZ', props.uuid, classId.value, 2);
 })
 
 const getLevel3Number = computed(() => {
@@ -54,7 +58,7 @@ const getLevel3Number = computed(() => {
       - branchAchievementCountByClassAndLevel('ZZZ', classId.value, 3);
 })
 const getCompleteLevel3Number = computed(() => {
-  return achievementStore.getCompleteRecordNumberByClassAndLevel(props.uuid, classId.value, 3);
+  return completeAchievementCountByClassAndLevel('ZZZ', props.uuid, classId.value, 3);
 })
 </script>
 

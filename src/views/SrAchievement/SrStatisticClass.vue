@@ -5,6 +5,10 @@ import SrAchievementImg1 from '@/assets/sr-image/sr-achievement-level-1.png';
 import SrAchievementImg2 from '@/assets/sr-image/sr-achievement-level-2.png';
 import SrAchievementImg3 from '@/assets/sr-image/sr-achievement-level-3.png';
 import {branchAchievementCountByClass, branchAchievementCountByClassAndLevel} from "@/utils/countBranchAchievement.js";
+import {
+  completeAchievementCountByClass,
+  completeAchievementCountByClassAndLevel
+} from "@/utils/countCompleteAchievement.js";
 
 // 使用Pinia作为本地缓存
 const achievementStore = useSrAchievementStore()
@@ -21,7 +25,7 @@ const totalNumber = computed(() => {
       - branchAchievementCountByClass('SR', props.achievementClass);
 })
 const completeNumber = computed(() => {
-  return achievementStore.getCompleteRecordNumberByClass(props.uuid, props.achievementClass);
+  return completeAchievementCountByClass('SR', props.uuid, props.achievementClass);
 })
 
 const getLevel1Number = computed(() => {
@@ -30,7 +34,7 @@ const getLevel1Number = computed(() => {
       - branchAchievementCountByClassAndLevel('SR', props.achievementClass, 1);
 })
 const getCompleteLevel1Number = computed(() => {
-  return achievementStore.getCompleteRecordNumberByClassAndLevel(props.uuid, props.achievementClass, 1);
+  return completeAchievementCountByClassAndLevel('SR', props.uuid, props.achievementClass, 1);
 })
 
 const getLevel2Number = computed(() => {
@@ -39,7 +43,7 @@ const getLevel2Number = computed(() => {
       - branchAchievementCountByClassAndLevel('SR', props.achievementClass, 2);
 })
 const getCompleteLevel2Number = computed(() => {
-  return achievementStore.getCompleteRecordNumberByClassAndLevel(props.uuid, props.achievementClass, 2);
+  return completeAchievementCountByClassAndLevel('SR', props.uuid, props.achievementClass, 2);
 })
 
 const getLevel3Number = computed(() => {
@@ -48,7 +52,7 @@ const getLevel3Number = computed(() => {
       - branchAchievementCountByClassAndLevel('SR', props.achievementClass, 3);
 })
 const getCompleteLevel3Number = computed(() => {
-  return achievementStore.getCompleteRecordNumberByClassAndLevel(props.uuid, props.achievementClass, 3);
+  return completeAchievementCountByClassAndLevel('SR', props.uuid, props.achievementClass, 3);
 })
 </script>
 

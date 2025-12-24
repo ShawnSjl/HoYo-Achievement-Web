@@ -10,6 +10,7 @@ import {useAccountStore} from "@/stores/accountStore.js";
 import {useServerInfoStore} from "@/stores/serverInfoStore.js";
 import ButtonEditAccount from "@/views/Home/ButtonEditAccount.vue";
 import {branchAchievementCount, branchAchievementCountByLevel} from "@/utils/countBranchAchievement.js";
+import {completeAchievementCount, completeAchievementCountByLevel} from "@/utils/countCompleteAchievement.js";
 
 // 使用Pinia作为本地缓存
 const accountStore = useAccountStore();
@@ -31,10 +32,11 @@ const account = accounts.value.find(account => account.uuid === props.uuid);
 
 // 计算成就数量
 const getTotalNumber = computed(() => {
-  return achievementStore.achievements.length - branchAchievementCount('ZZZ');
+  return achievementStore.achievements.length
+      - branchAchievementCount('ZZZ');
 })
 const getTotalCompleteNumber = computed(() => {
-  return account.records.filter(record => record.complete === 1).length;
+  return completeAchievementCount(props.uuid);
 })
 
 const getLevel1Number = computed(() => {
@@ -42,7 +44,7 @@ const getLevel1Number = computed(() => {
       - branchAchievementCountByLevel('ZZZ', 1);
 })
 const getCompleteLevel1Number = computed(() => {
-  return achievementStore.getCompleteRecordNumberByLevel(props.uuid, 1);
+  return completeAchievementCountByLevel('ZZZ', props.uuid, 1);
 })
 
 const getLevel2Number = computed(() => {
@@ -50,7 +52,7 @@ const getLevel2Number = computed(() => {
       - branchAchievementCountByLevel('ZZZ', 2);
 })
 const getCompleteLevel2Number = computed(() => {
-  return achievementStore.getCompleteRecordNumberByLevel(props.uuid, 2);
+  return completeAchievementCountByLevel('ZZZ', props.uuid, 2);
 })
 
 const getLevel3Number = computed(() => {
@@ -58,7 +60,7 @@ const getLevel3Number = computed(() => {
       - branchAchievementCountByLevel('ZZZ', 3);
 })
 const getCompleteLevel3Number = computed(() => {
-  return achievementStore.getCompleteRecordNumberByLevel(props.uuid, 3);
+  return completeAchievementCountByLevel('ZZZ', props.uuid, 3);
 })
 
 // 处理点击转跳

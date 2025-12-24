@@ -220,79 +220,6 @@ export const useSrAchievementStore = defineStore(
             return branch.achievement_id.filter(id => id !== targetId);
         }
 
-        /**
-         * Get the total number of complete records in a given level.
-         * @param uuid
-         * @param level
-         * @returns {number}
-         */
-        function getCompleteRecordNumberByLevel(uuid, level) {
-            // Get records by given uuid
-            const accountStore = useAccountStore();
-            const account = accountStore.getAccounts().find(item => item.uuid === uuid);
-
-            // Get the number of complete records by the given level
-            let count = 0;
-            for (const record of account.records) {
-                if (record.complete !== 1) continue;
-
-                const achievement = achievementMap.value.get(record.achievement_id);
-                if (achievement && achievement.reward_level === level) {
-                    count++;
-                }
-            }
-            return count;
-        }
-
-        /**
-         * Get the total number of complete records in a given class id.
-         * @param uuid
-         * @param sr_class
-         * @returns {number}
-         */
-        function getCompleteRecordNumberByClass(uuid, sr_class) {
-            // Get records by given uuid
-            const accountStore = useAccountStore();
-            const account = accountStore.getAccounts().find(item => item.uuid === uuid);
-
-            // Get the number of complete records by the given level
-            let count = 0;
-            for (const record of account.records) {
-                if (record.complete !== 1) continue;
-
-                const achievement = achievementMap.value.get(record.achievement_id);
-                if (achievement && achievement.class_name === sr_class) {
-                    count++;
-                }
-            }
-            return count;
-        }
-
-        /**
-         * Get the total number of complete records in a given class id.
-         * @param uuid
-         * @param sr_class
-         * @param level
-         * @returns {number}
-         */
-        function getCompleteRecordNumberByClassAndLevel(uuid, sr_class, level) {
-            // Get records by given uuid
-            const accountStore = useAccountStore();
-            const account = accountStore.getAccounts().find(item => item.uuid === uuid);
-
-            // Get the number of complete records by the given level
-            let count = 0;
-            for (const record of account.records) {
-                if (record.complete !== 1) continue;
-
-                const achievement = achievementMap.value.get(record.achievement_id);
-                if (achievement && achievement.class_name === sr_class && achievement.reward_level === level) {
-                    count++;
-                }
-            }
-            return count;
-        }
-
         return {
             achievements,
             achievementMap,
@@ -303,9 +230,6 @@ export const useSrAchievementStore = defineStore(
             fetchBranches,
             ensureBranchData,
             completeAchievement,
-            getCompleteRecordNumberByLevel,
-            getCompleteRecordNumberByClass,
-            getCompleteRecordNumberByClassAndLevel
         };
     },
     {

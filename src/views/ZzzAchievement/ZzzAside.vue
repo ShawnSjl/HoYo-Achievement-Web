@@ -4,6 +4,7 @@ import {useZzzAchievementStore} from "@/stores/zzzAchievementsStore";
 import {zzzGetClassByCategory, zzzGetClassIdByName} from "@/utils/zzzAchievementClass";
 import CardZzzStatisticTotal from "@/views/ZzzAchievement/CardZzzStatisticTotal.vue";
 import {branchAchievementCountByClass} from "@/utils/countBranchAchievement.js";
+import {completeAchievementCountByClass} from "@/utils/countCompleteAchievement.js";
 
 // 传入只读数据
 const props = defineProps({
@@ -31,7 +32,7 @@ const completePercentage = computed(() => {
     const numberTotal = achievementStore.achievements.filter(achievement => achievement.class_id === classId).length
         - branchAchievementCountByClass('ZZZ', classId);
 
-    const numberComplete = achievementStore.getCompleteRecordNumberByClass(props.uuid, classId);
+    const numberComplete = completeAchievementCountByClass('ZZZ', props.uuid, classId);
 
     if (numberTotal === 0) return 0; // 避免除以 0
 
