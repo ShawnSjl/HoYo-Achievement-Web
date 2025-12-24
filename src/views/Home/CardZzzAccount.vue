@@ -176,6 +176,7 @@ const handleClick = () => {
 }
 
 .version {
+  margin-left: 0;
   margin-block-start: 0;
   margin-block-end: 0;
   font-size: 14px;
