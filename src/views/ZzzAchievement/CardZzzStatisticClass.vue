@@ -5,24 +5,15 @@ import {zzzGetClassIdByName} from "@/utils/zzzAchievementClass";
 import ZzzAchievementImg1 from '@/assets/zzz-image/zzz-achievement-level-1.png';
 import ZzzAchievementImg2 from '@/assets/zzz-image/zzz-achievement-level-2.png';
 import ZzzAchievementImg3 from '@/assets/zzz-image/zzz-achievement-level-3.png';
-import {useAccountStore} from "@/stores/accountStore.js";
 
 // 使用Pinia作为本地缓存
-const accountStore = useAccountStore();
 const achievementStore = useZzzAchievementStore();
 
+// 传入只读数据
 const props = defineProps({
   uuid: String,
   achievementClass: String,
 })
-
-// 获取账户列表
-const accounts = computed(() => {
-  return accountStore.getAccounts();
-})
-
-// 获取账号成就
-const account = accounts.value.find(account => account.uuid === props.uuid);
 
 // 计算成就数量
 const totalNumber = computed(() => {
