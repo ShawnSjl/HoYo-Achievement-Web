@@ -3,46 +3,40 @@ import {computed, ref} from "vue";
 import {useIsMobileStore} from "@/stores/isMobileStore";
 import {useSrAchievementStore} from "@/stores/srAchievementStore";
 import {Check, Close, Warning} from '@element-plus/icons-vue';
-import {ElMessageBox} from "element-plus";
-import {showError, showSuccess} from "@/utils/notification";
 import {srExport} from "@/utils/srExport";
 import ButtonSrImport from "@/views/SrAchievement/ButtonSrImport.vue";
 
-// 移动端适配
+// 传入只读数据
+const props = defineProps({
+  uuid: String,
+})
+
+// 使用Pinia作为本地缓存
+const achievementStore = useSrAchievementStore();
 const isMobileStore = useIsMobileStore();
+
+// dialog可视性
+const dialogVisible = ref(false);
+
+// 移动端适配
 const dialogWidth = computed(() => {
   return isMobileStore.isMobile ? '100%' : '500px'
 });
 
-const achievementStore = useSrAchievementStore();
-
-const dialogVisible = ref(false);
-
+// 处理按钮点击
 const handleClick = () => {
   dialogVisible.value = true;
 }
 
+// 处理dialog关闭
 const handleClose = () => {
   dialogVisible.value = false;
 }
 
-const openWarn = () => {
-  ElMessageBox.confirm(
-      '强制更新会清理本地缓存数据，确认是否继续？',
-      '警告',
-      {
-        confirmButtonText: '确认',
-        cancelButtonText: '取消',
-        type: 'warning'
-      }
-  )
-      .then(() => {
-        achievementStore.fetchAchievements()
-        showSuccess('强制更新成功')
-      })
-      .catch(() => {
-        showError('强制更新失败')
-      })
+// 处理强制刷新
+const handleFetch = async () => {
+  await achievementStore.fetchAchievements();
+  await achievementStore.fetchBranches();
 }
 </script>
 
@@ -87,11 +81,11 @@ const openWarn = () => {
       </div>
       <div>
         <p>导出:</p>
-        <el-button dark round type="primary" @click="srExport()">导出成就表格</el-button>
+        <el-button dark round type="primary" @click="srExport(props.uuid)">导出成就表格</el-button>
       </div>
       <div>
         <p>强制更新数据:</p>
-        <el-button color="red" dark round @click="openWarn">更新</el-button>
+        <el-button dark round type="info" @click="handleFetch">更新</el-button>
       </div>
     </el-dialog>
 

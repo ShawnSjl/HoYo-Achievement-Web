@@ -8,53 +8,46 @@ import SrAchievementImg3 from '@/assets/sr-image/sr-achievement-level-3.png';
 // 使用Pinia作为本地缓存
 const achievementStore = useSrAchievementStore()
 
+// 传入只读数据
 const props = defineProps({
+  uuid: String,
   achievementClass: String,
 })
 
+// 计算成就数量
 const totalNumber = computed(() => {
-  return achievementStore.achievements.filter(achievement => achievement.class === props.achievementClass).length
+  return achievementStore.achievements.filter(achievement => achievement.class_name === props.achievementClass).length
       - achievementStore.getBranchAchievementsNumberByClass(props.achievementClass);
 })
 const completeNumber = computed(() => {
-  return achievementStore.achievements.filter(achievement => achievement.class === props.achievementClass &&
-      achievement.complete === 1).length;
+  return achievementStore.getCompleteRecordNumberByClass(props.uuid, props.achievementClass);
 })
 
 const getLevel1Number = computed(() => {
   return achievementStore.achievements.filter(achievement => achievement.reward_level === 1
-      && achievement.class === props.achievementClass).length
+          && achievement.class_name === props.achievementClass).length
       - achievementStore.getBranchAchievementNumberByClassAndLevel(props.achievementClass, 1);
 })
 const getCompleteLevel1Number = computed(() => {
-  return achievementStore.achievements.filter(achievement => achievement.reward_level === 1
-      && achievement.complete === 1
-      && achievement.class === props.achievementClass
-  ).length;
+  return achievementStore.getCompleteRecordNumberByClassAndLevel(props.uuid, props.achievementClass, 1);
 })
 
 const getLevel2Number = computed(() => {
   return achievementStore.achievements.filter(achievement => achievement.reward_level === 2
-      && achievement.class === props.achievementClass).length
+          && achievement.class_name === props.achievementClass).length
       - achievementStore.getBranchAchievementNumberByClassAndLevel(props.achievementClass, 2);
 })
 const getCompleteLevel2Number = computed(() => {
-  return achievementStore.achievements.filter(achievement => achievement.reward_level === 2
-      && achievement.complete === 1
-      && achievement.class === props.achievementClass
-  ).length;
+  return achievementStore.getCompleteRecordNumberByClassAndLevel(props.uuid, props.achievementClass, 2);
 })
 
 const getLevel3Number = computed(() => {
   return achievementStore.achievements.filter(achievement => achievement.reward_level === 3
-      && achievement.class === props.achievementClass).length
+          && achievement.class_name === props.achievementClass).length
       - achievementStore.getBranchAchievementNumberByClassAndLevel(props.achievementClass, 3);
 })
 const getCompleteLevel3Number = computed(() => {
-  return achievementStore.achievements.filter(achievement => achievement.reward_level === 3
-      && achievement.complete === 1
-      && achievement.class === props.achievementClass
-  ).length;
+  return achievementStore.getCompleteRecordNumberByClassAndLevel(props.uuid, props.achievementClass, 3);
 })
 </script>
 
@@ -63,20 +56,20 @@ const getCompleteLevel3Number = computed(() => {
     <el-scrollbar>
       <div class="sr-statistic-class">
         <div class="sr-statistic-left">
-          <p class="sr-statistic-title">{{props.achievementClass}}</p>
-          <p class="sr-statistic-count">成就进度 {{completeNumber}}/{{totalNumber}}</p>
+          <p class="sr-statistic-title">{{ props.achievementClass }}</p>
+          <p class="sr-statistic-count">成就进度 {{ completeNumber }}/{{ totalNumber }}</p>
         </div>
         <div class="sr-statistic-level">
-          <img :src="SrAchievementImg3" alt="achievement image" class="sr-statistic-img" />
-          <p class="sr-statistic-level-count">{{getCompleteLevel3Number}}/{{getLevel3Number}}</p>
+          <img :src="SrAchievementImg3" alt="achievement image" class="sr-statistic-img"/>
+          <p class="sr-statistic-level-count">{{ getCompleteLevel3Number }}/{{ getLevel3Number }}</p>
         </div>
         <div class="sr-statistic-level">
-          <img :src="SrAchievementImg2" alt="achievement image" class="sr-statistic-img" />
-          <p class="sr-statistic-level-count">{{getCompleteLevel2Number}}/{{getLevel2Number}}</p>
+          <img :src="SrAchievementImg2" alt="achievement image" class="sr-statistic-img"/>
+          <p class="sr-statistic-level-count">{{ getCompleteLevel2Number }}/{{ getLevel2Number }}</p>
         </div>
         <div class="sr-statistic-level">
-          <img :src="SrAchievementImg1" alt="achievement image" class="sr-statistic-img" />
-          <p class="sr-statistic-level-count">{{getCompleteLevel1Number}}/{{getLevel1Number}}</p>
+          <img :src="SrAchievementImg1" alt="achievement image" class="sr-statistic-img"/>
+          <p class="sr-statistic-level-count">{{ getCompleteLevel1Number }}/{{ getLevel1Number }}</p>
         </div>
       </div>
     </el-scrollbar>
@@ -135,7 +128,7 @@ const getCompleteLevel3Number = computed(() => {
   display: flex;
 }
 
-.sr-statistic-level+.sr-statistic-level {
+.sr-statistic-level + .sr-statistic-level {
   margin-left: 75px;
 }
 
@@ -159,7 +152,7 @@ const getCompleteLevel3Number = computed(() => {
     margin-left: 25px;
   }
 
-  .sr-statistic-level+.sr-statistic-level {
+  .sr-statistic-level + .sr-statistic-level {
     margin-left: 55px;
   }
 

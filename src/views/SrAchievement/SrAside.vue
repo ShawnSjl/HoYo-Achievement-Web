@@ -3,9 +3,16 @@ import {computed} from "vue";
 import {srClasses} from "@/utils/srAchievementClass";
 import {useSrAchievementStore} from "@/stores/srAchievementStore";
 
-const achievementStore = useSrAchievementStore()
+// 传入只读数据
+const props = defineProps({
+  uuid: String,
+})
 
-const achievementClass = defineModel()
+// 传入可写数据
+const achievementClass = defineModel();
+
+// 使用Pinia作为本地缓存
+const achievementStore = useSrAchievementStore()
 
 // 获取成就类别图片
 function getAchievementImg(cls) {
@@ -13,17 +20,18 @@ function getAchievementImg(cls) {
   return new URL(`/src/assets/sr-image/sr-class-${class_id}.png`, import.meta.url).href
 }
 
+// 处理选择
 const handleSelect = async (srClass) => {
   achievementClass.value = srClass;
 }
 
+// 计算完成度百分比
 const completePercentage = computed(() => {
   return (sr_class) => {
-    const totalNumber = achievementStore.achievements.filter(achievement => achievement.class === sr_class).length
+    const totalNumber = achievementStore.achievements.filter(achievement => achievement.class_name === sr_class).length
         - achievementStore.getBranchAchievementsNumberByClass(sr_class);
 
-    const completeNumber = achievementStore.achievements.filter(achievement => achievement.class === sr_class &&
-        achievement.complete === 1).length;
+    const completeNumber = achievementStore.getCompleteRecordNumberByClass(props.uuid, sr_class);
 
     if (totalNumber === 0) return 0; // 避免除以 0
 
@@ -48,8 +56,8 @@ const scrollBarMaxHeight = computed(() => {
             :class="['selector-button', { active: srClass === achievementClass }]"
             @click="handleSelect(srClass)"
         >
-          <img :src="getAchievementImg(srClass)" :alt="srClass" class="sr-button-image" />
-          <p class="sr-button-text">{{completePercentage(srClass)}}%</p>
+          <img :alt="srClass" :src="getAchievementImg(srClass)" class="sr-button-image"/>
+          <p class="sr-button-text">{{ completePercentage(srClass) }}%</p>
         </div>
       </div>
     </el-scrollbar>

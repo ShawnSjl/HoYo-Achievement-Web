@@ -8,16 +8,22 @@ import {useSrAchievementStore} from "@/stores/srAchievementStore";
 
 // 使用Pinia作为本地缓存
 const isMobileStore = useIsMobileStore();
-const srAchievementStore = useSrAchievementStore();
+const achievementStore = useSrAchievementStore();
 
-// 传入参数
+// 传入只读数据
 const props = defineProps({
+  uuid: String,
   achievement: Object,
+})
+
+// 获取成就完成状态
+const achievementStatus = computed(() => {
+  return achievementStore.getAchievementStatus(props.uuid, props.achievement.achievement_id);
 })
 
 // 获取成就图片
 const achievementImg = computed(() => {
-  const class_id = srClasses.indexOf(props.achievement.class) + 1;
+  const class_id = srClasses.indexOf(props.achievement.class_name) + 1;
   return new URL(`/src/assets/sr-image/sr-class-${class_id}-level-${props.achievement.reward_level}.png`, import.meta.url).href
 })
 
@@ -37,27 +43,38 @@ const achievementReward = computed(() => {
 
 // 获取按钮状态
 const completeButtonMsg = computed(() => {
-  if (props.achievement.complete === 0) {return "未完成"}
-  else if (props.achievement.complete === 1) {return "已完成"}
-  else {return "完成分支"}
+  switch (achievementStatus.value) {
+    case 0:
+      return "未完成";
+    case 1:
+      return "已完成";
+    case 2:
+      return "完成分支";
+    default:
+      return "未完成";
+  }
 })
-const isComplete = computed(() => {return props.achievement.complete === 1});
-const disableButton = computed(() => {return props.achievement.complete === 2});
+const isComplete = computed(() => {
+  return achievementStatus.value === 1
+});
+const disableButton = computed(() => {
+  return achievementStatus.value === 2
+});
 
 const handleComplete = async () => {
-  if (props.achievement.complete === 2) {
+  if (achievementStatus.value === 2) {
     showInfo('该分支成就已完成，不可更改')
     return;
   }
-  const newState = props.achievement.complete === 1 ? 0 : 1;
-  await srAchievementStore.completeAchievement(props.achievement.achievement_id, newState);
+  const newState = achievementStatus.value === 1 ? 0 : 1;
+  await achievementStore.completeAchievement(props.uuid, props.achievement.achievement_id, newState);
 }
 </script>
 
 <template>
   <div class="sr-table-row">
     <div class="sr-table-row-left">
-      <img :src="achievementImg" alt="achievement image" class="sr-achievement-image" />
+      <img :src="achievementImg" alt="achievement image" class="sr-achievement-image"/>
       <div class="sr-detail">
         <div class="sr-name">
           {{ props.achievement.name }}
@@ -67,13 +84,13 @@ const handleComplete = async () => {
     </div>
 
     <div class="sr-table-row-right">
-      <div class="sr-game-version" >{{ props.achievement.game_version }}</div>
-      <div v-if="!isMobileStore.isMobile"  class="sr-achievement-reward-bg">
-        <img :src="SrAchievementReward" alt="achievement reward" class="sr-achievement-reward-image" />
-        <div class="sr-achievement-reward-count">{{achievementReward}}</div>
+      <div class="sr-game-version">{{ props.achievement.game_version }}</div>
+      <div v-if="!isMobileStore.isMobile" class="sr-achievement-reward-bg">
+        <img :src="SrAchievementReward" alt="achievement reward" class="sr-achievement-reward-image"/>
+        <div class="sr-achievement-reward-count">{{ achievementReward }}</div>
       </div>
-      <el-button round :disabled="disableButton" :plain="!isComplete" @click="handleComplete" type="primary"
-                 class="sr-complete-button">
+      <el-button :disabled="disableButton" :plain="!isComplete" class="sr-complete-button" round type="primary"
+                 @click="handleComplete">
         {{ completeButtonMsg }}
       </el-button>
     </div>
@@ -120,7 +137,7 @@ const handleComplete = async () => {
   width: 53px;
   height: 53px;
   border-radius: 50%; /* 核心代码：让图片变圆 */
-  object-fit: contain;   /* 保证图片不变形、居中裁剪 */
+  object-fit: contain; /* 保证图片不变形、居中裁剪 */
   background-color: #6a6a6b;
 }
 
@@ -134,16 +151,16 @@ const handleComplete = async () => {
 /* 成就奖励图片 */
 .sr-achievement-reward-bg {
   position: relative;
-  width: 70px;              /* 控制背景大小 */
+  width: 70px; /* 控制背景大小 */
   height: 70px;
   background: linear-gradient(to bottom, #9a6450, #efb700);
   border-top-right-radius: 12px;
   margin-right: 20px;
 
-  display: flex;            /* 用 flex 居中图片 */
+  display: flex; /* 用 flex 居中图片 */
   align-items: center;
   justify-content: center;
-  overflow: hidden;         /* 确保图片不超出边界 */
+  overflow: hidden; /* 确保图片不超出边界 */
 }
 
 .sr-achievement-reward-image {
@@ -165,8 +182,8 @@ const handleComplete = async () => {
   text-align: center;
   font-size: 12px;
   display: flex;
-  justify-content: center;  /* 水平居中 */
-  align-items: center;      /* 垂直居中 */
+  justify-content: center; /* 水平居中 */
+  align-items: center; /* 垂直居中 */
 }
 
 /* 成就介绍 */

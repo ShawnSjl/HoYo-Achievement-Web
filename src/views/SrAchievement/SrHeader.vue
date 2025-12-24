@@ -5,7 +5,13 @@ import ButtonSrSetting from "@/views/SrAchievement/ButtonSrSetting.vue";
 import SrStatisticTotal from "@/views/SrAchievement/SrStatisticTotal.vue";
 import {useIsMobileStore} from "@/stores/isMobileStore";
 
+// 使用Pinia作为本地缓存
 const isMobileStore = useIsMobileStore();
+
+// 传入只读数据
+const props = defineProps({
+  uuid: String,
+});
 </script>
 
 <template>
@@ -17,12 +23,12 @@ const isMobileStore = useIsMobileStore();
       </div>
 
       <div v-if="!isMobileStore.isMobile" class="sr-header-statistic-wrapper">
-        <sr-statistic-total/>
+        <sr-statistic-total :uuid="props.uuid"/>
       </div>
     </div>
 
     <div class="sr-header-right">
-      <button-sr-setting/>
+      <button-sr-setting :uuid="props.uuid"/>
       <!--      <game-switch class="sr-header-right-gap" />-->
       <avatar/>
     </div>

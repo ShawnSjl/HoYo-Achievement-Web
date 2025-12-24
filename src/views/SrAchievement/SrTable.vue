@@ -1,23 +1,60 @@
 <script setup>
 import SrTableRow from "@/views/SrAchievement/SrTableRow.vue";
+import {useSrAchievementStore} from "@/stores/srAchievementStore.js";
+import {computed} from "vue";
 
-defineProps({
-  sortedAchievements: Array,
+// 传入只读数据
+const props = defineProps({
+  uuid: String,
   tableHeight: Number,
 })
-const achievementClass = defineModel()
+
+// 传入可写数据
+const achievementClass = defineModel();
+
+// 使用Pinia作为本地缓存
+const achievementStore = useSrAchievementStore();
+
+// 根据类别筛选成就
+const filteredAchievements = computed(() => {
+  return achievementStore.achievements.filter(achievement => achievement.class_name === achievementClass.value)
+})
+
+// 根据条件排序
+const sortedAchievements = computed(() => {
+  if (achievementStore.isCompleteFirst) {
+    return [...filteredAchievements.value].sort((a, b) => {
+      const statusA = achievementStore.getAchievementStatus(props.uuid, a.achievement_id);
+      const statusB = achievementStore.getAchievementStatus(props.uuid, b.achievement_id);
+
+      const completeA = statusA === 2 ? 1 : statusA;
+      const completeB = statusB === 2 ? 1 : statusB;
+
+      // 1️⃣ 优先按 complete 状态
+      if (completeA !== completeB) {
+        return completeA - completeB;
+      }
+
+      // 2️⃣ complete 相同，按 id 升序
+      return a.id - b.id;
+    });
+  } else {
+    return filteredAchievements.value;
+  }
+})
 </script>
 
 <template>
   <el-scrollbar :height="tableHeight">
     <div class="sr-table">
       <el-card
-        v-for="(row, index) in sortedAchievements"
-        :key="index"
-        class="sr-table-row"
-        shadow="hover"
-        >
-        <sr-table-row :achievement="row" />
+          v-for="(row, index) in sortedAchievements"
+          :key="index"
+          class="sr-table-row"
+          shadow="hover"
+      >
+        <sr-table-row :achievement="row"
+                      :uuid="props.uuid"/>
       </el-card>
     </div>
   </el-scrollbar>
