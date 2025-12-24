@@ -3,6 +3,9 @@ import ZzzView from "@/views/ZzzAchievement/ZzzView.vue";
 import HomeView from "@/views/Home/HomeView.vue"
 import SrView from "@/views/SrAchievement/SrView.vue";
 import {useAccountStore} from "@/stores/accountStore.js";
+import {useSrAchievementStore} from "@/stores/srAchievementStore.js";
+import {useZzzAchievementStore} from "@/stores/zzzAchievementsStore.js";
+import {useServerInfoStore} from "@/stores/serverInfoStore.js";
 
 const routes = [
     {
@@ -13,6 +16,23 @@ const routes = [
             theme: 'light',
             color: '#FFFFFF'
         },
+        beforeEnter: async (to, from, next) => {
+            const srAchievementStore = useSrAchievementStore();
+            const zzzAchievementStore = useZzzAchievementStore();
+            const serverInfoStore = useServerInfoStore();
+
+            // Ensure SR's data are loaded
+            await srAchievementStore.ensureAchievementData();
+            await srAchievementStore.ensureBranchData();
+
+            // Ensure ZZZ's data are loaded
+            await zzzAchievementStore.ensureAchievementData();
+            await zzzAchievementStore.ensureBranchData();
+            // Fetch the server info
+            await serverInfoStore.ensureServerInfo();
+
+            next();
+        }
     },
     {
         path: "/zzz",
