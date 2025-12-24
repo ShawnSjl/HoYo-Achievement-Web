@@ -108,7 +108,7 @@ async function handleFile(file) {
       }
 
       // 防止被标记为未完成的分支成就清除了加载过的成就的状态
-      if (targetRecord.complete === 2 && complete === 0) {
+      if (targetRecord && targetRecord.complete === 2 && complete === 0) {
         continue;
       }
 
