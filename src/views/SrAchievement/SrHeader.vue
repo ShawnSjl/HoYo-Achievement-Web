@@ -4,6 +4,7 @@ import SrAchievement from "@/assets/sr-image/sr-achievement.png"
 import ButtonSrSetting from "@/views/SrAchievement/ButtonSrSetting.vue";
 import SrStatisticTotal from "@/views/SrAchievement/SrStatisticTotal.vue";
 import {useIsMobileStore} from "@/stores/isMobileStore";
+import AccountSwitch from "@/components/AccountSwitch.vue";
 
 // 使用Pinia作为本地缓存
 const isMobileStore = useIsMobileStore();
@@ -29,7 +30,7 @@ const props = defineProps({
 
     <div class="sr-header-right">
       <button-sr-setting :uuid="props.uuid"/>
-      <!--      <game-switch class="sr-header-right-gap" />-->
+      <account-switch :uuid="props.uuid" style="margin-right: 10px"/>
       <avatar/>
     </div>
   </div>
@@ -94,17 +95,6 @@ const props = defineProps({
   justify-content: space-between;
   align-content: flex-start;
   align-items: center;
-}
-
-.sr-header-right-gap {
-  margin-right: 30px;
-  margin-left: 30px
-}
-
-@media (max-width: 900px) {
-  .sr-header-right-gap {
-    margin-right: 10px;
-    margin-left: 10px
-  }
+  gap: 10px;
 }
 </style>

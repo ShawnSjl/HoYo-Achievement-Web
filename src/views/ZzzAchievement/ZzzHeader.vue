@@ -3,6 +3,7 @@ import {categories} from "@/utils/zzzAchievementClass";
 import Avatar from "@/components/Avatar.vue";
 import ButtonZzzSetting from "@/views/ZzzAchievement/ButtonZzzSetting.vue";
 import {useIsMobileStore} from "@/stores/isMobileStore";
+import AccountSwitch from "@/components/AccountSwitch.vue";
 
 // 传入只读数据
 const props = defineProps({
@@ -21,7 +22,7 @@ const isMobileStore = useIsMobileStore();
     <div class="zzz-header-left">
       <div class="zzz-header-left-start">
         <avatar/>
-        <!--        <game-switch style="margin-left: 30px" />-->
+        <account-switch :uuid="props.uuid" style="margin-left: 30px"/>
       </div>
       <div class="zzz-header-left-end">
         <button-zzz-setting :uuid="props.uuid"/>
