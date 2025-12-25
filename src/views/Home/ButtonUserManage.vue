@@ -2,7 +2,7 @@
 import {ref, watch} from "vue";
 import {showError} from "@/utils/notification.js";
 import {getAllUsers} from "@/api/user.js";
-import ButtonAddUser from "@/views/Home/ButtonAddUser.vue";
+import ButtonUserAdd from "@/views/Home/ButtonUserAdd.vue";
 import {useUserStore} from "@/stores/userStore.js";
 
 // FIXME
@@ -61,7 +61,7 @@ watch(needToUpdate, () => {
             </template>
           </el-table-column>
         </el-table>
-        <button-add-user v-model="needToUpdate"/>
+        <button-user-add v-model="needToUpdate"/>
       </div>
     </el-dialog>
 

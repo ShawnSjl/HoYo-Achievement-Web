@@ -9,7 +9,7 @@ import SrAchievementImg1 from "@/assets/sr-image/sr-achievement-level-1.png";
 import SrAchievement from "@/assets/sr-image/sr-achievement.png";
 import {useAccountStore} from "@/stores/accountStore.js";
 import {useServerInfoStore} from "@/stores/serverInfoStore.js";
-import ButtonEditAccount from "@/views/Home/ButtonEditAccount.vue";
+import ButtonAccountEdit from "@/views/Home/ButtonAccountEdit.vue";
 import {branchAchievementCountByLevel} from "@/utils/countBranchAchievement.js";
 import {completeAchievementCountByLevel} from "@/utils/countCompleteAchievement.js";
 
@@ -90,7 +90,7 @@ const handleClick = () => {
               </div>
             </div>
             <div class="card-header-right-wrapper">
-              <button-edit-account :uuid="props.uuid"/>
+              <button-account-edit :uuid="props.uuid"/>
             </div>
           </div>
         </div>

@@ -1,8 +1,8 @@
 <script setup>
 import {computed} from "vue";
-import ButtonChangePassword from "@/views/Home/ButtonChangePassword.vue";
-import ButtonDeleteUser from "@/views/Home/ButtonDeleteUser.vue";
-import ButtonManageUser from "@/views/Home/ButtonManageUser.vue";
+import ButtonUserChangePassword from "@/views/Home/ButtonUserChangePassword.vue";
+import ButtonUserDelete from "@/views/Home/ButtonUserDelete.vue";
+import ButtonUserManage from "@/views/Home/ButtonUserManage.vue";
 import {useUserStore} from "@/stores/userStore.js";
 
 // 使用Pinia作为本地缓存
@@ -28,13 +28,13 @@ const isAdmin = computed(() => {
 
     <template #default>
       <div class="profile-popover">
-        <button-change-password/>
+        <button-user-change-password/>
       </div>
       <div v-if="isAdmin" class="profile-popover">
-        <button-manage-user/>
+        <button-user-manage/>
       </div>
       <div v-else class="profile-popover">
-        <button-delete-user/>
+        <button-user-delete/>
       </div>
     </template>
   </el-popover>

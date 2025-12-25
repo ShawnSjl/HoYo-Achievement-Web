@@ -2,7 +2,7 @@
 import {computed, onMounted, reactive, ref, watch} from "vue";
 import DefaultAvatar from '@/assets/zzz-image/zzz-logo.png'
 import {useUserStore} from "@/stores/userStore.js";
-import ButtonProfileSetting from "@/views/Home/ButtonProfileSetting.vue";
+import ButtonSettingProfile from "@/views/Home/ButtonSettingProfile.vue";
 import ButtonLogin from "@/components/ButtonLogin.vue";
 import ButtonLogout from "@/components/ButtonLogout.vue";
 import ButtonRegister from "@/components/ButtonRegister.vue";
@@ -66,7 +66,7 @@ const passwordForm = reactive({
   twoFACode: '',
 })
 
-// 改名表单规则
+// 密码表单规则
 const passwordRule = {
   twoFACode: [
     {required: true, message: '请输入密码', trigger: ['blur', 'change']},
@@ -129,7 +129,7 @@ const handleSubmit = async () => {
         <div class="profile-header-end">
           <div v-if="isLoggedIn" class="profile-header-end">
             <button-logout style="margin-left: 20px"/>
-            <button-profile-setting/>
+            <button-setting-profile/>
             <!--        TODO 将设置按钮中管理员相关的功能划分到管理服务器按钮；将原本的设置按钮改成账户设置按钮    -->
           </div>
           <div v-else class="profile-header-end">
@@ -162,8 +162,8 @@ const handleSubmit = async () => {
                :rules="passwordRule"
                @keyup.enter.native="handleClickSubmit"
       >
-        <el-form-item prop="twoFACode">
-          <el-input v-model="passwordForm.twoFACode" placeholder="密码" type="password"/>
+        <el-form-item label="密码" prop="twoFACode">
+          <el-input v-model="passwordForm.twoFACode" type="password"/>
         </el-form-item>
       </el-form>
 
