@@ -3,10 +3,14 @@ import {computed} from "vue";
 import ButtonChangePassword from "@/views/Home/ButtonChangePassword.vue";
 import ButtonDeleteUser from "@/views/Home/ButtonDeleteUser.vue";
 import ButtonManageUser from "@/views/Home/ButtonManageUser.vue";
+import {useUserStore} from "@/stores/userStore.js";
 
+// 使用Pinia作为本地缓存
+const userStore = useUserStore();
+
+// 获取用户权限
 const isAdmin = computed(() => {
-  const role = JSON.parse(localStorage.getItem("user")).role
-  return role === "admin";
+  return userStore.isUserAdmin();
 })
 </script>
 

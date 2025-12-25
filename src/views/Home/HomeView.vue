@@ -71,6 +71,7 @@ watch(userName, async (newUserName) => {
           <div v-if="isLoggedIn" class="profile-header-end">
             <button-logout style="margin-left: 20px"/>
             <button-profile-setting/>
+            <!--        TODO 将设置按钮中管理员相关的功能划分到管理服务器按钮；将原本的设置按钮改成账户设置按钮    -->
           </div>
           <div v-else class="profile-header-end">
             <button-register style="margin-left: 20px"/>

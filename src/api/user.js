@@ -7,7 +7,7 @@ export const login = (credentials) => {
 
 // Check if the current user is logged in
 export const isLogin = () => {
-    return api.get("/apiuser/is-login");
+    return api.get("/api/user/is-login");
 }
 
 // User logout
@@ -37,7 +37,7 @@ export const updateUsername = (request) => {
 
 // Change the user's password
 export const changePassword = (request) => {
-    return api.put("/api/auth/change-password", request);
+    return api.put("/api/user/update-password", request);
 }
 
 // Update the user's status

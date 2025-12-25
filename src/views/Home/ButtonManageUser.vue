@@ -5,6 +5,8 @@ import {getAllUsers} from "@/api/user.js";
 import ButtonAddUser from "@/views/Home/ButtonAddUser.vue";
 import {useUserStore} from "@/stores/userStore.js";
 
+// FIXME
+
 // 使用Pinia作为本地缓存
 const authStore = useUserStore();
 
