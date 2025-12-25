@@ -52,8 +52,6 @@ const extendVisible = ref(true);
 const handleClick = () => {
   extendVisible.value = !extendVisible.value;
 }
-
-// 优化一下显示
 </script>
 
 <template>
@@ -63,7 +61,7 @@ const handleClick = () => {
       <p class="sr-statistic-total-count">{{ completeNumber }}/{{ totalNumber }}</p>
     </div>
 
-    <div v-if="extendVisible" class="sr-statistic-detail-wrapper">
+    <div v-if="extendVisible" class="sr-statistic-detail-wrapper hide-on-small">
       <div class="vertical-divider"></div>
       <div class="sr-statistic-level">
         <img :src="SrAchievementImg3" alt="achievement image" class="sr-statistic-img"/>
@@ -127,14 +125,14 @@ const handleClick = () => {
 }
 
 .sr-statistic-level {
-  margin-left: 25px;
+  margin-left: 20px;
   position: relative;
 
   display: flex;
 }
 
 .sr-statistic-level + .sr-statistic-level {
-  margin-left: 15px;
+  margin-left: 5px;
 }
 
 .sr-statistic-img {
@@ -143,9 +141,9 @@ const handleClick = () => {
 }
 
 .sr-statistic-level-count {
-  margin-left: 10px;
+  margin-left: 0;
   margin-right: 20px;
-  margin-top: 34px;
+  margin-top: 35px;
   position: static;
 
   font-weight: bold;
@@ -155,5 +153,12 @@ const handleClick = () => {
 p {
   margin-block-start: 0;
   margin-block-end: 0;
+}
+
+/* 默认显示，但在小屏幕强制隐藏 */
+@media screen and (max-width: 1250px) {
+  .hide-on-small {
+    display: none !important;
+  }
 }
 </style>
