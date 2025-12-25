@@ -129,7 +129,9 @@ onBeforeUnmount(() => {
                       :uuid="currentUUID"/>
           </el-aside>
           <el-main class="sr-container-main">
-            <sr-aside v-if="isMobileStore.isMobile" v-model="achievementClass"/>
+            <sr-aside v-if="isMobileStore.isMobile"
+                      v-model="achievementClass"
+                      :uuid="currentUUID"/>
             <sr-statistic-class
                 :achievementClass="achievementClass"
                 :uuid="currentUUID"

@@ -251,6 +251,10 @@ const textAfter = computed(() => {
   .sr-name {
     font-size: 15px;
   }
+
+  .sr-desc {
+    font-size: 13px;
+  }
 }
 
 /* 成就版本 */

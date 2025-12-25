@@ -112,9 +112,17 @@ const avatarTrigger = computed(() => {
 
 @media (max-width: 900px) {
   .avatar-username {
-    font-size: 14px;
+    font-size: 12px;
     font-weight: bold;
     color: #ededed;
+  }
+
+  .avatar-account-name {
+    font-size: 12px;
+  }
+
+  .avatar-account-uid {
+    font-size: 10px;
   }
 }
 
