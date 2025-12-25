@@ -1,46 +1,43 @@
 <script setup>
 import {ref} from 'vue'
 import {useUserStore} from '@/stores/userStore.js';
-import {showError} from "@/utils/notification.js";
 
 // 使用Pinia作为本地缓存
-const authStore = useUserStore();
+const userStore = useUserStore();
 
+// dialog可视性
 const outerVisible = ref(false)
 const innerVisible = ref(false)
 
+// 处理关闭
 const handleClose = () => {
   innerVisible.value = false
   outerVisible.value = false
 }
 
+// 处理点击
 const handleDelete = async () => {
-  // try {
-  //   handleClose()
-  //   await authStore.deleteUser()
-  // } catch (error) {
-  //   showError('账户删除失败', error)
-  // }
-  showError('功能关闭')
+  await userStore.deleteUser();
 }
 </script>
 
 <template>
-  <el-button class="profile-delete-button" plain round type="danger" @click="outerVisible = true">
-    注销账号
+  <el-button round type="danger" @click="outerVisible = true">
+    注销用户
   </el-button>
 
-  <el-dialog v-model="outerVisible" title="注销账户" width="500" @close="handleClose">
-    <span>注销账户会将此账户从数据库中删除，是否继续？</span>
+  <el-dialog v-model="outerVisible" title="注销用户" width="500" @close="handleClose">
+    <span>注销用户会将此账户从数据库中删除，是否继续？</span>
 
     <el-dialog
         v-model="innerVisible"
+        :modal="false"
         append-to-body
-        title="注销账户二次确认"
+        title="注销用户二次确认"
         width="500"
         @close="handleClose"
     >
-      <span>注销账户后，数据无法恢复！请再次确认要删除账户。</span>
+      <span>注销用户后，数据无法恢复！请再次确认要删除用户。</span>
       <template #footer>
         <div class="dialog-footer">
           <el-button @click="handleClose">取消</el-button>
@@ -63,7 +60,4 @@ const handleDelete = async () => {
 </template>
 
 <style scoped>
-.profile-delete-button {
-  margin-top: 10px;
-}
 </style>

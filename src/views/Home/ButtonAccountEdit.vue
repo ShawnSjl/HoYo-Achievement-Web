@@ -4,9 +4,11 @@ import {Delete, Edit} from "@element-plus/icons-vue";
 import {computed, reactive, ref, watch} from "vue";
 import {showError} from "@/utils/notification.js";
 import {accountNameCharPattern, accountUidCharPattern} from "@/utils/formRegex.js";
+import {useIsMobileStore} from "@/stores/isMobileStore.js";
 
 // 使用Pinia作为本地缓存
 const accountStore = useAccountStore();
+const isMobileStore = useIsMobileStore();
 
 // 传入只读数据
 const props = defineProps({
@@ -53,16 +55,16 @@ const changeNameRule = {
 }
 
 // 处理改名表单提交
-const handleSubmitNewName = () => {
+const handleClickSubmitNewName = () => {
   changeNameFormRef.value.validate((valid) => {
     if (valid) {
-      submitNewName();
+      handleSubmitNewName();
     } else {
       showError("请输入账号名称");
     }
   })
 }
-const submitNewName = async () => {
+const handleSubmitNewName = async () => {
   await accountStore.updateName(props.uuid, changeNameForm.accountName);
 }
 
@@ -86,16 +88,16 @@ const uidRule = {
 }
 
 // 处理改名表单提交
-const handleSubmitUid = () => {
+const handleClickSubmitUid = () => {
   uidFormRef.value.validate((valid) => {
     if (valid) {
-      submitUid();
+      HandleSubmitUid();
     } else {
       showError("请输入账号UID");
     }
   })
 }
-const submitUid = async () => {
+const HandleSubmitUid = async () => {
   await accountStore.updateInGameUid(props.uuid, uidForm.inGameUid);
 }
 
@@ -124,6 +126,7 @@ watch(dialogVisible, (val) => {
   <el-dialog
       v-model="dialogVisible"
       :before-close="handleClose"
+      :fullscreen="isMobileStore.isMobile"
       append-to-body
       title="修改游戏账户"
   >
@@ -134,12 +137,12 @@ watch(dialogVisible, (val) => {
           :model="changeNameForm"
           :rules="changeNameRule"
           label-width="auto"
-          @keyup.enter.native="handleSubmitNewName"
+          @keyup.enter.native="handleClickSubmitNewName"
       >
         <el-form-item label="游戏账户名" prop="accountName">
-          <div style="display: flex; flex-direction: row; gap: 10px;">
+          <div class="form-content-wrapper">
             <el-input v-model="changeNameForm.accountName"/>
-            <el-button type="primary" @click="handleSubmitNewName">提交</el-button>
+            <el-button type="primary" @click="handleClickSubmitNewName">提交</el-button>
           </div>
         </el-form-item>
       </el-form>
@@ -150,12 +153,12 @@ watch(dialogVisible, (val) => {
           :model="uidForm"
           :rules="uidRule"
           label-width="auto"
-          @keyup.enter.native="handleSubmitUid"
+          @keyup.enter.native="handleClickSubmitUid"
       >
         <el-form-item label="游戏UID" prop="inGameUid">
-          <div style="display: flex; flex-direction: row; gap: 10px;">
+          <div class="form-content-wrapper">
             <el-input v-model="uidForm.inGameUid"/>
-            <el-button type="primary" @click="handleSubmitUid">提交</el-button>
+            <el-button type="primary" @click="handleClickSubmitUid">提交</el-button>
           </div>
         </el-form-item>
       </el-form>
@@ -169,5 +172,10 @@ watch(dialogVisible, (val) => {
 </template>
 
 <style scoped>
-
+.form-content-wrapper {
+  display: flex;
+  flex-direction: row;
+  gap: 10px;
+  width: 100%
+}
 </style>

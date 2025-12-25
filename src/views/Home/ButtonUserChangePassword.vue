@@ -3,15 +3,17 @@ import {reactive, ref} from "vue";
 import {showError} from "@/utils/notification.js";
 import {useUserStore} from "@/stores/userStore.js";
 import {passwordCharPattern} from "@/utils/formRegex.js";
+import {useIsMobileStore} from "@/stores/isMobileStore.js";
 
 // 使用Pinia作为本地缓存
 const userStore = useUserStore();
+const isMobileStore = useIsMobileStore();
 
+// dialog可视性
 const passwordChangeDialogVisible = ref(false);
 
-const formRef = ref(null);
-
 // 表单对象
+const formRef = ref(null);
 const passwordChangeForm = reactive({
   oldPassword: '',
   newPassword: '',
@@ -61,7 +63,8 @@ const handleClose = () => {
   passwordChangeDialogVisible.value = false;
 }
 
-const submitForm = () => {
+// 处理表单提交
+const handleClickSubmit = () => {
   formRef.value.validate((valid) => {
     if (valid) {
       handleSubmit()
@@ -78,14 +81,14 @@ const handleSubmit = async () => {
 
 <template>
   <el-button plain round type="primary" @click="passwordChangeDialogVisible = true">
-    修改密码
+    更改密码
   </el-button>
 
   <div class="login-dialog">
     <el-dialog
         v-model="passwordChangeDialogVisible"
         :before-close="handleClose"
-        class="login-dialog"
+        :fullscreen="isMobileStore.isMobile"
         title="更改密码"
     >
       <div>
@@ -94,7 +97,7 @@ const handleSubmit = async () => {
             :model="passwordChangeForm"
             :rules="rules"
             label-width="auto"
-            @keyup.enter.native="submitForm"
+            @keyup.enter.native="handleClickSubmit"
         >
           <el-form-item label="旧密码" prop="oldPassword">
             <el-input v-model="passwordChangeForm.oldPassword" type="password"/>
@@ -110,7 +113,7 @@ const handleSubmit = async () => {
 
       <template #footer>
         <el-button @click="handleClose">取消</el-button>
-        <el-button style="margin-left: 10px" type="primary" @click="submitForm">更改密码</el-button>
+        <el-button style="margin-left: 10px" type="primary" @click="handleClickSubmit">更改密码</el-button>
       </template>
     </el-dialog>
   </div>
@@ -120,6 +123,12 @@ const handleSubmit = async () => {
 .login-dialog :deep(.el-dialog) {
   min-width: 300px;
   max-width: 500px;
+}
+
+@media (max-width: 900px) {
+  .login-dialog :deep(.el-dialog) {
+    max-width: 100%;
+  }
 }
 
 .login-dialog :deep(.el-dialog__title) {
