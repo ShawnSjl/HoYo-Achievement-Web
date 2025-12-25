@@ -1,5 +1,5 @@
 <script setup>
-import {computed, watch} from "vue";
+import {computed} from "vue";
 import {useZzzAchievementStore} from "@/stores/zzzAchievementsStore";
 import {zzzGetClassByCategory, zzzGetClassIdByName} from "@/utils/zzzAchievementClass";
 import CardZzzStatisticTotal from "@/views/ZzzAchievement/CardZzzStatisticTotal.vue";
@@ -20,9 +20,6 @@ const achievementStore = useZzzAchievementStore();
 
 // 根据大类别获取小类别列表
 const classes = computed(() => zzzGetClassByCategory(props.category));
-watch(classes, (newClasses) => {
-  achievementClass.value = newClasses[0];
-}, {immediate: true});
 
 // 计算完成度百分比
 const completePercentage = computed(() => {

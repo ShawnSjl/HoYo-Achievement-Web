@@ -44,15 +44,10 @@ const category = ref(categories[0]);  // 大类别
 const achievementClass = ref(storyClasses[0]);  // 小类别
 
 /* 根据hash定位内容 */
-const syncStateFromHash = (hashStr) => {
-  // FIXME
-
-  // 1. 去掉 # 并解码
+const syncStateFromHash = async (hashStr) => {
+  // 去掉 # 并解码
   const hash = decodeURIComponent(hashStr.replace(/^#/, ''));
-
   if (!hash) return;
-
-  // 2. 如果当前状态已经和 URL 一致，什么都不做（防止死循环）
   if (achievementClass.value === hash) return;
 
   if (storyClasses.includes(hash)) {
@@ -67,7 +62,7 @@ const syncStateFromHash = (hashStr) => {
     return;
   }
 
-  // 4. 同步选中项
+  await nextTick();
   achievementClass.value = hash;
 };
 
@@ -132,7 +127,7 @@ onBeforeUnmount(() => {
     <div class="zzz-content">
       <el-container class="zzz-container" style="height: 100vh">
         <el-header class="zzz-container-header">
-          <zzz-header v-model="category" :uuid="currentUUID"/>
+          <zzz-header v-model:achievement-class="achievementClass" v-model:category="category" :uuid="currentUUID"/>
         </el-header>
 
         <el-container>

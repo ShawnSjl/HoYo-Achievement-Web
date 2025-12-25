@@ -1,5 +1,5 @@
 <script setup>
-import {categories} from "@/utils/zzzAchievementClass";
+import {categories, zzzGetClassByCategory} from "@/utils/zzzAchievementClass";
 import Avatar from "@/components/Avatar.vue";
 import ButtonZzzSetting from "@/views/ZzzAchievement/ButtonZzzSetting.vue";
 import {useIsMobileStore} from "@/stores/isMobileStore";
@@ -11,10 +11,21 @@ const props = defineProps({
 })
 
 // 传入可写数据
-const category = defineModel();
+const category = defineModel('category');
+const achievementClass = defineModel('achievementClass');
 
 // 使用Pinia作为本地缓存
 const isMobileStore = useIsMobileStore();
+
+// 处理大类别变更
+const handleCategoryChange = (newCategory) => {
+  category.value = newCategory;
+
+  const newClasses = zzzGetClassByCategory(newCategory);
+  if (newClasses && newClasses.length > 0) {
+    achievementClass.value = newClasses[0];
+  }
+}
 </script>
 
 <template>
@@ -29,7 +40,8 @@ const isMobileStore = useIsMobileStore();
       </div>
     </div>
     <div v-if="!isMobileStore.isMobile" class="zzz-header-right">
-      <el-segmented v-model="category" :options="categories" block size="large"/>
+      <el-segmented v-model="category" :options="categories" block size="large"
+                    @change="handleCategoryChange"/>
     </div>
   </div>
 </template>
