@@ -22,5 +22,7 @@ export const updateAccountInGameUid = (request) => {
 
 // Delete an account
 export const deleteAccount = (request) => {
-    return api.delete('/api/account/delete', request);
+    return api.delete('/api/account/delete', {
+        data: request
+    });
 }

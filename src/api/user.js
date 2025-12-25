@@ -56,6 +56,6 @@ export const deleteCurrentUser = () => {
 }
 
 // Do the second authentication
-export const secondAuth = () => {
-    return api.get("/api/user/second-auth");
+export const secondAuth = (request) => {
+    return api.post("/api/user/second-auth", request);
 }
