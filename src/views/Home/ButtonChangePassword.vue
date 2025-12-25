@@ -73,7 +73,7 @@ const submitForm = () => {
   })
 }
 const handleSubmit = async () => {
-  await userStore.updateUserPassword(passwordChangeForm.newPassword);
+  await userStore.updateUserPassword(passwordChangeForm.oldPassword, passwordChangeForm.newPassword);
   handleClose();
 }
 </script>

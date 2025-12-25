@@ -159,19 +159,25 @@ export const useUserStore = defineStore(
 
         /**
          * Update the password of the current user.
+         * @param oldPassword
          * @param newPassword
          * @returns {Promise<void>}
          */
-        async function updateUserPassword(newPassword) {
+        async function updateUserPassword(oldPassword, newPassword) {
             if (!token.value) {
                 showInfo("用户未登录");
                 return;
             }
 
             try {
-                const updateResponse = await changePassword({password: newPassword});
+                const requestBody = {
+                    old_password: oldPassword,
+                    new_password: newPassword,
+                }
+
+                const updateResponse = await changePassword(requestBody);
                 if (updateResponse.data.code === 200) {
-                    showInfo(updateResponse.data.msg);
+                    showSuccess(updateResponse.data.msg);
                 } else {
                     showInfo(updateResponse.data.msg);
                 }
