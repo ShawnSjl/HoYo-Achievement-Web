@@ -1,4 +1,5 @@
 import axios from "axios";
+import {useUserStore} from "@/stores/userStore.js";
 
 // 创建 Axios 实例
 const api = axios.create({
@@ -26,22 +27,27 @@ api.interceptors.request.use(
     }
 );
 
-// TODO 添加要求二次验证的拦截，并弹窗
 // 响应拦截器
-// api.interceptors.response.use(
-//     (response) => {
-//         return response.data;
-//     },
-//     (error) => {
-//         // 处理 token 过期等情况
-//         if (error.response && error.response.status === 401) {
-//             console.warn("Token 可能已过期，请重新登录");
-//             // 可以在这里触发退出登录逻辑，比如清除 token 并跳转到登录页
-//             localStorage.removeItem("sa_token");
-//         }
-//
-//         return Promise.reject(error);
-//     }
-// );
+api.interceptors.response.use(
+    (response) => {
+        const res = response.data;
+
+        // 拦截需要二次验证，并弹窗
+        if (res.code === 418) {
+            const userStore = useUserStore();
+
+            return new Promise((resolve, reject) => {
+                userStore.trigger2FA(() => {
+                    api(response.config).then(resolve).catch(reject);
+                });
+            });
+        }
+
+        return res;
+    },
+    (error) => {
+        return Promise.reject(error);
+    }
+);
 
 export default api;

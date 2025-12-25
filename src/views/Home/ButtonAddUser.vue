@@ -2,6 +2,7 @@
 import {reactive, ref} from 'vue';
 import {showError, showSuccess} from "@/utils/notification.js";
 import {createUser} from "@/api/user.js";
+import {passwordCharPattern, usernameCharPattern} from "@/utils/formRegex.js";
 
 const updateData = defineModel();
 
@@ -13,10 +14,6 @@ const userForm = reactive({
   password: '',
   confirmPassword: '',
 });
-
-// 正则表达式：禁止输入包含特殊字符
-const usernameCharPattern = /^[\u4e00-\u9fa5_a-zA-Z0-9]{3,20}$/;
-const passwordCharPattern = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d!@#$%^&*()_+\-=\[\]{}]{8,50}$/;
 
 // 表单规则
 const confirmValidator = (rule, value, callback) => {

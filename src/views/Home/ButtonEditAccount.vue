@@ -3,6 +3,7 @@ import {useAccountStore} from "@/stores/accountStore.js";
 import {Delete, Edit} from "@element-plus/icons-vue";
 import {computed, reactive, ref, watch} from "vue";
 import {showError} from "@/utils/notification.js";
+import {accountNameCharPattern, accountUidCharPattern} from "@/utils/formRegex.js";
 
 // 使用Pinia作为本地缓存
 const accountStore = useAccountStore();
@@ -39,13 +40,12 @@ const changeNameForm = reactive({
 })
 
 // 改名表单规则
-const nameCharPattern = /^[\u4e00-\u9fa5_a-zA-Z0-9]{3,20}$/;  // 正则表达式：禁止输入包含特殊字符
 const changeNameRule = {
   accountName: [
     {required: true, message: '请输入账号名称', trigger: ['blur', 'change']},
     {min: 3, max: 20, message: '长度在3到20个字符', trigger: ['blur', 'change']},
     {
-      pattern: nameCharPattern,
+      pattern: accountNameCharPattern,
       message: '账户名称格式不正确,只能包含中文、字母、数字、下划线',
       trigger: ['blur', 'change']
     }
@@ -73,13 +73,12 @@ const uidForm = reactive({
 })
 
 // UID表单规则
-const uidCharPattern = /^[a-zA-Z0-9]{5,20}$/; // 正则表达式：只支持数字和英文字母
 const uidRule = {
   inGameUid: [
     {required: false, message: '请输入账号UID', trigger: ['blur', 'change']},
     {min: 5, max: 20, message: '长度在5到20个字符', trigger: ['blur', 'change']},
     {
-      pattern: uidCharPattern,
+      pattern: accountUidCharPattern,
       message: 'UID格式不正确,只能包含字母、数字',
       trigger: ['blur', 'change']
     }

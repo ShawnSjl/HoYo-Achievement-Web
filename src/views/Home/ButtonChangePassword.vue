@@ -2,6 +2,7 @@
 import {reactive, ref} from "vue";
 import {showError} from "@/utils/notification.js";
 import {useUserStore} from "@/stores/userStore.js";
+import {passwordCharPattern} from "@/utils/formRegex.js";
 
 // 使用Pinia作为本地缓存
 const userStore = useUserStore();
@@ -16,9 +17,6 @@ const passwordChangeForm = reactive({
   newPassword: '',
   confirmPassword: '',
 });
-
-// 正则表达式：禁止输入包含特殊字符
-const passwordCharPattern = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d!@#$%^&*()_+\-=\[\]{}]{8,50}$/;
 
 // 表单规则
 const confirmValidator = (rule, value, callback) => {

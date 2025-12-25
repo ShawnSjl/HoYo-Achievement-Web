@@ -21,7 +21,7 @@ export const useAccountStore = defineStore(
 
         /**
          * Return the list of accounts. If the user is logged in, return the accounts from the backend; otherwise, return the local data.
-         * @returns {UnwrapRef<*[]>}
+         * @returns []
          */
         function getAccounts() {
             const userStore = useUserStore();
@@ -43,27 +43,33 @@ export const useAccountStore = defineStore(
 
                 // Get accounts from the backend
                 const accountsResponse = await getAccountByUserId();
-                if (accountsResponse.data.code !== 200) {
-                    showInfo(accountsResponse.data.msg)
+                if (accountsResponse.code !== 200) {
+                    showInfo(accountsResponse.msg)
                     return;
                 }
-                showSuccess(accountsResponse.data.msg);
+                showSuccess(accountsResponse.msg);
 
                 // For each account, get achievements from the backend
-                for (const account of accountsResponse.data.data) {
+                for (const account of accountsResponse.data) {
                     // Get achievements from the backend
                     const requestBody = {uuid: account.account_uuid};
-                    let achievementResponse;
+                    let recordResponse;
                     switch (account.game_type) {
                         case "SR":
-                            achievementResponse = await srGetAccountRecord(requestBody);
+                            recordResponse = await srGetAccountRecord(requestBody);
                             break;
                         case "ZZZ":
-                            achievementResponse = await zzzGetAccountRecord(requestBody);
+                            recordResponse = await zzzGetAccountRecord(requestBody);
                             break;
                         default:
                             showError("未知游戏类型");
                             return;
+                    }
+
+                    // Check response
+                    if (recordResponse.code !== 200) {
+                        showInfo(recordResponse.msg);
+                        continue;
                     }
 
                     // Create a data structure for the account
@@ -72,7 +78,7 @@ export const useAccountStore = defineStore(
                         type: account.game_type,
                         name: account.account_name,
                         inGameUid: account.account_in_game_uid,
-                        records: achievementResponse.data.data,
+                        records: recordResponse.data,
                     }
 
                     // Push the account to the list
@@ -105,8 +111,8 @@ export const useAccountStore = defineStore(
                         account_in_game_uid: inGameUid,
                     }
                     const createResponse = await createAccount(requestBody);
-                    if (createResponse.data.code !== 200) {
-                        showInfo(createResponse.data.msg);
+                    if (createResponse.code !== 200) {
+                        showInfo(createResponse.msg);
                         return;
                     }
                 }
@@ -150,8 +156,8 @@ export const useAccountStore = defineStore(
                     };
 
                     const updateResponse = await updateAccountName(requestBody);
-                    if (updateResponse.data.code !== 200) {
-                        showInfo(updateResponse.data.msg);
+                    if (updateResponse.code !== 200) {
+                        showInfo(updateResponse.msg);
                         return;
                     }
                 }
@@ -188,8 +194,8 @@ export const useAccountStore = defineStore(
                     };
 
                     const updateResponse = await updateAccountInGameUid(requestBody);
-                    if (updateResponse.data.code !== 200) {
-                        showInfo(updateResponse.data.msg);
+                    if (updateResponse.code !== 200) {
+                        showInfo(updateResponse.msg);
                         return;
                     }
                 }
@@ -224,8 +230,8 @@ export const useAccountStore = defineStore(
                     };
 
                     const deleteResponse = await deleteAccount(requestBody);
-                    if (deleteResponse.data.code !== 200) {
-                        showInfo(deleteResponse.data.msg);
+                    if (deleteResponse.code !== 200) {
+                        showInfo(deleteResponse.msg);
                         return;
                     }
                 }

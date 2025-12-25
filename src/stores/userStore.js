@@ -11,6 +11,10 @@ export const useUserStore = defineStore(
         const user = ref('');
         const admin = ref(false);
 
+        // 2FA variable
+        const is2FAVisible = ref(false);
+        const pendingRetryRequest = ref(null);
+
         /**
          * Async function that tries to log in the user
          * @param username
@@ -24,10 +28,10 @@ export const useUserStore = defineStore(
                     password: password
                 }
                 const loginResponse = await login(requestBody);
-                if (loginResponse.data.code === 200) {
-                    token.value = loginResponse.data.data.token;
-                    user.value = loginResponse.data.data.username;
-                    admin.value = loginResponse.data.data.isAdmin;
+                if (loginResponse.code === 200) {
+                    token.value = loginResponse.data.token;
+                    user.value = loginResponse.data.username;
+                    admin.value = loginResponse.data.isAdmin;
 
                     // Save the token in local storage for axios use
                     localStorage.setItem('token', token.value);
@@ -38,35 +42,11 @@ export const useUserStore = defineStore(
 
                     showSuccess('登录成功');
                 } else {
-                    showInfo(loginResponse.data.msg);
+                    showInfo(loginResponse.msg);
                 }
             } catch (error) {
                 console.error('Login error:', error);
                 showError("登录错误", error)
-            }
-        }
-
-        /**
-         * Force check if the current user is logged in.
-         * @returns {Promise<boolean>}
-         */
-        async function forceCheckIsUserLogin() {
-            if (!token.value) return false;
-
-            try {
-                const isLoginResponse = await isLogin();
-                if (isLoginResponse.data.code === 200) {
-                    if (!isLoginResponse.data.data) {
-                        await logoutUser();
-                    }
-                    return isLoginResponse.data.data;
-                } else {
-                    showError(isLoginResponse.data.msg)
-                    return false;
-                }
-            } catch (error) {
-                console.error('Check login error:', error);
-                return false;
             }
         }
 
@@ -77,10 +57,10 @@ export const useUserStore = defineStore(
             // Log out the token in the backend
             try {
                 const logoutResponse = await logout();
-                if (logoutResponse.data.code === 200) {
-                    showSuccess(logoutResponse.data.msg)
+                if (logoutResponse.code === 200) {
+                    showSuccess(logoutResponse.msg)
                 } else {
-                    showError(logoutResponse.data.msg)
+                    showError(logoutResponse.msg)
                 }
             } catch (error) {
                 console.error('Logout error:', error);
@@ -98,6 +78,30 @@ export const useUserStore = defineStore(
             // Empty the account list in the account store
             const accountStore = useAccountStore();
             accountStore.remoteAccounts.value = [];
+        }
+
+        /**
+         * Force check if the current user is logged in.
+         * @returns {Promise<boolean>}
+         */
+        async function forceCheckIsUserLogin() {
+            if (!token.value) return false;
+
+            try {
+                const isLoginResponse = await isLogin();
+                if (isLoginResponse.code === 200) {
+                    if (!isLoginResponse.data) {
+                        await logoutUser();
+                    }
+                    return isLoginResponse.data;
+                } else {
+                    showError(isLoginResponse.msg)
+                    return false;
+                }
+            } catch (error) {
+                console.error('Check login error:', error);
+                return false;
+            }
         }
 
         /**
@@ -119,8 +123,8 @@ export const useUserStore = defineStore(
             // Check if the user is an admin
             try {
                 const isAdminResponse = await isAdmin();
-                if (isAdminResponse.data.code === 200) {
-                    return isAdminResponse.data.data;
+                if (isAdminResponse.code === 200) {
+                    return isAdminResponse.data;
                 } else {
                     await logoutUser()
                     return false;
@@ -129,6 +133,15 @@ export const useUserStore = defineStore(
                 console.error('Check admin error:', error);
                 return false;
             }
+        }
+
+        /**
+         * Get the user's name
+         * @returns string
+         */
+        function getUserName() {
+            if (!user.value) return '游客'
+            return user.value;
         }
 
         /**
@@ -145,11 +158,11 @@ export const useUserStore = defineStore(
             // Update the username in the backend
             try {
                 const updateResponse = await updateUsername({username: newUsername});
-                if (updateResponse.data.code === 200) {
+                if (updateResponse.code === 200) {
                     user.value = newUsername;
-                    showInfo(updateResponse.data.msg);
+                    showInfo(updateResponse.msg);
                 } else {
-                    showInfo(updateResponse.data.msg);
+                    showInfo(updateResponse.msg);
                 }
             } catch (error) {
                 console.error('Update username error:', error);
@@ -176,10 +189,10 @@ export const useUserStore = defineStore(
                 }
 
                 const updateResponse = await changePassword(requestBody);
-                if (updateResponse.data.code === 200) {
-                    showSuccess(updateResponse.data.msg);
+                if (updateResponse.code === 200) {
+                    showSuccess(updateResponse.msg);
                 } else {
-                    showInfo(updateResponse.data.msg);
+                    showInfo(updateResponse.msg);
                 }
             } catch (error) {
                 console.error('Update password error:', error);
@@ -199,11 +212,11 @@ export const useUserStore = defineStore(
 
             try {
                 const deleteResponse = await deleteCurrentUser();
-                if (deleteResponse.data.code === 200) {
+                if (deleteResponse.code === 200) {
                     await logoutUser();
-                    showSuccess(deleteResponse.data.msg);
+                    showSuccess(deleteResponse.msg);
                 } else {
-                    showInfo(deleteResponse.data.msg);
+                    showInfo(deleteResponse.msg);
                 }
             } catch (error) {
                 console.error('Delete error:', error);
@@ -212,27 +225,39 @@ export const useUserStore = defineStore(
         }
 
         /**
-         * Get the user's name
-         * @returns {UnwrapRef<string>|string}
+         * Open 2FA validation dialog, register a callback function
+         * @param {Function} retryFn
          */
-        function getUserName() {
-            if (!user.value) return '游客'
-            return user.value;
+        function trigger2FA(retryFn) {
+            is2FAVisible.value = true;
+            pendingRetryRequest.value = retryFn;
+        }
+
+        /**
+         * Close 2FA validation dialog.
+         */
+        function close2FA() {
+            is2FAVisible.value = false;
+            pendingRetryRequest.value = null;
         }
 
         return {
             token,
             user,
             admin,
+            is2FAVisible,
+            pendingRetryRequest,
             loginUser,
-            forceCheckIsUserLogin,
             logoutUser,
+            forceCheckIsUserLogin,
             isUserAdmin,
             forceCheckIsUserAdmin,
+            getUserName,
             updateUserUsername,
             updateUserPassword,
-            getUserName,
-            deleteUser
+            deleteUser,
+            trigger2FA,
+            close2FA,
         };
     },
     {

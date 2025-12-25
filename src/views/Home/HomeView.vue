@@ -1,5 +1,5 @@
 <script setup>
-import {computed, onMounted, watch} from "vue";
+import {computed, onMounted, reactive, ref, watch} from "vue";
 import DefaultAvatar from '@/assets/zzz-image/zzz-logo.png'
 import {useUserStore} from "@/stores/userStore.js";
 import ButtonProfileSetting from "@/views/Home/ButtonProfileSetting.vue";
@@ -11,6 +11,9 @@ import {useIsMobileStore} from "@/stores/isMobileStore.js";
 import {useSrAchievementStore} from "@/stores/srAchievementStore.js";
 import {useZzzAchievementStore} from "@/stores/zzzAchievementsStore.js";
 import {useServerInfoStore} from "@/stores/serverInfoStore.js";
+import {secondAuth} from "@/api/user.js";
+import {showError} from "@/utils/notification.js";
+import {passwordCharPattern} from "@/utils/formRegex.js";
 
 // 使用Pinia作为本地缓存
 const userStore = useUserStore();
@@ -53,6 +56,62 @@ watch(userName, async (newUserName) => {
   console.log(newUserName);
   await fetchRemoteData();
 });
+
+// 二次验证用
+const verifying = ref(false);
+
+// 表单对象
+const passwordFormRef = ref(null);
+const passwordForm = reactive({
+  twoFACode: '',
+})
+
+// 改名表单规则
+const passwordRule = {
+  twoFACode: [
+    {required: true, message: '请输入密码', trigger: ['blur', 'change']},
+    {
+      pattern: passwordCharPattern,
+      message: '密码格式错误，需包含字母和数字，可包含部分特殊字符',
+      trigger: ['blur', 'change']
+    }
+  ],
+}
+
+const handleCancel = () => {
+  userStore.close2FA();
+}
+
+const handleClickSubmit = () => {
+  passwordFormRef.value.validate((valid) => {
+    if (valid) {
+      handleSubmit();
+    } else {
+      showError('请输入密码');
+    }
+  })
+}
+const handleSubmit = async () => {
+  verifying.value = true;
+  try {
+    const res = await secondAuth({password: passwordForm.twoFACode});
+
+    if (res.code === 200) {
+      if (userStore.pendingRetryRequest) {
+        userStore.pendingRetryRequest();
+      }
+
+      userStore.close2FA();
+      passwordForm.twoFACode = '';
+    } else {
+      showError(res.msg)
+    }
+  } catch (e) {
+    console.error(e);
+  } finally {
+    verifying.value = false;
+  }
+}
 </script>
 
 <template>
@@ -86,6 +145,35 @@ watch(userName, async (newUserName) => {
         <profile-cards-layout/>
       </div>
     </div>
+
+    <el-dialog
+        v-model="userStore.is2FAVisible"
+        :close-on-click-modal="false"
+        :modal="false"
+        :show-close="false"
+        append-to-body
+        class="second-auth-dialog"
+        title="安全验证"
+        width="300px"
+    >
+      <p>检测到敏感操作，请输入密码：</p>
+      <el-form ref="passwordFormRef"
+               :model="passwordForm"
+               :rules="passwordRule"
+               @keyup.enter.native="handleClickSubmit"
+      >
+        <el-form-item prop="twoFACode">
+          <el-input v-model="passwordForm.twoFACode" placeholder="密码" type="password"/>
+        </el-form-item>
+      </el-form>
+
+      <template #footer>
+        <el-button @click="handleCancel">取消</el-button>
+        <el-button :loading="verifying" type="primary" @click="handleClickSubmit">
+          验证
+        </el-button>
+      </template>
+    </el-dialog>
   </div>
 </template>
 
@@ -177,5 +265,9 @@ html, body {
   .profile-statistic {
     width: 95%;
   }
+}
+
+.second-auth-dialog {
+  z-index: 999;
 }
 </style>

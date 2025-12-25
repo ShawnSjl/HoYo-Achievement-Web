@@ -95,7 +95,6 @@ async function handleFile(file) {
       // 检查成就是否存在
       const targetAchievement = achievementStore.achievements.find(achievement => achievement.name === item.name);
       if (!targetAchievement) {
-        debugger
         showError('未知成就名', item.name);
         missCount++;
         if (missCount >= 10) {

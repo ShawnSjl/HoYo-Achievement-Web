@@ -16,17 +16,17 @@ export const useServerInfoStore = defineStore(
         async function fetchServerInfo() {
             try {
                 const allInfoResponse = await getAllServerInfo();
-                if (allInfoResponse.data.code === 200) {
-                    allInfo.value = allInfoResponse.data.data;
+                if (allInfoResponse.code === 200) {
+                    allInfo.value = allInfoResponse.data;
                 } else {
-                    showInfo(allInfoResponse.data.msg);
+                    showInfo(allInfoResponse.msg);
                 }
 
                 const lastestInfoResponse = await getLatestServerInfo();
-                if (lastestInfoResponse.data.code === 200) {
-                    lastestInfo.value = lastestInfoResponse.data.data;
+                if (lastestInfoResponse.code === 200) {
+                    lastestInfo.value = lastestInfoResponse.data;
                 } else {
-                    showInfo(lastestInfoResponse.data.msg)
+                    showInfo(lastestInfoResponse.msg)
                 }
 
                 showSuccess("服务器信息获取完成")
