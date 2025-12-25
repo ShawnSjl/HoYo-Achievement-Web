@@ -81,15 +81,15 @@ const handleClick = () => {
     <el-card shadow="never" @click="handleClick">
       <template #header>
         <div slot="header">
-          <div style="display: flex; flex-direction: row; justify-content: space-between">
-            <div style="display: flex; align-items: center">
+          <div class="card-header-wrapper">
+            <div class="card-header-left-wrapper">
               <el-avatar :src="SrLogo" shape="square" size="default"/>
-              <div>
-                <p class="username">{{ account.name }}</p>
-                <p class="uid">UID: {{ account.inGameUid }} </p>
+              <div class="account-info">
+                <p class="account-name">{{ account.name }}</p>
+                <p class="account-uid">UID: {{ account.inGameUid }} </p>
               </div>
             </div>
-            <div style="display: flex; flex-direction: row-reverse">
+            <div class="card-header-right-wrapper">
               <button-edit-account :uuid="props.uuid"/>
             </div>
           </div>
@@ -138,21 +138,58 @@ const handleClick = () => {
 }
 
 /* header文字样式 */
-.username {
-  margin-block-start: 0;
-  margin-block-end: 0;
-  margin-left: 20px;
-  padding-bottom: 5px;
+.card-header-wrapper {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
 }
 
-.uid {
+.card-header-left-wrapper {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  flex: 1;
+  min-width: 0;
+}
+
+.card-header-right-wrapper {
+  display: flex;
+  flex-direction: row-reverse;
+}
+
+.account-info {
+  display: flex;
+  flex-direction: column;
+
+  margin-left: 10px;
+
+  flex: 1;
+  min-width: 0;
+}
+
+.account-name {
   margin-block-start: 0;
   margin-block-end: 0;
-  margin-left: 20px;
+  padding-bottom: 5px;
+
+  white-space: nowrap; /* 强制不换行 */
+  overflow: hidden; /* 隐藏超出部分 */
+  text-overflow: ellipsis; /* 超出显示省略号 (...) */
+  width: 100%; /* 确保宽度占满父容器，不然可能切不断 */
+}
+
+.account-uid {
+  margin-block-start: 0;
+  margin-block-end: 0;
 
   font-size: 12px;
   color: #909399;
   font-family: Consolas, monospace;
+
+  white-space: nowrap; /* 强制不换行 */
+  overflow: hidden; /* 隐藏超出部分 */
+  text-overflow: ellipsis; /* 超出显示省略号 (...) */
+  width: 100%; /* 确保宽度占满父容器，不然可能切不断 */
 }
 
 /* body布局样式 */

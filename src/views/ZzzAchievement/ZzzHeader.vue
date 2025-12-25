@@ -32,7 +32,7 @@ const handleCategoryChange = (newCategory) => {
   <div class="zzz-header">
     <div class="zzz-header-left">
       <div class="zzz-header-left-start">
-        <avatar/>
+        <avatar :uuid="props.uuid"/>
         <account-switch :uuid="props.uuid" style="margin-left: 30px"/>
       </div>
       <div class="zzz-header-left-end">

@@ -31,7 +31,7 @@ const props = defineProps({
     <div class="sr-header-right">
       <button-sr-setting :uuid="props.uuid"/>
       <account-switch :uuid="props.uuid" style="margin-right: 10px"/>
-      <avatar/>
+      <avatar :uuid="props.uuid"/>
     </div>
   </div>
 </template>

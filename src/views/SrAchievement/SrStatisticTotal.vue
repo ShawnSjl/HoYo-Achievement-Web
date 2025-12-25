@@ -52,6 +52,8 @@ const extendVisible = ref(true);
 const handleClick = () => {
   extendVisible.value = !extendVisible.value;
 }
+
+// 优化一下显示
 </script>
 
 <template>
