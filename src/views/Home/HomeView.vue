@@ -128,6 +128,7 @@ const handleSubmit = async () => {
       <div class="profile-header">
         <div class="profile-header-start">
           <el-avatar :size="avatarSize" :src="DefaultAvatar"/>
+          <!--          TODO: 新增头像系统-->
           <div class="profile-info">
             <p>{{ userName }}</p>
           </div>
