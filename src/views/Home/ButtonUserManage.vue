@@ -1,67 +1,97 @@
 <script setup>
-import {ref, watch} from "vue";
-import {showError} from "@/utils/notification.js";
+import {computed, onMounted, onUnmounted, ref, watch} from "vue";
+import {showError, showInfo, showSuccess} from "@/utils/notification.js";
 import {getAllUsers} from "@/api/user.js";
 import ButtonUserAdd from "@/views/Home/ButtonUserAdd.vue";
 import {useUserStore} from "@/stores/userStore.js";
-
-// FIXME
+import {dayjs} from "element-plus";
+import ButtonUserEdit from "@/views/Home/ButtonUserEdit.vue";
 
 // 使用Pinia作为本地缓存
-const authStore = useUserStore();
+const userStore = useUserStore();
 
-const manageDialogVisible = ref(false);
+// 获取用户是否有高级权限
+const isUserAdmin = computed(() => {
+  return userStore.isUserAdmin();
+})
+onMounted(async () => {
+  await userStore.forceCheckIsUserAdmin();
+})
+onUnmounted(() => {
+  allUsers.value = [];
+})
+watch(isUserAdmin, async (newValue) => {
+  if (newValue === false) {
+    dialogVisible.value = false;
+    allUsers.value = [];
+  }
+})
+
+// dialog可视性
+const dialogVisible = ref(false);
+
+// 获取用户数据
 const allUsers = ref([]);
-const needToUpdate = ref(false);
-
-const formatTime = (time) => {
-  return new Date(time).toLocaleString('zh-CN', {
-    timeZone: 'Asia/Shanghai',
-    hour12: false
-  });
-}
 
 const fetchAllUsers = async () => {
   try {
     const response = await getAllUsers();
-    allUsers.value = response.users;
+    if (response.code !== 200) {
+      showInfo(response.msg);
+      return;
+    }
+    allUsers.value = response.data;
+    showSuccess(response.msg);
   } catch (e) {
     showError('获取用户列表失败', e);
-  } finally {
-    needToUpdate.value = false;
   }
 }
 
-watch(needToUpdate, () => {
-  if (needToUpdate.value) {
-    fetchAllUsers();
-  }
-})
+// 处理时间戳
+const getTime = (timeStr) => {
+  return dayjs(timeStr).format('YYYY-MM-DD HH:mm');
+}
 </script>
 
 <template>
-  <el-button plain round style="margin-top: 10px" type="warning" @click="manageDialogVisible = true; fetchAllUsers()">
+  <el-button plain round style="margin-top: 10px" type="warning" @click="dialogVisible = true; fetchAllUsers()">
     管理用户
   </el-button>
 
   <div class="manage-dialog">
     <el-dialog
-        v-model="manageDialogVisible"
+        v-model="dialogVisible"
+        append-to-body
         class="manage-dialog"
         title="管理用户"
-        @close="manageDialogVisible = false">
+        @close="dialogVisible = false">
       <div>
-        <el-table :data="allUsers" max-height="400" style="margin-bottom: 10px">
-          <el-table-column label="ID" prop="user_id" width="50"/>
-          <el-table-column label="用户名" prop="username" width="300"/>
-          <el-table-column label="权限" prop="role" width="150"/>
-          <el-table-column label="创建时间" prop="created_at" width="270">
+        <el-table
+            :data="allUsers"
+            max-height="400"
+            stripe
+            style="margin-bottom: 10px">
+          <el-table-column fixed label="ID" prop="id" width="50"/>
+          <el-table-column fixed label="用户名" min-width="100" prop="username"/>
+          <el-table-column label="权限" prop="role" width="100"/>
+          <el-table-column label="状态" prop="status" width="100"/>
+          <el-table-column label="创建时间" prop="created_at" width="170">
             <template #default="{ row }">
-              {{ formatTime(row.created_at) }}
+              {{ getTime(row.created_at) }}
+            </template>
+          </el-table-column>
+          <el-table-column label="更新时间" prop="updated_at" width="170">
+            <template #default="{ row }">
+              {{ getTime(row.updated_at) }}
+            </template>
+          </el-table-column>
+          <el-table-column fixed="right" label="操作" min-width="120">
+            <template #default="{ row }">
+              <button-user-edit :user="row" @refresh="fetchAllUsers"/>
             </template>
           </el-table-column>
         </el-table>
-        <button-user-add v-model="needToUpdate"/>
+        <button-user-add @refresh="fetchAllUsers"/>
       </div>
     </el-dialog>
 
@@ -71,7 +101,7 @@ watch(needToUpdate, () => {
 <style scoped>
 .manage-dialog :deep(.el-dialog) {
   min-width: 300px;
-  max-width: 810px;
+  max-width: 900px;
 }
 
 .manage-dialog :deep(.el-dialog__title) {

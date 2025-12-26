@@ -3,6 +3,7 @@ import {computed, onMounted, reactive, ref, watch} from "vue";
 import DefaultAvatar from '@/assets/zzz-image/zzz-logo.png'
 import {useUserStore} from "@/stores/userStore.js";
 import ButtonSettingProfile from "@/views/Home/ButtonSettingProfile.vue";
+import ButtonSettingServer from "@/views/Home/ButtonSettingServer.vue";
 import ButtonLogin from "@/components/ButtonLogin.vue";
 import ButtonLogout from "@/components/ButtonLogout.vue";
 import ButtonRegister from "@/components/ButtonRegister.vue";
@@ -27,6 +28,11 @@ const isLoggedIn = computed(() => {
   return userStore.token !== ''
 })
 
+// 获取用户是否有高级权限
+const isUserAdmin = computed(() => {
+  return userStore.isUserAdmin();
+})
+
 // 移动端适配
 const avatarSize = computed(() => {
   return isMobileStore.isMobile ? 'default' : 'large'
@@ -44,8 +50,9 @@ const fetchRemoteData = async () => {
   // Fetch the server info
   await serverInfoStore.ensureServerInfo();
 };
-onMounted(() => {
-  fetchRemoteData();
+onMounted(async () => {
+  await fetchRemoteData();
+  await userStore.forceCheckIsUserLogin();
 });
 
 // 获取用户名，并处理用户登录登出
@@ -115,8 +122,8 @@ const handleSubmit = async () => {
 </script>
 
 <template>
-  <div class="profile-bg">
-    <div class="profile-content">
+  <div class="home-bg">
+    <div class="home-content-wrapper">
 
       <div class="profile-header">
         <div class="profile-header-start">
@@ -126,16 +133,14 @@ const handleSubmit = async () => {
           </div>
         </div>
 
-        <div class="profile-header-end">
-          <div v-if="isLoggedIn" class="profile-header-end">
-            <button-logout style="margin-left: 20px"/>
-            <button-setting-profile/>
-            <!--        TODO 将设置按钮中管理员相关的功能划分到管理服务器按钮；将原本的设置按钮改成账户设置按钮    -->
-          </div>
-          <div v-else class="profile-header-end">
-            <button-register style="margin-left: 20px"/>
-            <button-login/>
-          </div>
+        <div v-if="isLoggedIn" class="profile-header-end">
+          <button-logout style="margin-left: 10px"/>
+          <button-setting-profile/>
+          <button-setting-server v-if="isUserAdmin"/>
+        </div>
+        <div v-else class="profile-header-end">
+          <button-register style="margin-left: 10px"/>
+          <button-login/>
         </div>
       </div>
 
@@ -184,7 +189,7 @@ html, body {
   padding: 0;
 }
 
-.profile-bg {
+.home-bg {
   background-color: #f6f6f6;
   height: 100%;
   width: 100%;
@@ -193,20 +198,21 @@ html, body {
   position: fixed;
 }
 
-.profile-content {
+.home-content-wrapper {
   max-width: 1080px;
   margin: 0 auto;
   padding: 0 20px;
 }
 
 @media (max-width: 900px) {
-  .profile-content {
+  .home-content-wrapper {
     max-width: 830px;
     margin: 0 auto;
     padding: 0 5px;
   }
 }
 
+/* header样式 */
 .profile-header {
   padding-top: 20px;
   margin: 0 auto;
@@ -235,6 +241,7 @@ html, body {
   display: flex;
   flex-direction: row-reverse;
   align-items: center;
+  gap: 10px;
 }
 
 .profile-info {
@@ -243,7 +250,6 @@ html, body {
   font-weight: bold;
   font-size: 32px;
 }
-
 
 @media (max-width: 900px) {
   .profile-info {
@@ -254,6 +260,7 @@ html, body {
   }
 }
 
+/* body样式 */
 .profile-statistic {
   width: 90%;
   justify-self: center;
@@ -267,7 +274,8 @@ html, body {
   }
 }
 
+/* 二次验证弹窗优先级 */
 .second-auth-dialog {
-  z-index: 999;
+  z-index: 9999;
 }
 </style>

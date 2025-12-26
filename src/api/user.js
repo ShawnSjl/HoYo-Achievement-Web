@@ -46,7 +46,7 @@ export const updateUserStatus = (request) => {
 }
 
 // Update the user's role; Should only be called by admin or root
-export const updateUserRoles = (request) => {
+export const updateUserRole = (request) => {
     return api.put("/api/user/update-role", request);
 }
 
