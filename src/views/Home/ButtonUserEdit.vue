@@ -95,6 +95,12 @@ const getUpdateTime = computed(() => {
   return dayjs(props.user.updated_at).format('YYYY-MM-DD HH:mm');
 })
 
+
+// 按钮状态，针对root用户
+const disableButton = (role) => {
+  return role === 'ROOT';
+}
+
 // 开启时自动填充表单
 watch(dialogVisible, (val) => {
   if (val && props.user) {
@@ -106,6 +112,7 @@ watch(dialogVisible, (val) => {
 
 <template>
   <el-button
+      :disabled="disableButton(props.user.role)"
       bg
       plain
       type="primary"
