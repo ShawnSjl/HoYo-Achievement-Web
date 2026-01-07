@@ -108,6 +108,8 @@ watch(dialogVisible, (val) => {
     editForm.status = status2Bool(props.user.status);
   }
 })
+
+// TODO 细分用户权限：admin不能修改admin状态，只用root可以修改role
 </script>
 
 <template>

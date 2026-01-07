@@ -70,6 +70,7 @@ const filterType = (value, row) => {
   fetchAllMigrationRecords()">
     管理成就数据
   </el-button>
+  <!--        TODO 添加后台数据管理/上传功能-->
 
   <div class="manage-dialog">
     <el-dialog
@@ -123,5 +124,12 @@ const filterType = (value, row) => {
 </template>
 
 <style scoped>
+.manage-dialog :deep(.el-dialog) {
+  min-width: 300px;
+  max-width: 900px;
+}
 
+.manage-dialog :deep(.el-dialog__title) {
+  font-weight: bold;
+}
 </style>

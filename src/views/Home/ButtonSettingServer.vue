@@ -19,7 +19,6 @@ import ButtonDataManage from "@/views/Home/ButtonDataManage.vue";
       <div class="profile-popover-wrapper">
         <button-user-manage/>
         <button-data-manage/>
-        <!--        TODO 添加后台数据管理/上传功能-->
       </div>
     </template>
   </el-popover>
