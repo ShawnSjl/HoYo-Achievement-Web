@@ -1,5 +1,6 @@
 <script setup>
 import ButtonUserManage from "@/views/Home/ButtonUserManage.vue";
+import ButtonDataManage from "@/views/Home/ButtonDataManage.vue";
 </script>
 
 <template>
@@ -17,6 +18,7 @@ import ButtonUserManage from "@/views/Home/ButtonUserManage.vue";
     <template #default>
       <div class="profile-popover-wrapper">
         <button-user-manage/>
+        <button-data-manage/>
         <!--        TODO 添加后台数据管理/上传功能-->
       </div>
     </template>

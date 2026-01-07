@@ -53,7 +53,7 @@ const handleClose = () => {
 </script>
 
 <template>
-  <el-button plain round type="primary" @click="dialogVisible = true">
+  <el-button plain round style="margin-top: 10px" type="primary" @click="dialogVisible = true">
     更改用户名
   </el-button>
 
