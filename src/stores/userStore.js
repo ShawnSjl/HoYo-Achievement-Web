@@ -1,6 +1,15 @@
 import {defineStore} from "pinia";
 import {ref} from 'vue';
-import {changePassword, deleteCurrentUser, isAdmin, isLogin, login, logout, updateUsername} from "@/api/user";
+import {
+    changePassword,
+    deleteCurrentUser,
+    isLogin,
+    isRootUser,
+    isSuperUser,
+    login,
+    logout,
+    updateUsername
+} from "@/api/user";
 import {showError, showInfo, showSuccess} from "@/utils/notification.js";
 import {useAccountStore} from "@/stores/accountStore.js";
 
@@ -9,7 +18,8 @@ export const useUserStore = defineStore(
     () => {
         const token = ref('');
         const user = ref('');
-        const admin = ref(false);
+        const isSuper = ref(false);
+        const isRoot = ref(false);
 
         // 2FA variable
         const is2FAVisible = ref(false);
@@ -31,7 +41,8 @@ export const useUserStore = defineStore(
                 if (loginResponse.code === 200) {
                     token.value = loginResponse.data.token;
                     user.value = loginResponse.data.username;
-                    admin.value = loginResponse.data.isAdmin;
+                    isSuper.value = loginResponse.data.isSuper;
+                    isRoot.value = loginResponse.data.isRoot;
 
                     // Save the token in local storage for axios use
                     localStorage.setItem('token', token.value);
@@ -70,7 +81,8 @@ export const useUserStore = defineStore(
             // Remove data from the local store whatever the response is
             token.value = '';
             user.value = '';
-            admin.value = false;
+            isSuper.value = false;
+            isRoot.value = false;
 
             // Remove the token from local storage
             localStorage.removeItem('token');
@@ -105,26 +117,59 @@ export const useUserStore = defineStore(
         }
 
         /**
-         * Get whether the current user is an admin
+         * Get whether the current user is a superuser
          * @returns {boolean}
          */
-        function isUserAdmin() {
-            return !!(token.value && admin.value);
+        function isUserSuper() {
+            return !!(token.value && isSuper.value);
         }
 
         /**
-         * Force check if the current user is an admin.
+         * Force check if the current user is a superuser.
          * If the response is not 200, log out the user.
          * @returns {Promise<any|boolean>}
          */
-        async function forceCheckIsUserAdmin() {
+        async function forceCheckIsUserSuper() {
             if (!token.value) return false;
 
             // Check if the user is an admin
             try {
-                const isAdminResponse = await isAdmin();
-                if (isAdminResponse.code === 200) {
-                    return isAdminResponse.data;
+                const isSuperResponse = await isSuperUser();
+                if (isSuperResponse.code === 200) {
+                    isSuper.value = isSuperResponse.data;
+                    return isSuperResponse.data;
+                } else {
+                    await logoutUser()
+                    return false;
+                }
+            } catch (error) {
+                console.error('Check admin error:', error);
+                return false;
+            }
+        }
+
+        /**
+         * Get whether the current user is a root
+         * @returns {boolean}
+         */
+        function isUserRoot() {
+            return !!(token.value && isRoot.value);
+        }
+
+        /**
+         * Force check if the current user is a root.
+         * If the response is not 200, log out the user.
+         * @returns {Promise<any|boolean>}
+         */
+        async function forceCheckIsUserRoot() {
+            if (!token.value) return false;
+
+            // Check if the user is an admin
+            try {
+                const isRootResponse = await isRootUser();
+                if (isRootResponse.code === 200) {
+                    isRoot.value = isRootResponse.data;
+                    return isRootResponse.data;
                 } else {
                     await logoutUser()
                     return false;
@@ -244,14 +289,17 @@ export const useUserStore = defineStore(
         return {
             token,
             user,
-            admin,
+            isSuper,
+            isRoot,
             is2FAVisible,
             pendingRetryRequest,
             loginUser,
             logoutUser,
             forceCheckIsUserLogin,
-            isUserAdmin,
-            forceCheckIsUserAdmin,
+            isUserSuper,
+            forceCheckIsUserSuper,
+            isUserRoot,
+            forceCheckIsUserRoot,
             getUserName,
             updateUserUsername,
             updateUserPassword,

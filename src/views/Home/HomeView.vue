@@ -29,8 +29,8 @@ const isLoggedIn = computed(() => {
 })
 
 // 获取用户是否有高级权限
-const isUserAdmin = computed(() => {
-  return userStore.isUserAdmin();
+const isUserSuper = computed(() => {
+  return userStore.isUserSuper();
 })
 
 // 移动端适配
@@ -137,7 +137,7 @@ const handleSubmit = async () => {
         <div v-if="isLoggedIn" class="profile-header-end">
           <button-logout style="margin-left: 10px"/>
           <button-setting-profile/>
-          <button-setting-server v-if="isUserAdmin"/>
+          <button-setting-server v-if="isUserSuper"/>
         </div>
         <div v-else class="profile-header-end">
           <button-register style="margin-left: 10px"/>

@@ -11,16 +11,16 @@ import ButtonUserEdit from "@/views/Home/ButtonUserEdit.vue";
 const userStore = useUserStore();
 
 // 获取用户是否有高级权限
-const isUserAdmin = computed(() => {
-  return userStore.isUserAdmin();
+const isUserSuper = computed(() => {
+  return userStore.isUserSuper();
 })
 onMounted(async () => {
-  await userStore.forceCheckIsUserAdmin();
+  await userStore.forceCheckIsUserSuper();
 })
 onUnmounted(() => {
   allUsers.value = [];
 })
-watch(isUserAdmin, async (newValue) => {
+watch(isUserSuper, async (newValue) => {
   if (newValue === false) {
     dialogVisible.value = false;
     allUsers.value = [];

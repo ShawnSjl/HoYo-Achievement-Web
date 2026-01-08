@@ -15,9 +15,14 @@ export const logout = () => {
     return api.post("/api/user/logout");
 }
 
-// Check if the current user is an admin
-export const isAdmin = () => {
-    return api.get("/api/user/is-admin");
+// Check if the current user has super role
+export const isSuperUser = () => {
+    return api.get("/api/user/is-super");
+}
+
+// Check if the current user is a root
+export const isRootUser = () => {
+    return api.get("/api/user/is-root");
 }
 
 // Get all users

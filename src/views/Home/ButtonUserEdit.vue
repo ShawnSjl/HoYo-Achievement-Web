@@ -1,11 +1,13 @@
 <script setup>
 import {useIsMobileStore} from "@/stores/isMobileStore.js";
-import {computed, reactive, ref, watch} from "vue";
+import {computed, onMounted, reactive, ref, watch} from "vue";
 import {showError, showInfo, showSuccess} from "@/utils/notification.js";
 import {updateUserRole, updateUserStatus} from "@/api/user.js";
 import {dayjs} from "element-plus";
+import {useUserStore} from "@/stores/userStore.js";
 
 // 使用Pinia作为本地缓存
+const userStore = useUserStore();
 const isMobileStore = useIsMobileStore();
 
 // 传入只读数据
@@ -95,9 +97,17 @@ const getUpdateTime = computed(() => {
   return dayjs(props.user.updated_at).format('YYYY-MM-DD HH:mm');
 })
 
+// 获取用户是否有Root权限
+const isUserRoot = computed(() => {
+  return userStore.isUserRoot();
+})
+onMounted(async () => {
+  await userStore.forceCheckIsUserRoot();
+})
 
-// 按钮状态，针对root用户
-const disableButton = (role) => {
+// 按钮状态，禁用规则：目标是root用户；当前是admin，且目标也是admin
+const disableEditButton = (role) => {
+  if (role === 'ADMIN' && !isUserRoot.value) return true;
   return role === 'ROOT';
 }
 
@@ -108,13 +118,11 @@ watch(dialogVisible, (val) => {
     editForm.status = status2Bool(props.user.status);
   }
 })
-
-// TODO 细分用户权限：admin不能修改admin状态，只用root可以修改role
 </script>
 
 <template>
   <el-button
-      :disabled="disableButton(props.user.role)"
+      :disabled="disableEditButton(props.user.role)"
       bg
       plain
       type="primary"
@@ -146,7 +154,7 @@ watch(dialogVisible, (val) => {
           <el-input v-model="props.user.username" disabled/>
         </el-form-item>
         <el-form-item label="权限" prop="role">
-          <el-select v-model="editForm.role">
+          <el-select v-model="editForm.role" :disabled="!isUserRoot">
             <el-option v-for="role in roles" :key="role" :label="role" :value="role"/>
           </el-select>
         </el-form-item>
