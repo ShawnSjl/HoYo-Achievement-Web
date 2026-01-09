@@ -4,6 +4,8 @@ import {computed, onMounted, onUnmounted, ref, watch} from "vue";
 import {dayjs} from "element-plus";
 import {showError, showInfo, showSuccess} from "@/utils/notification.js";
 import {getAllMigrationRecords} from "@/api/migration.js";
+import ButtonDataUpload from "@/views/Home/ButtonDataUpload.vue";
+import ButtonDataLoad from "@/views/Home/ButtonDataLoad.vue";
 
 // 使用Pinia作为本地缓存
 const userStore = useUserStore();
@@ -70,7 +72,6 @@ const filterType = (value, row) => {
   fetchAllMigrationRecords()">
     管理成就数据
   </el-button>
-  <!--        TODO 添加后台数据管理/上传功能 只有Root可以上传文件 -->
 
   <div class="manage-dialog">
     <el-dialog
@@ -119,6 +120,9 @@ const filterType = (value, row) => {
           </template>
         </el-table-column>
       </el-table>
+
+      <button-data-load style="margin-top: 10px"/>
+      <button-data-upload style="margin-top: 10px"/>
     </el-dialog>
   </div>
 </template>
@@ -131,5 +135,9 @@ const filterType = (value, row) => {
 
 .manage-dialog :deep(.el-dialog__title) {
   font-weight: bold;
+}
+
+.el-button + .el-button {
+  margin-left: 0;
 }
 </style>
