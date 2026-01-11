@@ -1,38 +1,25 @@
-# hoyo-achievement-web
+HoYo-Achievement-Web
+===========
 
-This template should help get you started developing with Vue 3 in Vite.
+## ℹ️ 简介
+HoYo-Achievement 项目的前端服务核心。
 
-## Recommended IDE Setup
+本项目基于 [Vue.js](https://cn.vuejs.org/) 开发，采用 RESTful API 架构。
 
-[VS Code](https://code.visualstudio.com/) + [Vue (Official)](https://marketplace.visualstudio.com/items?itemName=Vue.volar) (and disable Vetur).
-
-## Recommended Browser Setup
-
-- Chromium-based browsers (Chrome, Edge, Brave, etc.):
-  - [Vue.js devtools](https://chromewebstore.google.com/detail/vuejs-devtools/nhdogjmejiglipccpnnnanhbledajbpd) 
-  - [Turn on Custom Object Formatter in Chrome DevTools](http://bit.ly/object-formatters)
-- Firefox:
-  - [Vue.js devtools](https://addons.mozilla.org/en-US/firefox/addon/vue-js-devtools/)
-  - [Turn on Custom Object Formatter in Firefox DevTools](https://fxdx.dev/firefox-devtools-custom-object-formatters/)
-
-## Customize configuration
-
-See [Vite Configuration Reference](https://vite.dev/config/).
-
-## Project Setup
-
+## 🛠️ 编译方法
 ```sh
 npm install
-```
-
-### Compile and Hot-Reload for Development
-
-```sh
-npm run dev
-```
-
-### Compile and Minify for Production
-
-```sh
 npm run build
 ```
+ℹ️ 推荐使用[HoYo-Achievement-Server](https://github.com/ShawnSjl/HoYo-Achievement-Server)运行，已将前端打包进release。
+
+## 🛠️ 相关仓库
+1. 数据：[HoYo-Achievement-Data](https://github.com/ShawnSjl/HoYo-Achievement-Data)
+2. 后端：[HoYo-Achievement-Server](https://github.com/ShawnSjl/HoYo-Achievement-Server)
+
+# ⚠️ 免责声明
+本仓库仅用于整理和存储游戏相关数据，供玩家工具使用。
+
+所有的游戏文本、图标、数据版权均归 miHoYo / HoYoverse 所有。
+
+本项目与 HoYoverse 没有任何官方关联。
