@@ -4,7 +4,6 @@ import {computed, onMounted, onUnmounted, ref, watch} from "vue";
 import {dayjs} from "element-plus";
 import {showError, showInfo, showSuccess} from "@/utils/notification.js";
 import {getAllMigrationRecords} from "@/api/migration.js";
-import ButtonDataUpload from "@/views/Home/ButtonDataUpload.vue";
 import ButtonDataLoad from "@/views/Home/ButtonDataLoad.vue";
 
 // 使用Pinia作为本地缓存
@@ -122,7 +121,8 @@ const filterType = (value, row) => {
       </el-table>
 
       <button-data-load style="margin-top: 10px"/>
-      <button-data-upload style="margin-top: 10px"/>
+      <!-- 禁用上传功能 -->
+      <!--      <button-data-upload style="margin-top: 10px"/>-->
     </el-dialog>
   </div>
 </template>
