@@ -6,9 +6,11 @@ import ButtonUserAdd from "@/views/Home/ButtonUserAdd.vue";
 import {useUserStore} from "@/stores/userStore.js";
 import {dayjs} from "element-plus";
 import ButtonUserEdit from "@/views/Home/ButtonUserEdit.vue";
+import {useIsMobileStore} from "@/stores/isMobileStore.js";
 
 // 使用Pinia作为本地缓存
 const userStore = useUserStore();
+const isMobileStore = useIsMobileStore();
 
 // 获取用户是否有高级权限
 const isUserSuper = computed(() => {
@@ -75,6 +77,7 @@ const filterStatus = (value, row) => {
   <div class="manage-dialog">
     <el-dialog
         v-model="dialogVisible"
+        :fullscreen="isMobileStore.isMobile"
         append-to-body
         class="manage-dialog"
         title="管理用户"
@@ -82,7 +85,7 @@ const filterStatus = (value, row) => {
       <div>
         <el-table
             :data="allUsers"
-            max-height="400"
+            :max-height="isMobileStore.isMobile ? 'calc(100vh - 150px)' : '700px'"
             stripe
             style="margin-bottom: 10px">
           <el-table-column fixed label="ID" prop="id" sortable width="80"/>

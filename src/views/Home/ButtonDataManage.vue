@@ -5,9 +5,11 @@ import {dayjs} from "element-plus";
 import {showError, showInfo, showSuccess} from "@/utils/notification.js";
 import {getAllMigrationRecords} from "@/api/migration.js";
 import ButtonDataLoad from "@/views/Home/ButtonDataLoad.vue";
+import {useIsMobileStore} from "@/stores/isMobileStore.js";
 
 // 使用Pinia作为本地缓存
 const userStore = useUserStore();
+const isMobileStore = useIsMobileStore();
 
 // 获取用户是否有高级权限
 const isUserSuper = computed(() => {
@@ -75,13 +77,14 @@ const filterType = (value, row) => {
   <div class="manage-dialog">
     <el-dialog
         v-model="dialogVisible"
+        :fullscreen="isMobileStore.isMobile"
         append-to-body
         class="manage-dialog"
         title="管理成就数据"
         @close="handleClose">
       <el-table
           :data="allMigrationRecords"
-          max-height="400"
+          :max-height="isMobileStore.isMobile ? 'calc(100vh - 150px)' : '700px'"
           stripe
           style="margin-bottom: 10px">
         <el-table-column fixed label="ID" prop="id" sortable width="80"/>
@@ -120,7 +123,7 @@ const filterType = (value, row) => {
         </el-table-column>
       </el-table>
 
-      <button-data-load style="margin-top: 10px"/>
+      <button-data-load style="margin-top: 10px" @refresh="fetchAllMigrationRecords"/>
       <!-- 禁用上传功能 -->
       <!--      <button-data-upload style="margin-top: 10px"/>-->
     </el-dialog>

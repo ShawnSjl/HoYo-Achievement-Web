@@ -3,6 +3,9 @@ import {ref} from "vue";
 import {loadLocalData} from "@/api/migration.js";
 import {showError, showInfo, showSuccess} from "@/utils/notification.js";
 
+// 传入刷新事件
+const emit = defineEmits(['refresh'])
+
 const isLoading = ref(false);
 const isDisabled = ref(false);
 const buttonText = ref('加载本地数据');
@@ -20,6 +23,8 @@ const handleLocalLoad = async () => {
       return;
     }
     showSuccess(loadResponse.msg, loadResponse.data);
+    // 触发刷新事件
+    emit('refresh');
   } catch (e) {
     showError(e);
   } finally {

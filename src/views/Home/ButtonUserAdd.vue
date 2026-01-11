@@ -106,6 +106,7 @@ const handleSubmit = async () => {
     <el-dialog
         v-model="dialogVisible"
         :before-close="handleClose"
+        :fullscreen="isMobileStore.isMobile"
         append-to-body
         class="login-dialog"
         title="添加新用户"
