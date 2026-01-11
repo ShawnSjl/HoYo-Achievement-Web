@@ -2,10 +2,19 @@
 import {ref} from "vue";
 import {loadLocalData} from "@/api/migration.js";
 import {showError, showInfo, showSuccess} from "@/utils/notification.js";
+import {useServerInfoStore} from "@/stores/serverInfoStore.js";
+import {useZzzAchievementStore} from "@/stores/zzzAchievementsStore.js";
+import {useSrAchievementStore} from "@/stores/srAchievementStore.js";
+
+// 使用Pinia作为本地缓存
+const serverInfoStore = useServerInfoStore();
+const zzzAchievementStore = useZzzAchievementStore();
+const srAchievementStore = useSrAchievementStore();
 
 // 传入刷新事件
 const emit = defineEmits(['refresh'])
 
+// 按钮相关变量
 const isLoading = ref(false);
 const isDisabled = ref(false);
 const buttonText = ref('加载本地数据');
@@ -22,9 +31,19 @@ const handleLocalLoad = async () => {
       showInfo(loadResponse.msg);
       return;
     }
-    showSuccess(loadResponse.msg, loadResponse.data);
-    // 触发刷新事件
-    emit('refresh');
+    if (loadResponse.data.length > 0) {
+      showSuccess(loadResponse.msg, loadResponse.data);
+      // 触发刷新事件
+      emit('refresh');
+
+      await serverInfoStore.fetchServerInfo();
+      await zzzAchievementStore.fetchAchievements();
+      await zzzAchievementStore.fetchBranches();
+      await srAchievementStore.fetchAchievements();
+      await srAchievementStore.fetchBranches();
+    } else {
+      showSuccess(loadResponse.msg);
+    }
   } catch (e) {
     showError(e);
   } finally {
