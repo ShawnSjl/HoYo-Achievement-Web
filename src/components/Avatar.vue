@@ -1,6 +1,6 @@
 <script setup>
 import {computed} from 'vue';
-import Zzz from '@/assets/zzz-image/zzz-logo.png'
+import Avatar from '@/assets/avatar/zzz-1.png'
 import {useUserStore} from "@/stores/userStore.js";
 import AvatarPopover from '@/components/AvatarPopover.vue'
 import {useIsMobileStore} from "@/stores/isMobileStore";
@@ -49,7 +49,7 @@ const avatarTrigger = computed(() => {
     <template #reference>
       <div class="avatar-container">
         <div style="display: flex; align-items: center">
-          <el-avatar :size="avatarSize" :src="Zzz"/>
+          <el-avatar :size="avatarSize" :src="Avatar"/>
         </div>
         <div class="avatar-side">
           <p class="avatar-username">{{ userName }}</p>

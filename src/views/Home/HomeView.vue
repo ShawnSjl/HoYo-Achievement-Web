@@ -1,6 +1,6 @@
 <script setup>
 import {computed, onMounted, reactive, ref, watch} from "vue";
-import DefaultAvatar from '@/assets/zzz-image/zzz-logo.png'
+import DefaultAvatar from '@/assets/avatar/zzz-1.png'
 import {useUserStore} from "@/stores/userStore.js";
 import ButtonSettingProfile from "@/views/Home/ButtonSettingProfile.vue";
 import ButtonSettingServer from "@/views/Home/ButtonSettingServer.vue";
