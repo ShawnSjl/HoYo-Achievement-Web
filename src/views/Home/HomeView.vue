@@ -60,7 +60,6 @@ const userName = computed(() => {
   return userStore.getUserName()
 })
 watch(userName, async (newUserName) => {
-  console.log(newUserName);
   await fetchRemoteData();
 });
 

@@ -31,7 +31,7 @@ export const useServerInfoStore = defineStore(
 
                 showSuccess("服务器信息获取完成")
             } catch (error) {
-                console.log("Fail to fetch server info:", error)
+                console.error("Fail to fetch server info:", error)
                 showError("获取服务器信息错误", error)
             }
         }
