@@ -124,21 +124,19 @@ const handleSubmit = async () => {
   <div class="home-bg">
     <div class="home-content-wrapper">
 
-      <div class="profile-header">
-        <div class="profile-header-start">
-          <el-avatar :size="avatarSize" :src="DefaultAvatar"/>
+      <div class="profile-header-wrapper">
+        <div class="profile-header-left-wrapper">
+          <el-avatar :size="avatarSize" :src="DefaultAvatar" style="flex-shrink: 0"/>
           <!--          TODO: 新增头像系统-->
-          <div class="profile-info">
-            <p>{{ userName }}</p>
-          </div>
+          <p class="profile-username">{{ userName }}</p>
         </div>
 
-        <div v-if="isLoggedIn" class="profile-header-end">
+        <div v-if="isLoggedIn" class="profile-header-right-wrapper">
           <button-logout style="margin-left: 10px"/>
           <button-setting-profile/>
           <button-setting-server v-if="isUserSuper"/>
         </div>
-        <div v-else class="profile-header-end">
+        <div v-else class="profile-header-right-wrapper">
           <button-register style="margin-left: 10px"/>
           <button-login/>
         </div>
@@ -213,50 +211,56 @@ html, body {
 }
 
 /* header样式 */
-.profile-header {
+.profile-header-wrapper {
   padding-top: 20px;
-  margin: 0 auto;
-  width: 70%;
+  min-width: 800px;
   justify-self: center;
+
   display: flex;
   flex-direction: row;
   justify-content: space-between;
-  align-items: center;
 }
 
-@media (max-width: 900px) {
-  .profile-header {
-    padding-top: 10px;
-    width: 80%;
-  }
-}
-
-.profile-header-start {
+.profile-header-left-wrapper {
   display: flex;
   flex-direction: row;
   align-items: center;
+
+  flex: 1;
+  min-width: 0;
 }
 
-.profile-header-end {
+.profile-header-right-wrapper {
   display: flex;
   flex-direction: row-reverse;
   align-items: center;
   gap: 10px;
 }
 
-.profile-info {
+.profile-username {
   margin-left: 30px;
   justify-self: center;
   font-weight: bold;
   font-size: 32px;
+
+  white-space: nowrap; /* 强制不换行 */
+  overflow: hidden; /* 隐藏超出部分 */
+  text-overflow: ellipsis; /* 超出显示省略号 (...) */
+  width: 100%; /* 确保宽度占满父容器，不然可能切不断 */
 }
 
 @media (max-width: 900px) {
-  .profile-info {
+  .profile-header-wrapper {
+    padding-top: 10px;
+    min-width: 0;
+    width: 80%;
+
+    flex-direction: column;
+  }
+
+  .profile-username {
     margin-left: 10px;
-    justify-self: center;
-    font-weight: bold;
-    font-size: 14px;
+    font-size: 18px;
   }
 }
 

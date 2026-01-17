@@ -1,3 +1,10 @@
 body {
     margin: 0;
+
+    /* 依次尝试：自定义字体 -> 系统默认无衬线字体 */
+    font-family: "Helvetica Neue", Helvetica, "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "微软雅黑", Arial, sans-serif;
+
+    /* 可选：优化字体抗锯齿渲染 */
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
 }
