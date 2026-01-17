@@ -132,17 +132,21 @@ const getAchievementName = computed(() => {
   flex: 2;
 }
 
-@media (max-width: 900px) {
-  .zzz-table-row-left {
-    flex: 3;
-  }
-}
-
 .zzz-table-row-right {
   display: flex;
   flex-direction: row-reverse;
   align-items: center;
   margin-left: 10px;
+}
+
+@media (max-width: 900px) {
+  .zzz-table-row-left {
+    flex: 3;
+  }
+
+  .zzz-table-row-right {
+    margin-left: 0;
+  }
 }
 
 /* 成就图片 */
@@ -260,7 +264,7 @@ const getAchievementName = computed(() => {
   .zzz-game-version {
     font-weight: normal;
     font-size: 14px;
-    margin-right: 5px;
+    margin-right: 8px;
   }
 }
 

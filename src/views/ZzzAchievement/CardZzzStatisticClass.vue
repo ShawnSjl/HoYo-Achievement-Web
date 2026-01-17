@@ -100,6 +100,7 @@ const getCompleteLevel3Number = computed(() => {
 .el-card {
   --el-card-bg-color: #161817;
   --el-card-border-color: #000000;
+  --el-card-padding: 10px 20px;
   color: #cacaca;
 }
 

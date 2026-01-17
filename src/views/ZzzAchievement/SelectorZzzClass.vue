@@ -91,23 +91,6 @@ const completePercentage = computed(() => {
   background-color: #161817;
 }
 
-/* 菜单中的选项背景 */
-:deep(.el-select-dropdown__item) {
-  color: #cacaca;
-  background-color: #161817;
-  font-weight: bold;
-}
-
-/* 菜单中被选中的选项字体 */
-:deep(.el-select-dropdown__item.is-selected) {
-  color: #000000;
-}
-
-/* 菜单中被选中的选项背景 */
-:deep(.el-select-dropdown__item.is-hovering) {
-  background-color: #ffd100;
-}
-
 p {
   margin-block-start: 0;
   margin-block-end: 0;
@@ -124,5 +107,29 @@ p {
     background: #161817 !important;
     border: 1px solid #161817 !important;
   }
+}
+
+/* 菜单中的选项字体 */
+.zzz-class-select .el-select-dropdown__item {
+  color: #cacaca;
+  font-weight: bold;
+}
+
+/* 菜单中被选中的选项字体 */
+.zzz-class-select .el-select-dropdown__item.is-selected {
+  color: #ffd100;
+  font-weight: bold;
+}
+
+.zzz-class-select .el-select-dropdown__item.is-selected .el-select-dropdown__item.is-hovering {
+  color: #000000;
+  font-weight: bold;
+}
+
+/* 菜单中被选中的选项背景 */
+.zzz-class-select .el-select-dropdown__item.is-hovering,
+.zzz-class-select .el-select-dropdown__item:hover {
+  background-color: #ffd100 !important;
+  color: #000; /* 悬停时文字颜色可能也需要调整以保证对比度 */
 }
 </style>

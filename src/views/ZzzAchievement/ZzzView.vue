@@ -98,7 +98,7 @@ const calculateTableHeight = () => {
   const headerEl = document.querySelector('.el-header') // 获取头部高度
   const headerHeight = headerEl ? headerEl.offsetHeight : 0
 
-  const margin = isMobileStore.isMobile ? 90 : 142 // 预留的 padding/margin（可调）
+  const margin = isMobileStore.isMobile ? 135 : 170 // 预留的 padding/margin（可调）
 
   tableHeight.value = windowHeight - headerHeight - margin
 }
