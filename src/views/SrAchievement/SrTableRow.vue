@@ -134,6 +134,13 @@ const textAfter = computed(() => {
   flex: 2;
 }
 
+.sr-table-row-right {
+  display: flex;
+  flex-direction: row-reverse;
+  align-items: center;
+  margin-left: 10px;
+}
+
 @media (max-width: 900px) {
   .sr-table-row {
     justify-content: normal;
@@ -142,13 +149,10 @@ const textAfter = computed(() => {
   .sr-table-row-left {
     flex: 3;
   }
-}
 
-.sr-table-row-right {
-  display: flex;
-  flex-direction: row-reverse;
-  align-items: center;
-  margin-left: 10px;
+  .sr-table-row-right {
+    margin-left: 0;
+  }
 }
 
 /* 成就图片 */
@@ -243,17 +247,12 @@ const textAfter = computed(() => {
 
 @media (max-width: 900px) {
   .sr-detail {
-    font-size: 12px;
-    gap: 6px;
+    font-size: 14px;
     padding: 7px;
   }
 
   .sr-name {
-    font-size: 15px;
-  }
-
-  .sr-desc {
-    font-size: 13px;
+    font-size: 16px;
   }
 }
 
