@@ -166,7 +166,7 @@ const handleSubmit = async () => {
                @keyup.enter.native="handleClickSubmit"
       >
         <el-form-item label="密码" prop="twoFACode">
-          <el-input v-model="passwordForm.twoFACode" type="password"/>
+          <el-input v-model="passwordForm.twoFACode" show-password type="password"/>
         </el-form-item>
       </el-form>
 

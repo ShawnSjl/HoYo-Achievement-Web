@@ -71,7 +71,7 @@ const handleLogin = async () => {
             <el-input v-model="loginForm.username"/>
           </el-form-item>
           <el-form-item label="密码" prop="password">
-            <el-input v-model="loginForm.password" type="password"/>
+            <el-input v-model="loginForm.password" show-password type="password"/>
           </el-form-item>
         </el-form>
       </div>

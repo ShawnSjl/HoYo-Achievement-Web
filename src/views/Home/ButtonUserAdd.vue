@@ -123,10 +123,10 @@ const handleSubmit = async () => {
             <el-input v-model="userForm.username"/>
           </el-form-item>
           <el-form-item label="密码" prop="password">
-            <el-input v-model="userForm.password" type="password"/>
+            <el-input v-model="userForm.password" show-password type="password"/>
           </el-form-item>
           <el-form-item label="密码" prop="confirmPassword">
-            <el-input v-model="userForm.confirmPassword" type="password"/>
+            <el-input v-model="userForm.confirmPassword" show-password type="password"/>
           </el-form-item>
         </el-form>
       </div>
