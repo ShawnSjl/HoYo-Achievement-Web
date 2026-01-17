@@ -85,6 +85,11 @@ const getAchievementName = computed(() => {
     return props.achievement.name
   }
 })
+
+// 处理分支标签
+const branchID = computed(() => {
+  return achievementStore.getAchievementBranchID(props.achievement.achievement_id);
+})
 </script>
 
 <template>
@@ -96,6 +101,9 @@ const getAchievementName = computed(() => {
       <div class="zzz-detail">
         <div class="zzz-name">
           {{ getAchievementName }}
+          <span v-if="branchID !== 0" class="zzz-hidden-badge">
+            分支{{ branchID }}
+          </span>
         </div>
         <div class="zzz-desc">{{ props.achievement.description }}</div>
       </div>
@@ -238,6 +246,18 @@ const getAchievementName = computed(() => {
   text-align: left;
   word-break: break-word;
   color: #acacac;
+}
+
+.zzz-hidden-badge {
+  background-color: #f11a1a;
+  color: #fff;
+  font-size: 12px;
+  padding: 2px 6px;
+  border-radius: 10px;
+  margin-left: 8px;
+  position: relative;
+  top: -6px;
+  left: -10px;
 }
 
 @media (max-width: 900px) {

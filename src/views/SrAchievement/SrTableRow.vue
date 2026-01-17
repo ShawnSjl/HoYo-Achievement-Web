@@ -88,6 +88,12 @@ const textAfter = computed(() => {
   // slice(index) 会从该索引开始截取直到末尾，正好包含索引处的字符 '※'
   return str.slice(index);
 });
+
+
+// 处理分支标签
+const branchID = computed(() => {
+  return achievementStore.getAchievementBranchID(props.achievement.achievement_id);
+})
 </script>
 
 <template>
@@ -97,6 +103,9 @@ const textAfter = computed(() => {
       <div class="sr-detail">
         <div class="sr-name">
           {{ props.achievement.name }}
+          <span v-if="branchID !== 0" class="sr-hidden-badge">
+            分支{{ branchID }}
+          </span>
         </div>
         <div class="sr-desc">{{ textBefore }}</div>
         <div class="sr-sub-desc">{{ textAfter }}</div>
@@ -243,6 +252,18 @@ const textAfter = computed(() => {
   content: "\00a0";
   display: inline-block;
   width: 0;
+}
+
+.sr-hidden-badge {
+  background-color: #f11a1a;
+  color: #fff;
+  font-size: 12px;
+  padding: 2px 6px;
+  border-radius: 10px;
+  margin-left: 8px;
+  position: relative;
+  top: -6px;
+  left: -10px;
 }
 
 @media (max-width: 900px) {

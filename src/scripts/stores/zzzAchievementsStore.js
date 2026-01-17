@@ -221,6 +221,17 @@ export const useZzzAchievementStore = defineStore(
             return branch.achievement_id.filter(id => id !== targetId);
         }
 
+        /**
+         * Get the branch ID of the target achievement.
+         * @param achievementId
+         * @return {*}
+         */
+        function getAchievementBranchID(achievementId) {
+            const branch = branches.value.find(item => item.achievement_id.includes(achievementId));
+            if (!branch) return 0;
+            return branch.branch_id;
+        }
+
         return {
             achievements,
             achievementMap,
@@ -232,6 +243,7 @@ export const useZzzAchievementStore = defineStore(
             fetchBranches,
             ensureBranchData,
             completeAchievement,
+            getAchievementBranchID,
         };
     },
     {
