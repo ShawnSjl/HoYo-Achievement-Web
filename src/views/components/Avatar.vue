@@ -2,8 +2,8 @@
 import {computed} from 'vue';
 import Avatar from '@/assets/avatar/zzz-1.png'
 import {useUserStore} from "@/stores/userStore.js";
-import AvatarPopover from '@/components/AvatarPopover.vue'
-import {useIsMobileStore} from "@/stores/isMobileStore";
+import AvatarPopover from '@/views/components/AvatarPopover.vue'
+import {useIsMobileStore} from "@/stores/isMobileStore.js";
 import {useAccountStore} from "@/stores/accountStore.js";
 
 // 传入只读数据

@@ -1,8 +1,5 @@
 <script setup>
-import { ref, computed } from 'vue';
-import { useRouter } from 'vue-router';
-import { useUserStore } from '@/stores/userStore.js';
-import {showWarn, showSuccess, showError, showInfo} from "@/utils/notification";
+import {showInfo} from "@/utils/notification.js";
 
 // 使用Pinia作为本地缓存
 // const authStore = useAuthStore();
@@ -49,26 +46,26 @@ const handleRegister = () => {
 </script>
 
 <template>
-  <el-button round plain type="primary" @click="handleRegister">
+  <el-button plain round type="primary" @click="handleRegister">
     注册
   </el-button>
 
-<!--  <el-dialog-->
-<!--      v-model="dialogVisible"-->
-<!--      title="注册"-->
-<!--      width="30%"-->
-<!--      :before-close="handleClose"-->
-<!--  >-->
-<!--    <div>-->
-<!--      <el-input v-model="loginForm.username" placeholder="用户名" />-->
-<!--      <el-input v-model="loginForm.password" placeholder="密码" type="password" />-->
-<!--      <el-input v-model="loginForm.password2" placeholder="重复密码" type="password" />-->
-<!--    </div>-->
-<!--    <template #footer>-->
-<!--      <el-button @click="handleClose">取消</el-button>-->
-<!--      <el-button type="primary" :disabled="!allFilled" @click="handleRegister">注册</el-button>-->
-<!--    </template>-->
-<!--  </el-dialog>-->
+  <!--  <el-dialog-->
+  <!--      v-model="dialogVisible"-->
+  <!--      title="注册"-->
+  <!--      width="30%"-->
+  <!--      :before-close="handleClose"-->
+  <!--  >-->
+  <!--    <div>-->
+  <!--      <el-input v-model="loginForm.username" placeholder="用户名" />-->
+  <!--      <el-input v-model="loginForm.password" placeholder="密码" type="password" />-->
+  <!--      <el-input v-model="loginForm.password2" placeholder="重复密码" type="password" />-->
+  <!--    </div>-->
+  <!--    <template #footer>-->
+  <!--      <el-button @click="handleClose">取消</el-button>-->
+  <!--      <el-button type="primary" :disabled="!allFilled" @click="handleRegister">注册</el-button>-->
+  <!--    </template>-->
+  <!--  </el-dialog>-->
 </template>
 
 <style scoped>

@@ -1,10 +1,10 @@
 <script setup>
 import {computed} from "vue";
 import {useUserStore} from "@/stores/userStore.js";
-import ButtonLogin from "@/components/ButtonLogin.vue";
-import ButtonLogout from "@/components/ButtonLogout.vue";
-import ButtonRegister from "@/components/ButtonRegister.vue";
-import ButtonHomePage from "@/components/ButtonHomePage.vue";
+import ButtonLogin from "@/views/components/ButtonLogin.vue";
+import ButtonLogout from "@/views/components/ButtonLogout.vue";
+import ButtonRegister from "@/views/components/ButtonRegister.vue";
+import ButtonHomePage from "@/views/components/ButtonHomePage.vue";
 
 // 使用Pinia作为本地缓存
 const userStore = useUserStore();

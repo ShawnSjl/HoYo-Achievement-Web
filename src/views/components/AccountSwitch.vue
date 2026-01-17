@@ -1,6 +1,6 @@
 <script setup>
 import {ArrowDown} from '@element-plus/icons-vue';
-import router from "@/router";
+import router from "@/router/index.js";
 import Zzz from '@/assets/zzz-image/zzz-logo.png'
 import Sr from "@/assets/sr-image/sr-logo.png"
 import {useAccountStore} from "@/stores/accountStore.js";

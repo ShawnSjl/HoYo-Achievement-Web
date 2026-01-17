@@ -1,9 +1,9 @@
 <script setup>
 import {categories, zzzGetClassByCategory} from "@/utils/zzzAchievementClass";
-import Avatar from "@/components/Avatar.vue";
+import Avatar from "@/views/components/Avatar.vue";
 import ButtonZzzSetting from "@/views/ZzzAchievement/ButtonZzzSetting.vue";
 import {useIsMobileStore} from "@/stores/isMobileStore";
-import AccountSwitch from "@/components/AccountSwitch.vue";
+import AccountSwitch from "@/views/components/AccountSwitch.vue";
 
 // 传入只读数据
 const props = defineProps({

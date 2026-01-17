@@ -4,9 +4,9 @@ import DefaultAvatar from '@/assets/avatar/zzz-1.png'
 import {useUserStore} from "@/stores/userStore.js";
 import ButtonSettingProfile from "@/views/Home/ButtonSettingProfile.vue";
 import ButtonSettingServer from "@/views/Home/ButtonSettingServer.vue";
-import ButtonLogin from "@/components/ButtonLogin.vue";
-import ButtonLogout from "@/components/ButtonLogout.vue";
-import ButtonRegister from "@/components/ButtonRegister.vue";
+import ButtonLogin from "@/views/components/ButtonLogin.vue";
+import ButtonLogout from "@/views/components/ButtonLogout.vue";
+import ButtonRegister from "@/views/components/ButtonRegister.vue";
 import ProfileCardsLayout from "@/views/Home/ProfileCardsLayout.vue";
 import {useIsMobileStore} from "@/stores/isMobileStore.js";
 import {useSrAchievementStore} from "@/stores/srAchievementStore.js";
