@@ -1,8 +1,8 @@
 <script setup>
-import {useServerInfoStore} from "@/stores/serverInfoStore.js";
+import {useServerInfoStore} from "@/scripts/stores/serverInfoStore.js";
 import {ref} from "vue";
 import {dayjs} from "element-plus";
-import {useIsMobileStore} from "@/stores/isMobileStore.js";
+import {useIsMobileStore} from "@/scripts/stores/isMobileStore.js";
 
 // 使用Pinia作为本地缓存
 const serverInfoStore = useServerInfoStore();

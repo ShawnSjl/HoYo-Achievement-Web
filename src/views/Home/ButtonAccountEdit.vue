@@ -1,10 +1,10 @@
 <script setup>
-import {useAccountStore} from "@/stores/accountStore.js";
+import {useAccountStore} from "@/scripts/stores/accountStore.js";
 import {Delete, Edit} from "@element-plus/icons-vue";
 import {computed, reactive, ref, watch} from "vue";
-import {showError} from "@/utils/notification.js";
-import {accountNameCharPattern, accountUidCharPattern} from "@/utils/formRegex.js";
-import {useIsMobileStore} from "@/stores/isMobileStore.js";
+import {showError} from "@/scripts/utils/notification.js";
+import {accountNameCharPattern, accountUidCharPattern} from "@/scripts/utils/formRegex.js";
+import {useIsMobileStore} from "@/scripts/stores/isMobileStore.js";
 
 // 使用Pinia作为本地缓存
 const accountStore = useAccountStore();

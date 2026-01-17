@@ -1,9 +1,9 @@
 <script setup>
 import {reactive, ref} from 'vue';
-import {showError, showInfo, showSuccess} from "@/utils/notification.js";
-import {createUser} from "@/api/user.js";
-import {passwordCharPattern, usernameCharPattern} from "@/utils/formRegex.js";
-import {useIsMobileStore} from "@/stores/isMobileStore.js";
+import {showError, showInfo, showSuccess} from "@/scripts/utils/notification.js";
+import {createUser} from "@/scripts/api/user.js";
+import {passwordCharPattern, usernameCharPattern} from "@/scripts/utils/formRegex.js";
+import {useIsMobileStore} from "@/scripts/stores/isMobileStore.js";
 
 // 使用Pinia作为本地缓存
 const isMobileStore = useIsMobileStore();
@@ -123,10 +123,10 @@ const handleSubmit = async () => {
             <el-input v-model="userForm.username"/>
           </el-form-item>
           <el-form-item label="密码" prop="password">
-            <el-input v-model="userForm.password" type="password"/>
+            <el-input v-model="userForm.password" show-password type="password"/>
           </el-form-item>
           <el-form-item label="密码" prop="confirmPassword">
-            <el-input v-model="userForm.confirmPassword" type="password"/>
+            <el-input v-model="userForm.confirmPassword" show-password type="password"/>
           </el-form-item>
         </el-form>
       </div>

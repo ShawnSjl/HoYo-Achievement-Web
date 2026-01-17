@@ -1,12 +1,12 @@
 <script setup>
 import {computed} from 'vue';
-import {useZzzAchievementStore} from "@/stores/zzzAchievementsStore";
-import {zzzGetClassIdByName} from "@/utils/zzzAchievementClass";
+import {useZzzAchievementStore} from "@/scripts/stores/zzzAchievementsStore";
+import {zzzGetClassIdByName} from "@/scripts/utils/zzzAchievementClass";
 import ZzzAchievementImg1 from '@/assets/zzz-image/zzz-achievement-level-1.png';
 import ZzzAchievementImg2 from '@/assets/zzz-image/zzz-achievement-level-2.png';
 import ZzzAchievementImg3 from '@/assets/zzz-image/zzz-achievement-level-3.png';
-import {branchAchievementCountByClassAndLevel} from "@/utils/countBranchAchievement.js";
-import {completeAchievementCountByClassAndLevel} from "@/utils/countCompleteAchievement.js";
+import {branchAchievementCountByClassAndLevel} from "@/scripts/utils/countBranchAchievement.js";
+import {completeAchievementCountByClassAndLevel} from "@/scripts/utils/countCompleteAchievement.js";
 
 // 使用Pinia作为本地缓存
 const achievementStore = useZzzAchievementStore();
@@ -100,6 +100,7 @@ const getCompleteLevel3Number = computed(() => {
 .el-card {
   --el-card-bg-color: #161817;
   --el-card-border-color: #000000;
+  --el-card-padding: 10px 20px;
   color: #cacaca;
 }
 

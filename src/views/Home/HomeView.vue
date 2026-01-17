@@ -1,20 +1,20 @@
 <script setup>
 import {computed, onMounted, reactive, ref, watch} from "vue";
 import DefaultAvatar from '@/assets/avatar/zzz-1.png'
-import {useUserStore} from "@/stores/userStore.js";
+import {useUserStore} from "@/scripts/stores/userStore.js";
 import ButtonSettingProfile from "@/views/Home/ButtonSettingProfile.vue";
 import ButtonSettingServer from "@/views/Home/ButtonSettingServer.vue";
-import ButtonLogin from "@/components/ButtonLogin.vue";
-import ButtonLogout from "@/components/ButtonLogout.vue";
-import ButtonRegister from "@/components/ButtonRegister.vue";
+import ButtonLogin from "@/views/components/ButtonLogin.vue";
+import ButtonLogout from "@/views/components/ButtonLogout.vue";
+import ButtonRegister from "@/views/components/ButtonRegister.vue";
 import ProfileCardsLayout from "@/views/Home/ProfileCardsLayout.vue";
-import {useIsMobileStore} from "@/stores/isMobileStore.js";
-import {useSrAchievementStore} from "@/stores/srAchievementStore.js";
-import {useZzzAchievementStore} from "@/stores/zzzAchievementsStore.js";
-import {useServerInfoStore} from "@/stores/serverInfoStore.js";
-import {secondAuth} from "@/api/user.js";
-import {showError} from "@/utils/notification.js";
-import {passwordCharPattern} from "@/utils/formRegex.js";
+import {useIsMobileStore} from "@/scripts/stores/isMobileStore.js";
+import {useSrAchievementStore} from "@/scripts/stores/srAchievementStore.js";
+import {useZzzAchievementStore} from "@/scripts/stores/zzzAchievementsStore.js";
+import {useServerInfoStore} from "@/scripts/stores/serverInfoStore.js";
+import {secondAuth} from "@/scripts/api/user.js";
+import {showError} from "@/scripts/utils/notification.js";
+import {passwordCharPattern} from "@/scripts/utils/formRegex.js";
 
 // 使用Pinia作为本地缓存
 const userStore = useUserStore();
@@ -124,21 +124,19 @@ const handleSubmit = async () => {
   <div class="home-bg">
     <div class="home-content-wrapper">
 
-      <div class="profile-header">
-        <div class="profile-header-start">
-          <el-avatar :size="avatarSize" :src="DefaultAvatar"/>
+      <div class="profile-header-wrapper">
+        <div class="profile-header-left-wrapper">
+          <el-avatar :size="avatarSize" :src="DefaultAvatar" style="flex-shrink: 0"/>
           <!--          TODO: 新增头像系统-->
-          <div class="profile-info">
-            <p>{{ userName }}</p>
-          </div>
+          <p class="profile-username">{{ userName }}</p>
         </div>
 
-        <div v-if="isLoggedIn" class="profile-header-end">
+        <div v-if="isLoggedIn" class="profile-header-right-wrapper">
           <button-logout style="margin-left: 10px"/>
           <button-setting-profile/>
           <button-setting-server v-if="isUserSuper"/>
         </div>
-        <div v-else class="profile-header-end">
+        <div v-else class="profile-header-right-wrapper">
           <button-register style="margin-left: 10px"/>
           <button-login/>
         </div>
@@ -168,7 +166,7 @@ const handleSubmit = async () => {
                @keyup.enter.native="handleClickSubmit"
       >
         <el-form-item label="密码" prop="twoFACode">
-          <el-input v-model="passwordForm.twoFACode" type="password"/>
+          <el-input v-model="passwordForm.twoFACode" show-password type="password"/>
         </el-form-item>
       </el-form>
 
@@ -202,6 +200,11 @@ html, body {
   max-width: 1080px;
   margin: 0 auto;
   padding: 0 20px;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
 }
 
 @media (max-width: 900px) {
@@ -213,50 +216,56 @@ html, body {
 }
 
 /* header样式 */
-.profile-header {
+.profile-header-wrapper {
   padding-top: 20px;
-  margin: 0 auto;
-  width: 70%;
+  min-width: 800px;
   justify-self: center;
+
   display: flex;
   flex-direction: row;
   justify-content: space-between;
-  align-items: center;
 }
 
-@media (max-width: 900px) {
-  .profile-header {
-    padding-top: 10px;
-    width: 80%;
-  }
-}
-
-.profile-header-start {
+.profile-header-left-wrapper {
   display: flex;
   flex-direction: row;
   align-items: center;
+
+  flex: 1;
+  min-width: 0;
 }
 
-.profile-header-end {
+.profile-header-right-wrapper {
   display: flex;
   flex-direction: row-reverse;
   align-items: center;
   gap: 10px;
 }
 
-.profile-info {
+.profile-username {
   margin-left: 30px;
   justify-self: center;
   font-weight: bold;
   font-size: 32px;
+
+  white-space: nowrap; /* 强制不换行 */
+  overflow: hidden; /* 隐藏超出部分 */
+  text-overflow: ellipsis; /* 超出显示省略号 (...) */
+  width: 100%; /* 确保宽度占满父容器，不然可能切不断 */
 }
 
 @media (max-width: 900px) {
-  .profile-info {
+  .profile-header-wrapper {
+    padding-top: 10px;
+    min-width: 0;
+    width: 80%;
+
+    flex-direction: column;
+  }
+
+  .profile-username {
     margin-left: 10px;
-    justify-self: center;
-    font-weight: bold;
-    font-size: 14px;
+    font-size: 18px;
   }
 }
 

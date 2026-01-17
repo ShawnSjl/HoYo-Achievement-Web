@@ -1,15 +1,15 @@
 <script setup>
-import {useUserStore} from "@/stores/userStore.js";
-import {useIsMobileStore} from "@/stores/isMobileStore";
+import {useUserStore} from "@/scripts/stores/userStore.js";
+import {useIsMobileStore} from "@/scripts/stores/isMobileStore";
 import {computed, nextTick, onBeforeUnmount, onMounted, ref, watch} from "vue";
-import {srClasses} from "@/utils/srAchievementClass";
+import {srClasses} from "@/scripts/utils/srAchievementClass";
 import SrTable from "@/views/SrAchievement/SrTable.vue";
 import SrHeader from "@/views/SrAchievement/SrHeader.vue";
-import SrAside from "@/views/SrAchievement/SrAside.vue";
+import SelectorSrClass from "@/views/SrAchievement/SelectorSrClass.vue";
 import SrStatisticClass from "@/views/SrAchievement/SrStatisticClass.vue";
 import {useRoute} from "vue-router";
-import router from "@/router/index.js";
-import {useSrAchievementStore} from "@/stores/srAchievementStore.js";
+import router from "@/scripts/router/index.js";
+import {useSrAchievementStore} from "@/scripts/stores/srAchievementStore.js";
 
 // 创建Route
 const route = useRoute();
@@ -83,7 +83,7 @@ const calculateTableHeight = () => {
   const headerEl = document.querySelector('.el-header') // 获取头部高度
   const headerHeight = headerEl ? headerEl.offsetHeight : 0
 
-  const margin = isMobileStore.isMobile ? 150 : 180 // 预留的 padding/margin（可调）
+  const margin = isMobileStore.isMobile ? 190 : 216 // 预留的 padding/margin（可调）
 
   tableHeight.value = windowHeight - headerHeight - margin
 }
@@ -125,13 +125,13 @@ onBeforeUnmount(() => {
           <el-aside v-if="!isMobileStore.isMobile"
                     :style="{ height: asideHeight }"
                     class="sr-container-aside">
-            <sr-aside v-model="achievementClass"
-                      :uuid="currentUUID"/>
+            <selector-sr-class v-model="achievementClass"
+                               :uuid="currentUUID"/>
           </el-aside>
           <el-main class="sr-container-main">
-            <sr-aside v-if="isMobileStore.isMobile"
-                      v-model="achievementClass"
-                      :uuid="currentUUID"/>
+            <selector-sr-class v-if="isMobileStore.isMobile"
+                               v-model="achievementClass"
+                               :uuid="currentUUID"/>
             <sr-statistic-class
                 :achievementClass="achievementClass"
                 :uuid="currentUUID"

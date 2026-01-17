@@ -1,10 +1,10 @@
 <script setup>
-import Avatar from "@/components/Avatar.vue";
+import Avatar from "@/views/components/Avatar.vue";
 import SrAchievement from "@/assets/sr-image/sr-achievement.png"
 import ButtonSrSetting from "@/views/SrAchievement/ButtonSrSetting.vue";
 import SrStatisticTotal from "@/views/SrAchievement/SrStatisticTotal.vue";
-import {useIsMobileStore} from "@/stores/isMobileStore";
-import AccountSwitch from "@/components/AccountSwitch.vue";
+import {useIsMobileStore} from "@/scripts/stores/isMobileStore";
+import AccountSwitch from "@/views/components/AccountSwitch.vue";
 
 // 使用Pinia作为本地缓存
 const isMobileStore = useIsMobileStore();
@@ -17,21 +17,23 @@ const props = defineProps({
 
 <template>
   <div class="sr-header-content">
-    <div class="sr-header-left">
+    <div v-if="!isMobileStore.isMobile" class="sr-header-left">
       <div class="sr-header-title-wrapper">
         <img :src="SrAchievement" alt="sr achievement" class="sr-header-title-img">
         <div class="sr-header-title">成就</div>
       </div>
 
-      <div v-if="!isMobileStore.isMobile" class="sr-header-statistic-wrapper">
+      <div class="sr-header-statistic-wrapper">
         <sr-statistic-total :uuid="props.uuid"/>
       </div>
     </div>
 
     <div class="sr-header-right">
+      <div class="sr-header-account-wrapper">
+        <avatar :uuid="props.uuid"/>
+        <account-switch :uuid="props.uuid"/>
+      </div>
       <button-sr-setting :uuid="props.uuid"/>
-      <account-switch :uuid="props.uuid" style="margin-right: 10px"/>
-      <avatar :uuid="props.uuid"/>
     </div>
   </div>
 </template>
@@ -91,10 +93,30 @@ const props = defineProps({
 /* 右侧功能区 */
 .sr-header-right {
   display: flex;
-  flex-direction: row;
+  flex-direction: row-reverse;
   justify-content: space-between;
   align-content: flex-start;
   align-items: center;
   gap: 10px;
+}
+
+.sr-header-account-wrapper {
+  display: flex;
+  flex-direction: row-reverse;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+@media (max-width: 900px) {
+  .sr-header-right {
+    flex: 1;
+    gap: 0;
+    flex-direction: row;
+  }
+
+  .sr-header-account-wrapper {
+    flex-direction: row;
+  }
 }
 </style>

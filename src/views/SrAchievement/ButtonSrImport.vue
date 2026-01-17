@@ -1,8 +1,8 @@
 <script setup>
 import ExcelJS from 'exceljs';
-import {showError, showSuccess} from "@/utils/notification";
-import {useSrAchievementStore} from "@/stores/srAchievementStore";
-import {useAccountStore} from "@/stores/accountStore.js";
+import {showError, showSuccess} from "@/scripts/utils/notification";
+import {useSrAchievementStore} from "@/scripts/stores/srAchievementStore";
+import {useAccountStore} from "@/scripts/stores/accountStore.js";
 import {computed} from "vue";
 
 // 传入只读数据

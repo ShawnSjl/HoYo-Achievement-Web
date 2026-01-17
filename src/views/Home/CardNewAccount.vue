@@ -1,8 +1,8 @@
 <script setup>
 import {onMounted, onUnmounted, reactive, ref} from "vue";
-import {showError} from "@/utils/notification.js";
-import {useAccountStore} from "@/stores/accountStore.js";
-import {accountNameCharPattern, accountUidCharPattern} from "@/utils/formRegex.js";
+import {showError} from "@/scripts/utils/notification.js";
+import {useAccountStore} from "@/scripts/stores/accountStore.js";
+import {accountNameCharPattern, accountUidCharPattern} from "@/scripts/utils/formRegex.js";
 
 // 使用Pinia作为本地缓存
 const accountStore = useAccountStore();

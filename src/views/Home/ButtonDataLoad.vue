@@ -1,10 +1,10 @@
 <script setup>
 import {ref} from "vue";
-import {loadLocalData} from "@/api/migration.js";
-import {showError, showInfo, showSuccess} from "@/utils/notification.js";
-import {useServerInfoStore} from "@/stores/serverInfoStore.js";
-import {useZzzAchievementStore} from "@/stores/zzzAchievementsStore.js";
-import {useSrAchievementStore} from "@/stores/srAchievementStore.js";
+import {loadLocalData} from "@/scripts/api/migration.js";
+import {showError, showInfo, showSuccess} from "@/scripts/utils/notification.js";
+import {useServerInfoStore} from "@/scripts/stores/serverInfoStore.js";
+import {useZzzAchievementStore} from "@/scripts/stores/zzzAchievementsStore.js";
+import {useSrAchievementStore} from "@/scripts/stores/srAchievementStore.js";
 
 // 使用Pinia作为本地缓存
 const serverInfoStore = useServerInfoStore();

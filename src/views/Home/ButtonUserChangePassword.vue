@@ -1,9 +1,9 @@
 <script setup>
 import {reactive, ref} from "vue";
-import {showError} from "@/utils/notification.js";
-import {useUserStore} from "@/stores/userStore.js";
-import {passwordCharPattern} from "@/utils/formRegex.js";
-import {useIsMobileStore} from "@/stores/isMobileStore.js";
+import {showError} from "@/scripts/utils/notification.js";
+import {useUserStore} from "@/scripts/stores/userStore.js";
+import {passwordCharPattern} from "@/scripts/utils/formRegex.js";
+import {useIsMobileStore} from "@/scripts/stores/isMobileStore.js";
 
 // 使用Pinia作为本地缓存
 const userStore = useUserStore();
@@ -100,13 +100,13 @@ const handleSubmit = async () => {
             @keyup.enter.native="handleClickSubmit"
         >
           <el-form-item label="旧密码" prop="oldPassword">
-            <el-input v-model="passwordChangeForm.oldPassword" type="password"/>
+            <el-input v-model="passwordChangeForm.oldPassword" show-password type="password"/>
           </el-form-item>
           <el-form-item label="新密码" prop="newPassword">
-            <el-input v-model="passwordChangeForm.newPassword" type="password"/>
+            <el-input v-model="passwordChangeForm.newPassword" show-password type="password"/>
           </el-form-item>
           <el-form-item label="确认新密码" prop="confirmPassword">
-            <el-input v-model="passwordChangeForm.confirmPassword" type="password"/>
+            <el-input v-model="passwordChangeForm.confirmPassword" show-password type="password"/>
           </el-form-item>
         </el-form>
       </div>

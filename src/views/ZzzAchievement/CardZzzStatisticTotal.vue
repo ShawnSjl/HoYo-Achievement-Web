@@ -1,12 +1,12 @@
 <script setup>
 import {computed} from 'vue';
-import {useZzzAchievementStore} from "@/stores/zzzAchievementsStore";
+import {useZzzAchievementStore} from "@/scripts/stores/zzzAchievementsStore";
 import ZzzAchievementImg1 from '@/assets/zzz-image/zzz-achievement-level-1.png';
 import ZzzAchievementImg2 from '@/assets/zzz-image/zzz-achievement-level-2.png';
 import ZzzAchievementImg3 from '@/assets/zzz-image/zzz-achievement-level-3.png';
-import {useServerInfoStore} from "@/stores/serverInfoStore.js";
-import {branchAchievementCountByLevel} from "@/utils/countBranchAchievement.js";
-import {completeAchievementCountByLevel} from "@/utils/countCompleteAchievement.js";
+import {useServerInfoStore} from "@/scripts/stores/serverInfoStore.js";
+import {branchAchievementCountByLevel} from "@/scripts/utils/countBranchAchievement.js";
+import {completeAchievementCountByLevel} from "@/scripts/utils/countCompleteAchievement.js";
 
 // 使用Pinia作为本地缓存
 const achievementStore = useZzzAchievementStore();

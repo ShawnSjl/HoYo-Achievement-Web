@@ -1,8 +1,9 @@
 <script setup>
 import SrTableRow from "@/views/SrAchievement/SrTableRow.vue";
-import {useSrAchievementStore} from "@/stores/srAchievementStore.js";
-import {computed, ref} from "vue";
-import {useAccountStore} from "@/stores/accountStore.js";
+import {useSrAchievementStore} from "@/scripts/stores/srAchievementStore.js";
+import {computed, ref, watch} from "vue";
+import {useAccountStore} from "@/scripts/stores/accountStore.js";
+import FilterSrAchievement from "@/views/SrAchievement/FilterSrAchievement.vue";
 
 // 传入只读数据
 const props = defineProps({
@@ -42,9 +43,40 @@ function getProgress(achievementId) {
   return recordMap.value.get(achievementId)?.complete || 0;
 }
 
-// 根据类别筛选成就
-const filteredAchievements = computed(() => {
+// 根据类别获取成就
+const achievementsInClass = computed(() => {
   return achievementStore.achievements.filter(achievement => achievement.class_name === achievementClass.value)
+})
+
+// 过滤器
+const input = ref("");
+const type = ref("全部");
+
+const filteredAchievements = computed(() => {
+  let achievementsInType;
+
+  switch (type.value) {
+    case '全部':
+      achievementsInType = achievementsInClass.value;
+      break;
+    case '未完成':
+      achievementsInType = achievementsInClass.value.filter(achieve => getProgress(achieve.achievement_id) === 0);
+      break;
+    case '已完成':
+      achievementsInType = achievementsInClass.value.filter(achieve => getProgress(achieve.achievement_id) !== 0);
+      break;
+    case '最新版本':
+      achievementsInType = achievementsInClass.value.filter(achieve => achieve.game_version === serverInfoStore.lastestInfo.zzz_version);
+      break;
+    default:
+      achievementsInType = achievementsInClass.value;
+  }
+
+  if (input.value !== "") {
+    return achievementsInType.filter(achieve => achieve.name.includes(input.value) || achieve.game_version === input.value);
+  } else {
+    return achievementsInType;
+  }
 })
 
 // 根据条件排序
@@ -68,7 +100,7 @@ const sortedAchievements = computed(() => {
   } else {
     return filteredAchievements.value;
   }
-})
+});
 
 // 渲染优化部分
 const num = ref(30);
@@ -79,9 +111,16 @@ const loadMore = (direction) => {
     num.value += 10
   }
 }
+
+watch([input, type], () => {
+  // 1. 重置渲染数量，避免之前的长列表影响性能
+  num.value = 30;
+});
 </script>
 
 <template>
+  <filter-sr-achievement v-model:input="input" v-model:type="type" class="sr-filter-container"/>
+
   <el-scrollbar :height="tableHeight" @end-reached="loadMore">
     <div class="sr-table">
       <el-card
@@ -99,6 +138,12 @@ const loadMore = (direction) => {
 </template>
 
 <style scoped>
+/* filter */
+.sr-filter-container {
+  margin-bottom: 10px;
+}
+
+/* table */
 .sr-table {
   display: flex;
   flex-direction: column;

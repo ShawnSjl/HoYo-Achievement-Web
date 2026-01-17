@@ -1,12 +1,12 @@
 <script setup>
 import {computed} from 'vue';
-import {useZzzAchievementStore} from "@/stores/zzzAchievementsStore";
+import {useZzzAchievementStore} from "@/scripts/stores/zzzAchievementsStore";
 import ZzzAchievementImg1 from '@/assets/zzz-image/zzz-achievement-level-1.png';
 import ZzzAchievementImg2 from '@/assets/zzz-image/zzz-achievement-level-2.png';
 import ZzzAchievementImg3 from '@/assets/zzz-image/zzz-achievement-level-3.png';
 import ZzzAchievementReward from '@/assets/zzz-image/zzz-achievement-reward.png';
-import {useIsMobileStore} from "@/stores/isMobileStore";
-import {showInfo} from "@/utils/notification";
+import {useIsMobileStore} from "@/scripts/stores/isMobileStore";
+import {showInfo} from "@/scripts/utils/notification";
 
 // 使用Pinia作为本地缓存
 const achievementStore = useZzzAchievementStore();
@@ -85,6 +85,11 @@ const getAchievementName = computed(() => {
     return props.achievement.name
   }
 })
+
+// 处理分支标签
+const branchID = computed(() => {
+  return achievementStore.getAchievementBranchID(props.achievement.achievement_id);
+})
 </script>
 
 <template>
@@ -96,6 +101,9 @@ const getAchievementName = computed(() => {
       <div class="zzz-detail">
         <div class="zzz-name">
           {{ getAchievementName }}
+          <span v-if="branchID !== 0" class="zzz-hidden-badge">
+            分支{{ branchID }}
+          </span>
         </div>
         <div class="zzz-desc">{{ props.achievement.description }}</div>
       </div>
@@ -132,17 +140,21 @@ const getAchievementName = computed(() => {
   flex: 2;
 }
 
-@media (max-width: 900px) {
-  .zzz-table-row-left {
-    flex: 3;
-  }
-}
-
 .zzz-table-row-right {
   display: flex;
   flex-direction: row-reverse;
   align-items: center;
   margin-left: 10px;
+}
+
+@media (max-width: 900px) {
+  .zzz-table-row-left {
+    flex: 3;
+  }
+
+  .zzz-table-row-right {
+    margin-left: 0;
+  }
 }
 
 /* 成就图片 */
@@ -236,6 +248,18 @@ const getAchievementName = computed(() => {
   color: #acacac;
 }
 
+.zzz-hidden-badge {
+  background-color: #f11a1a;
+  color: #fff;
+  font-size: 12px;
+  padding: 2px 6px;
+  border-radius: 10px;
+  margin-left: 8px;
+  position: relative;
+  top: -6px;
+  left: -10px;
+}
+
 @media (max-width: 900px) {
   .zzz-detail {
     font-size: 12px;
@@ -260,7 +284,7 @@ const getAchievementName = computed(() => {
   .zzz-game-version {
     font-weight: normal;
     font-size: 14px;
-    margin-right: 5px;
+    margin-right: 8px;
   }
 }
 

@@ -1,12 +1,14 @@
 <script setup>
 import ZzzTableRow from "@/views/ZzzAchievement/ZzzTableRow.vue";
-import ZzzClassSelect from "@/views/ZzzAchievement/ZzzClassSelect.vue";
-import {useIsMobileStore} from "@/stores/isMobileStore";
+import SelectorZzzClass from "@/views/ZzzAchievement/SelectorZzzClass.vue";
+import {useIsMobileStore} from "@/scripts/stores/isMobileStore";
 import CardZzzStatisticClass from "@/views/ZzzAchievement/CardZzzStatisticClass.vue";
-import {computed, ref} from "vue";
-import {useZzzAchievementStore} from "@/stores/zzzAchievementsStore.js";
-import {zzzGetClassIdByName} from "@/utils/zzzAchievementClass.js";
-import {useAccountStore} from "@/stores/accountStore.js";
+import {computed, ref, watch} from "vue";
+import {useZzzAchievementStore} from "@/scripts/stores/zzzAchievementsStore.js";
+import {zzzGetClassIdByName} from "@/scripts/utils/zzzAchievementClass.js";
+import {useAccountStore} from "@/scripts/stores/accountStore.js";
+import FilterZzzAchievement from "@/views/ZzzAchievement/FilterZzzAchievement.vue";
+import {useServerInfoStore} from "@/scripts/stores/serverInfoStore.js";
 
 // 传入只读数据
 const props = defineProps({
@@ -20,6 +22,7 @@ const achievementClass = defineModel();
 // 使用Pinia作为本地缓存
 const accountStore = useAccountStore();
 const achievementStore = useZzzAchievementStore();
+const serverInfoStore = useServerInfoStore();
 const isMobileStore = useIsMobileStore();
 
 // 获取账户列表
@@ -47,10 +50,41 @@ function getProgress(achievementId) {
   return recordMap.value.get(achievementId)?.complete || 0;
 }
 
-// 根据类别筛选成就
-const filteredAchievements = computed(() => {
+// 根据类别获取成就
+const achievementsInClass = computed(() => {
   return achievementStore.achievements.filter(achievement => achievement.class_id === zzzGetClassIdByName(achievementClass.value))
 });
+
+// 过滤器
+const input = ref("");
+const type = ref("全部");
+
+const filteredAchievements = computed(() => {
+  let achievementsInType;
+
+  switch (type.value) {
+    case '全部':
+      achievementsInType = achievementsInClass.value;
+      break;
+    case '未完成':
+      achievementsInType = achievementsInClass.value.filter(achieve => getProgress(achieve.achievement_id) === 0);
+      break;
+    case '已完成':
+      achievementsInType = achievementsInClass.value.filter(achieve => getProgress(achieve.achievement_id) !== 0);
+      break;
+    case '最新版本':
+      achievementsInType = achievementsInClass.value.filter(achieve => achieve.game_version === serverInfoStore.lastestInfo.zzz_version);
+      break;
+    default:
+      achievementsInType = achievementsInClass.value;
+  }
+
+  if (input.value !== "") {
+    return achievementsInType.filter(achieve => achieve.name.includes(input.value) || achieve.game_version === input.value);
+  } else {
+    return achievementsInType;
+  }
+})
 
 // 根据条件排序
 const sortedAchievements = computed(() => {
@@ -84,16 +118,21 @@ const loadMore = (direction) => {
     num.value += 10
   }
 }
+
+watch([input, type], () => {
+  // 1. 重置渲染数量，避免之前的长列表影响性能
+  num.value = 30;
+});
 </script>
 
 <template>
-  <div v-if="isMobileStore.isMobile" class="zzz-table-header">
-    <zzz-class-select v-model="achievementClass" :uuid="props.uuid" class="zzz-table-header-select"/>
+  <div class="zzz-table-header">
+    <selector-zzz-class v-if="isMobileStore.isMobile" v-model="achievementClass" :uuid="props.uuid"
+                        class="zzz-table-header-select"/>
     <card-zzz-statistic-class :achievement-class="achievementClass" :uuid="props.uuid" class="zzz-table-header-card"/>
   </div>
-  <div v-else>
-    <card-zzz-statistic-class :achievement-class="achievementClass" :uuid="props.uuid" style="margin-bottom: 10px"/>
-  </div>
+
+  <filter-zzz-achievement v-model:input="input" v-model:type="type" class="zzz-filter-container"/>
 
   <el-scrollbar :height="props.tableHeight" @end-reached="loadMore">
     <div class="zzz-card-table">
@@ -110,6 +149,37 @@ const loadMore = (direction) => {
 </template>
 
 <style scoped>
+/* header */
+.zzz-table-header-card {
+  margin-bottom: 10px
+}
+
+@media (max-width: 900px) {
+  .zzz-table-header {
+    margin-bottom: 10px;
+    display: flex;
+    flex-direction: row;
+  }
+
+  .zzz-table-header-select {
+    align-self: center;
+    min-width: 128px;
+    flex: 1;
+  }
+
+  .zzz-table-header-card {
+    margin-bottom: 0;
+    margin-left: 5px;
+    flex: 3;
+  }
+}
+
+/* filter */
+.zzz-filter-container {
+  margin-bottom: 10px;
+}
+
+/* table */
 .zzz-card-table {
   display: flex;
   flex-direction: column;
@@ -138,23 +208,6 @@ const loadMore = (direction) => {
 
   :deep(.zzz-card-row .el-card__body) {
     padding: 4px 8px;
-  }
-
-  .zzz-table-header {
-    margin-bottom: 10px;
-    display: flex;
-    flex-direction: row;
-  }
-
-  .zzz-table-header-select {
-    align-self: center;
-    min-width: 128px;
-    flex: 1;
-  }
-
-  .zzz-table-header-card {
-    margin-left: 5px;
-    flex: 3;
   }
 }
 </style>

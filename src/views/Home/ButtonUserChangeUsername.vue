@@ -1,9 +1,9 @@
 <script setup>
-import {useUserStore} from "@/stores/userStore.js";
+import {useUserStore} from "@/scripts/stores/userStore.js";
 import {reactive, ref} from "vue";
-import {usernameCharPattern} from "@/utils/formRegex.js";
-import {showError} from "@/utils/notification.js";
-import {useIsMobileStore} from "@/stores/isMobileStore.js";
+import {usernameCharPattern} from "@/scripts/utils/formRegex.js";
+import {showError} from "@/scripts/utils/notification.js";
+import {useIsMobileStore} from "@/scripts/stores/isMobileStore.js";
 
 // 使用Pinia作为本地缓存
 const userStore = useUserStore();

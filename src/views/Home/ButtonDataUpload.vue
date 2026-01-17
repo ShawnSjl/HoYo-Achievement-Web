@@ -1,5 +1,5 @@
 <script setup>
-import {useUserStore} from "@/stores/userStore.js";
+import {useUserStore} from "@/scripts/stores/userStore.js";
 import {computed, onMounted} from "vue";
 
 // 使用Pinia作为本地缓存

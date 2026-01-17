@@ -1,9 +1,9 @@
 <script setup>
-import {categories, zzzGetClassByCategory} from "@/utils/zzzAchievementClass";
-import Avatar from "@/components/Avatar.vue";
+import {categories, zzzGetClassByCategory} from "@/scripts/utils/zzzAchievementClass";
+import Avatar from "@/views/components/Avatar.vue";
 import ButtonZzzSetting from "@/views/ZzzAchievement/ButtonZzzSetting.vue";
-import {useIsMobileStore} from "@/stores/isMobileStore";
-import AccountSwitch from "@/components/AccountSwitch.vue";
+import {useIsMobileStore} from "@/scripts/stores/isMobileStore";
+import AccountSwitch from "@/views/components/AccountSwitch.vue";
 
 // 传入只读数据
 const props = defineProps({
@@ -33,7 +33,7 @@ const handleCategoryChange = (newCategory) => {
     <div class="zzz-header-left">
       <div class="zzz-header-left-start">
         <avatar :uuid="props.uuid"/>
-        <account-switch :uuid="props.uuid" style="margin-left: 30px"/>
+        <account-switch :uuid="props.uuid" class="zzz-header-switch-button"/>
       </div>
       <div class="zzz-header-left-end">
         <button-zzz-setting :uuid="props.uuid"/>
@@ -48,20 +48,22 @@ const handleCategoryChange = (newCategory) => {
 
 <style scoped>
 .zzz-header {
+  width: 100%;
+
   display: flex;
   flex-direction: row;
   justify-content: space-between;
   align-content: center;
-  width: 100%;
 }
 
 .zzz-header-left {
+  flex: 1;
+
   display: flex;
   flex-direction: row;
   justify-content: space-between;
   align-content: flex-start;
   align-items: center;
-  flex: 1;
 }
 
 .zzz-header-left-start {
@@ -70,20 +72,29 @@ const handleCategoryChange = (newCategory) => {
   align-items: center;
 }
 
+.zzz-header-switch-button {
+  margin-left: 30px;
+}
+
 .zzz-header-left-end {
   margin-right: 20px;
 }
 
 @media (max-width: 900px) {
+  .zzz-header-switch-button {
+    margin-left: 10px;
+  }
+
   .zzz-header-left-end {
     margin-right: 0;
   }
 }
 
 .zzz-header-right {
+  flex: 1;
+
   align-content: center;
   font-weight: bold;
-  flex: 1;
 }
 
 .el-segmented {
