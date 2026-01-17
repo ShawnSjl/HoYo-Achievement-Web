@@ -78,6 +78,10 @@ const filterType = defineModel('type')
   color: #000000;
 }
 
+:deep(.el-select__caret) {
+  color: #000000;
+}
+
 /* 菜单按钮 */
 :deep(.el-select__wrapper) {
   background-color: #ffd100;
