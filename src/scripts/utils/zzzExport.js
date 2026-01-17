@@ -1,18 +1,18 @@
 import ExcelJS from 'exceljs';
 import {saveAs} from 'file-saver';
-import {showError} from "@/utils/notification";
-import {useAccountStore} from "@/stores/accountStore.js";
-import {useSrAchievementStore} from "@/stores/srAchievementStore";
+import {showError} from "@/scripts/utils/notification.js";
+import {useAccountStore} from "@/scripts/stores/accountStore.js";
+import {useZzzAchievementStore} from "@/scripts/stores/zzzAchievementsStore.js";
 
-export const srExport = async (uuid) => {
+export const zzzExport = async (uuid) => {
     try {
         const workbook = new ExcelJS.Workbook();
-        const worksheet = workbook.addWorksheet('SR Achievements');
+        const worksheet = workbook.addWorksheet('ZZZ Achievements');
 
         // 表头
         worksheet.columns = [
             {header: '成就ID', key: 'achievement_id', width: 15},
-            {header: '类别', key: 'class_name', width: 10},
+            {header: '类别', key: 'class_id', width: 10},
             {header: '名称', key: 'name', width: 20},
             {header: '描述', key: 'description', width: 40},
             {header: '奖励等级', key: 'reward_level', width: 15},
@@ -21,7 +21,7 @@ export const srExport = async (uuid) => {
         ];
 
         // 获取数据
-        const achievementStore = useSrAchievementStore();
+        const achievementStore = useZzzAchievementStore();
         const accountStore = useAccountStore();
         const account = accountStore.getAccounts().find(account => account.uuid === uuid);
 
@@ -55,7 +55,7 @@ export const srExport = async (uuid) => {
         const formatted = `${now.getFullYear()}-${now.getMonth() + 1}-${now.getDate()}-`
             + `${now.getHours()}-${now.getMinutes()}-${now.getSeconds()}`;
 
-        saveAs(blob, `崩坏：星穹铁道成就表格_${formatted}.xlsx`);
+        saveAs(blob, `绝区零成就表格_${formatted}.xlsx`);
     } catch (error) {
         console.error(error);
         showError('成就表格导出失败')

@@ -1,16 +1,16 @@
 <script setup>
 import {computed} from 'vue';
-import router from "@/router/index.js";
-import {useZzzAchievementStore} from "@/stores/zzzAchievementsStore.js";
+import router from "@/scripts/router/index.js";
+import {useZzzAchievementStore} from "@/scripts/stores/zzzAchievementsStore.js";
 import ZzzLogo from '@/assets/zzz-image/zzz-logo.png';
 import ZzzAchievementImg1 from '@/assets/zzz-image/zzz-achievement-level-1.png';
 import ZzzAchievementImg2 from '@/assets/zzz-image/zzz-achievement-level-2.png';
 import ZzzAchievementImg3 from '@/assets/zzz-image/zzz-achievement-level-3.png';
-import {useAccountStore} from "@/stores/accountStore.js";
-import {useServerInfoStore} from "@/stores/serverInfoStore.js";
+import {useAccountStore} from "@/scripts/stores/accountStore.js";
+import {useServerInfoStore} from "@/scripts/stores/serverInfoStore.js";
 import ButtonAccountEdit from "@/views/Home/ButtonAccountEdit.vue";
-import {branchAchievementCountByLevel} from "@/utils/countBranchAchievement.js";
-import {completeAchievementCountByLevel} from "@/utils/countCompleteAchievement.js";
+import {branchAchievementCountByLevel} from "@/scripts/utils/countBranchAchievement.js";
+import {completeAchievementCountByLevel} from "@/scripts/utils/countCompleteAchievement.js";
 
 // 使用Pinia作为本地缓存
 const accountStore = useAccountStore();

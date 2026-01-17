@@ -1,9 +1,9 @@
 <script setup>
 import {computed} from "vue";
-import {srClasses} from "@/utils/srAchievementClass";
-import {useSrAchievementStore} from "@/stores/srAchievementStore";
-import {branchAchievementCountByClass} from "@/utils/countBranchAchievement.js";
-import {completeAchievementCountByClass} from "@/utils/countCompleteAchievement.js";
+import {srClasses} from "@/scripts/utils/srAchievementClass";
+import {useSrAchievementStore} from "@/scripts/stores/srAchievementStore";
+import {branchAchievementCountByClass} from "@/scripts/utils/countBranchAchievement.js";
+import {completeAchievementCountByClass} from "@/scripts/utils/countCompleteAchievement.js";
 
 // 传入只读数据
 const props = defineProps({

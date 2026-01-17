@@ -1,12 +1,12 @@
 <script setup>
 import ZzzTableRow from "@/views/ZzzAchievement/ZzzTableRow.vue";
 import ZzzClassSelect from "@/views/ZzzAchievement/ZzzClassSelect.vue";
-import {useIsMobileStore} from "@/stores/isMobileStore";
+import {useIsMobileStore} from "@/scripts/stores/isMobileStore";
 import CardZzzStatisticClass from "@/views/ZzzAchievement/CardZzzStatisticClass.vue";
 import {computed, ref} from "vue";
-import {useZzzAchievementStore} from "@/stores/zzzAchievementsStore.js";
-import {zzzGetClassIdByName} from "@/utils/zzzAchievementClass.js";
-import {useAccountStore} from "@/stores/accountStore.js";
+import {useZzzAchievementStore} from "@/scripts/stores/zzzAchievementsStore.js";
+import {zzzGetClassIdByName} from "@/scripts/utils/zzzAchievementClass.js";
+import {useAccountStore} from "@/scripts/stores/accountStore.js";
 
 // 传入只读数据
 const props = defineProps({

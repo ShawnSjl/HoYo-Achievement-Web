@@ -1,5 +1,5 @@
 <script setup>
-import {useServerInfoStore} from "@/stores/serverInfoStore.js";
+import {useServerInfoStore} from "@/scripts/stores/serverInfoStore.js";
 import ButtonServerInfoList from "@/views/Home/ButtonServerInfoList.vue";
 
 // 使用Pinia作为本地缓存

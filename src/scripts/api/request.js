@@ -1,5 +1,5 @@
 import axios from "axios";
-import {useUserStore} from "@/stores/userStore.js";
+import {useUserStore} from "@/scripts/stores/userStore.js";
 
 // 创建 Axios 实例
 const api = axios.create({

@@ -1,12 +1,12 @@
 <script setup>
 import {computed, onMounted, onUnmounted, ref, watch} from "vue";
-import {showError, showInfo, showSuccess} from "@/utils/notification.js";
-import {getAllUsers} from "@/api/user.js";
+import {showError, showInfo, showSuccess} from "@/scripts/utils/notification.js";
+import {getAllUsers} from "@/scripts/api/user.js";
 import ButtonUserAdd from "@/views/Home/ButtonUserAdd.vue";
-import {useUserStore} from "@/stores/userStore.js";
+import {useUserStore} from "@/scripts/stores/userStore.js";
 import {dayjs} from "element-plus";
 import ButtonUserEdit from "@/views/Home/ButtonUserEdit.vue";
-import {useIsMobileStore} from "@/stores/isMobileStore.js";
+import {useIsMobileStore} from "@/scripts/stores/isMobileStore.js";
 
 // 使用Pinia作为本地缓存
 const userStore = useUserStore();

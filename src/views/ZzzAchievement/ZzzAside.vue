@@ -1,10 +1,10 @@
 <script setup>
 import {computed} from "vue";
-import {useZzzAchievementStore} from "@/stores/zzzAchievementsStore";
-import {zzzGetClassByCategory, zzzGetClassIdByName} from "@/utils/zzzAchievementClass";
+import {useZzzAchievementStore} from "@/scripts/stores/zzzAchievementsStore";
+import {zzzGetClassByCategory, zzzGetClassIdByName} from "@/scripts/utils/zzzAchievementClass";
 import CardZzzStatisticTotal from "@/views/ZzzAchievement/CardZzzStatisticTotal.vue";
-import {branchAchievementCountByClass} from "@/utils/countBranchAchievement.js";
-import {completeAchievementCountByClass} from "@/utils/countCompleteAchievement.js";
+import {branchAchievementCountByClass} from "@/scripts/utils/countBranchAchievement.js";
+import {completeAchievementCountByClass} from "@/scripts/utils/countCompleteAchievement.js";
 
 // 传入只读数据
 const props = defineProps({

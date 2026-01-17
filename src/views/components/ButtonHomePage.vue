@@ -1,5 +1,5 @@
 <script setup>
-import router from "@/router/index.js";
+import router from "@/scripts/router/index.js";
 
 const handleClick = () => {
   router.push({path: '/'});

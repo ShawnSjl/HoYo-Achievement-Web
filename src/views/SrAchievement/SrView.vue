@@ -1,15 +1,15 @@
 <script setup>
-import {useUserStore} from "@/stores/userStore.js";
-import {useIsMobileStore} from "@/stores/isMobileStore";
+import {useUserStore} from "@/scripts/stores/userStore.js";
+import {useIsMobileStore} from "@/scripts/stores/isMobileStore";
 import {computed, nextTick, onBeforeUnmount, onMounted, ref, watch} from "vue";
-import {srClasses} from "@/utils/srAchievementClass";
+import {srClasses} from "@/scripts/utils/srAchievementClass";
 import SrTable from "@/views/SrAchievement/SrTable.vue";
 import SrHeader from "@/views/SrAchievement/SrHeader.vue";
 import SrAside from "@/views/SrAchievement/SrAside.vue";
 import SrStatisticClass from "@/views/SrAchievement/SrStatisticClass.vue";
 import {useRoute} from "vue-router";
-import router from "@/router/index.js";
-import {useSrAchievementStore} from "@/stores/srAchievementStore.js";
+import router from "@/scripts/router/index.js";
+import {useSrAchievementStore} from "@/scripts/stores/srAchievementStore.js";
 
 // 创建Route
 const route = useRoute();

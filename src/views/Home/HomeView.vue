@@ -1,20 +1,20 @@
 <script setup>
 import {computed, onMounted, reactive, ref, watch} from "vue";
 import DefaultAvatar from '@/assets/avatar/zzz-1.png'
-import {useUserStore} from "@/stores/userStore.js";
+import {useUserStore} from "@/scripts/stores/userStore.js";
 import ButtonSettingProfile from "@/views/Home/ButtonSettingProfile.vue";
 import ButtonSettingServer from "@/views/Home/ButtonSettingServer.vue";
 import ButtonLogin from "@/views/components/ButtonLogin.vue";
 import ButtonLogout from "@/views/components/ButtonLogout.vue";
 import ButtonRegister from "@/views/components/ButtonRegister.vue";
 import ProfileCardsLayout from "@/views/Home/ProfileCardsLayout.vue";
-import {useIsMobileStore} from "@/stores/isMobileStore.js";
-import {useSrAchievementStore} from "@/stores/srAchievementStore.js";
-import {useZzzAchievementStore} from "@/stores/zzzAchievementsStore.js";
-import {useServerInfoStore} from "@/stores/serverInfoStore.js";
-import {secondAuth} from "@/api/user.js";
-import {showError} from "@/utils/notification.js";
-import {passwordCharPattern} from "@/utils/formRegex.js";
+import {useIsMobileStore} from "@/scripts/stores/isMobileStore.js";
+import {useSrAchievementStore} from "@/scripts/stores/srAchievementStore.js";
+import {useZzzAchievementStore} from "@/scripts/stores/zzzAchievementsStore.js";
+import {useServerInfoStore} from "@/scripts/stores/serverInfoStore.js";
+import {secondAuth} from "@/scripts/api/user.js";
+import {showError} from "@/scripts/utils/notification.js";
+import {passwordCharPattern} from "@/scripts/utils/formRegex.js";
 
 // 使用Pinia作为本地缓存
 const userStore = useUserStore();

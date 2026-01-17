@@ -1,7 +1,7 @@
 import {defineStore} from "pinia";
 import {ref} from "vue";
-import {showError, showInfo, showSuccess} from "@/utils/notification.js";
-import {getAllServerInfo, getLatestServerInfo} from "@/api/serverInfo.js";
+import {showError, showInfo, showSuccess} from "@/scripts/utils/notification.js";
+import {getAllServerInfo, getLatestServerInfo} from "@/scripts/api/serverInfo.js";
 
 export const useServerInfoStore = defineStore(
     'serverInfoStore',

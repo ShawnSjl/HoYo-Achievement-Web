@@ -1,9 +1,9 @@
 <script setup>
 import {computed, ref} from "vue";
-import {useIsMobileStore} from "@/stores/isMobileStore";
-import {useSrAchievementStore} from "@/stores/srAchievementStore";
+import {useIsMobileStore} from "@/scripts/stores/isMobileStore";
+import {useSrAchievementStore} from "@/scripts/stores/srAchievementStore";
 import {Check, Close, Warning} from '@element-plus/icons-vue';
-import {srExport} from "@/utils/srExport";
+import {srExport} from "@/scripts/utils/srExport";
 import ButtonSrImport from "@/views/SrAchievement/ButtonSrImport.vue";
 
 // 传入只读数据

@@ -3,7 +3,7 @@ import Avatar from "@/views/components/Avatar.vue";
 import SrAchievement from "@/assets/sr-image/sr-achievement.png"
 import ButtonSrSetting from "@/views/SrAchievement/ButtonSrSetting.vue";
 import SrStatisticTotal from "@/views/SrAchievement/SrStatisticTotal.vue";
-import {useIsMobileStore} from "@/stores/isMobileStore";
+import {useIsMobileStore} from "@/scripts/stores/isMobileStore";
 import AccountSwitch from "@/views/components/AccountSwitch.vue";
 
 // 使用Pinia作为本地缓存

@@ -1,4 +1,4 @@
-import api from "@/utils/request";
+import api from "@/scripts/api/request.js";
 
 // Get all ZZZ achievement
 export const zzzGetAllAchievement = () => {

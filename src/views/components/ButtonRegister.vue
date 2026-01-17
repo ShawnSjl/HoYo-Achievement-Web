@@ -1,5 +1,5 @@
 <script setup>
-import {showInfo} from "@/utils/notification.js";
+import {showInfo} from "@/scripts/utils/notification.js";
 
 // 使用Pinia作为本地缓存
 // const authStore = useAuthStore();

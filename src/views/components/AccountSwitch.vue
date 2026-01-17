@@ -1,9 +1,9 @@
 <script setup>
 import {ArrowDown} from '@element-plus/icons-vue';
-import router from "@/router/index.js";
+import router from "@/scripts/router/index.js";
 import Zzz from '@/assets/zzz-image/zzz-logo.png'
 import Sr from "@/assets/sr-image/sr-logo.png"
-import {useAccountStore} from "@/stores/accountStore.js";
+import {useAccountStore} from "@/scripts/stores/accountStore.js";
 import {computed} from "vue";
 
 // 传入只读数据

@@ -1,10 +1,10 @@
 <script setup>
 import {computed} from 'vue';
-import {useIsMobileStore} from "@/stores/isMobileStore";
+import {useIsMobileStore} from "@/scripts/stores/isMobileStore";
 import SrAchievementReward from "@/assets/sr-image/sr-achievement-reward.png";
-import {srClasses} from "@/utils/srAchievementClass";
-import {showInfo} from "@/utils/notification";
-import {useSrAchievementStore} from "@/stores/srAchievementStore";
+import {srClasses} from "@/scripts/utils/srAchievementClass";
+import {showInfo} from "@/scripts/utils/notification";
+import {useSrAchievementStore} from "@/scripts/stores/srAchievementStore";
 
 // 使用Pinia作为本地缓存
 const isMobileStore = useIsMobileStore();

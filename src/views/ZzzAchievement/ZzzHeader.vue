@@ -1,8 +1,8 @@
 <script setup>
-import {categories, zzzGetClassByCategory} from "@/utils/zzzAchievementClass";
+import {categories, zzzGetClassByCategory} from "@/scripts/utils/zzzAchievementClass";
 import Avatar from "@/views/components/Avatar.vue";
 import ButtonZzzSetting from "@/views/ZzzAchievement/ButtonZzzSetting.vue";
-import {useIsMobileStore} from "@/stores/isMobileStore";
+import {useIsMobileStore} from "@/scripts/stores/isMobileStore";
 import AccountSwitch from "@/views/components/AccountSwitch.vue";
 
 // 传入只读数据

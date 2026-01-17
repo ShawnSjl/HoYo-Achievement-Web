@@ -1,17 +1,17 @@
 <script setup>
 import {computed} from "vue";
-import {useSrAchievementStore} from "@/stores/srAchievementStore.js";
-import router from "@/router/index.js";
+import {useSrAchievementStore} from "@/scripts/stores/srAchievementStore.js";
+import router from "@/scripts/router/index.js";
 import SrLogo from '@/assets/sr-image/sr-logo.png';
 import SrAchievementImg3 from "@/assets/sr-image/sr-achievement-level-3.png";
 import SrAchievementImg2 from "@/assets/sr-image/sr-achievement-level-2.png";
 import SrAchievementImg1 from "@/assets/sr-image/sr-achievement-level-1.png";
 import SrAchievement from "@/assets/sr-image/sr-achievement.png";
-import {useAccountStore} from "@/stores/accountStore.js";
-import {useServerInfoStore} from "@/stores/serverInfoStore.js";
+import {useAccountStore} from "@/scripts/stores/accountStore.js";
+import {useServerInfoStore} from "@/scripts/stores/serverInfoStore.js";
 import ButtonAccountEdit from "@/views/Home/ButtonAccountEdit.vue";
-import {branchAchievementCountByLevel} from "@/utils/countBranchAchievement.js";
-import {completeAchievementCountByLevel} from "@/utils/countCompleteAchievement.js";
+import {branchAchievementCountByLevel} from "@/scripts/utils/countBranchAchievement.js";
+import {completeAchievementCountByLevel} from "@/scripts/utils/countCompleteAchievement.js";
 
 // 使用Pinia作为本地缓存
 const accountStore = useAccountStore();

@@ -1,4 +1,4 @@
-import api from "@/utils/request";
+import api from "@/scripts/api/request.js";
 
 // User login
 export const login = (credentials) => {

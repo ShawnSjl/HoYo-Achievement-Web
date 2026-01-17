@@ -1,10 +1,10 @@
 <script setup>
 import {computed} from 'vue';
 import Avatar from '@/assets/avatar/zzz-1.png'
-import {useUserStore} from "@/stores/userStore.js";
+import {useUserStore} from "@/scripts/stores/userStore.js";
 import AvatarPopover from '@/views/components/AvatarPopover.vue'
-import {useIsMobileStore} from "@/stores/isMobileStore.js";
-import {useAccountStore} from "@/stores/accountStore.js";
+import {useIsMobileStore} from "@/scripts/stores/isMobileStore.js";
+import {useAccountStore} from "@/scripts/stores/accountStore.js";
 
 // 传入只读数据
 const props = defineProps({

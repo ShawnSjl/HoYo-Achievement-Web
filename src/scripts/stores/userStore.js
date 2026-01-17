@@ -9,9 +9,9 @@ import {
     login,
     logout,
     updateUsername
-} from "@/api/user";
-import {showError, showInfo, showSuccess} from "@/utils/notification.js";
-import {useAccountStore} from "@/stores/accountStore.js";
+} from "@/scripts/api/user.js";
+import {showError, showInfo, showSuccess} from "@/scripts/utils/notification.js";
+import {useAccountStore} from "@/scripts/stores/accountStore.js";
 
 export const useUserStore = defineStore(
     "userStore",

@@ -1,7 +1,7 @@
-import {useAccountStore} from "@/stores/accountStore.js";
-import {useSrAchievementStore} from "@/stores/srAchievementStore.js";
-import {useZzzAchievementStore} from "@/stores/zzzAchievementsStore.js";
-import {showError} from "@/utils/notification.js";
+import {useAccountStore} from "@/scripts/stores/accountStore.js";
+import {useSrAchievementStore} from "@/scripts/stores/srAchievementStore.js";
+import {useZzzAchievementStore} from "@/scripts/stores/zzzAchievementsStore.js";
+import {showError} from "@/scripts/utils/notification.js";
 
 /**
  * Get the total number of complete records in a given level.

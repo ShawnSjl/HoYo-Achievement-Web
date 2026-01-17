@@ -1,9 +1,9 @@
 <script setup>
 import {computed, ref} from 'vue';
-import {useZzzAchievementStore} from "@/stores/zzzAchievementsStore";
+import {useZzzAchievementStore} from "@/scripts/stores/zzzAchievementsStore";
 import {Check, Close, Warning} from '@element-plus/icons-vue';
-import {useIsMobileStore} from "@/stores/isMobileStore";
-import {zzzExport} from "@/utils/zzzExport";
+import {useIsMobileStore} from "@/scripts/stores/isMobileStore";
+import {zzzExport} from "@/scripts/utils/zzzExport";
 import ButtonZzzImport from "@/views/ZzzAchievement/ButtonZzzImport.vue";
 
 // 传入只读数据

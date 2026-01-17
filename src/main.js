@@ -1,7 +1,7 @@
-import { createApp } from 'vue';  // Vue 3 API
+import {createApp} from 'vue';  // Vue 3 API
 import App from './App.vue';       // 导入 App.vue
-import router from './router';     // 导入 Vue Router
-import { createPinia } from 'pinia'; // 导入 Pinia 状态管理
+import router from './scripts/router';     // 导入 Vue Router
+import {createPinia} from 'pinia'; // 导入 Pinia 状态管理
 import piniaPluginPersistedstate from 'pinia-plugin-persistedstate'
 import ElementPlus from 'element-plus';
 import 'element-plus/dist/index.css';

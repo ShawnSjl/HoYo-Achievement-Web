@@ -6,12 +6,12 @@ import {
     getAccountByUserId,
     updateAccountInGameUid,
     updateAccountName
-} from "@/api/account.js";
-import {showError, showInfo, showSuccess} from "@/utils/notification.js";
-import {srGetAccountRecord} from "@/api/sr.js";
-import {zzzGetAccountRecord} from "@/api/zzz.js";
+} from "@/scripts/api/account.js";
+import {showError, showInfo, showSuccess} from "@/scripts/utils/notification.js";
+import {srGetAccountRecord} from "@/scripts/api/sr.js";
+import {zzzGetAccountRecord} from "@/scripts/api/zzz.js";
 import {v7 as uuidv7} from 'uuid';
-import {useUserStore} from "@/stores/userStore.js";
+import {useUserStore} from "@/scripts/stores/userStore.js";
 
 export const useAccountStore = defineStore(
     'accountStore',

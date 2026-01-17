@@ -1,14 +1,20 @@
 <script setup>
 import {computed, nextTick, onBeforeUnmount, onMounted, ref, watch} from "vue";
-import {useUserStore} from '@/stores/userStore.js';
-import {useIsMobileStore} from '@/stores/isMobileStore';
-import {categories, cityClasses, explorationClasses, storyClasses, tacticsClasses} from "@/utils/zzzAchievementClass";
+import {useUserStore} from '@/scripts/stores/userStore.js';
+import {useIsMobileStore} from '@/scripts/stores/isMobileStore';
+import {
+  categories,
+  cityClasses,
+  explorationClasses,
+  storyClasses,
+  tacticsClasses
+} from "@/scripts/utils/zzzAchievementClass";
 import ZzzTable from "@/views/ZzzAchievement/ZzzTable.vue";
 import ZzzHeader from "@/views/ZzzAchievement/ZzzHeader.vue";
 import ZzzAside from "@/views/ZzzAchievement/ZzzAside.vue";
 import {useRoute} from "vue-router";
-import router from "@/router/index.js";
-import {useZzzAchievementStore} from "@/stores/zzzAchievementsStore.js";
+import router from "@/scripts/router/index.js";
+import {useZzzAchievementStore} from "@/scripts/stores/zzzAchievementsStore.js";
 
 // 创建Route
 const route = useRoute();

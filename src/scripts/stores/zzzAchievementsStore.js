@@ -1,8 +1,8 @@
 import {defineStore} from 'pinia';
 import {computed, ref} from 'vue';
-import {zzzGetAllAchievement, zzzGetAllBranch, zzzUpdateAchievement} from '@/api/zzz';
-import {showError, showInfo, showWarn} from "@/utils/notification.js";
-import {useAccountStore} from "@/stores/accountStore.js";
+import {zzzGetAllAchievement, zzzGetAllBranch, zzzUpdateAchievement} from '@/scripts/api/zzz.js';
+import {showError, showInfo, showWarn} from "@/scripts/utils/notification.js";
+import {useAccountStore} from "@/scripts/stores/accountStore.js";
 
 export const useZzzAchievementStore = defineStore(
     'zzzAchievementStore',

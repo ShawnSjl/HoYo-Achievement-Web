@@ -1,9 +1,9 @@
 <script setup>
-import {useZzzAchievementStore} from "@/stores/zzzAchievementsStore";
-import {categories, zzzGetClassByCategory, zzzGetClassIdByName} from "@/utils/zzzAchievementClass"
+import {useZzzAchievementStore} from "@/scripts/stores/zzzAchievementsStore";
+import {categories, zzzGetClassByCategory, zzzGetClassIdByName} from "@/scripts/utils/zzzAchievementClass"
 import {computed} from "vue";
-import {branchAchievementCountByClass} from "@/utils/countBranchAchievement.js";
-import {completeAchievementCountByClass} from "@/utils/countCompleteAchievement.js";
+import {branchAchievementCountByClass} from "@/scripts/utils/countBranchAchievement.js";
+import {completeAchievementCountByClass} from "@/scripts/utils/countCompleteAchievement.js";
 
 // 传入只读数据
 const props = defineProps({

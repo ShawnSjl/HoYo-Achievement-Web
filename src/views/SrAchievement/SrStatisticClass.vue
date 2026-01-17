@@ -1,11 +1,11 @@
 <script setup>
-import {useSrAchievementStore} from "@/stores/srAchievementStore";
+import {useSrAchievementStore} from "@/scripts/stores/srAchievementStore";
 import {computed} from "vue";
 import SrAchievementImg1 from '@/assets/sr-image/sr-achievement-level-1.png';
 import SrAchievementImg2 from '@/assets/sr-image/sr-achievement-level-2.png';
 import SrAchievementImg3 from '@/assets/sr-image/sr-achievement-level-3.png';
-import {branchAchievementCountByClassAndLevel} from "@/utils/countBranchAchievement.js";
-import {completeAchievementCountByClassAndLevel} from "@/utils/countCompleteAchievement.js";
+import {branchAchievementCountByClassAndLevel} from "@/scripts/utils/countBranchAchievement.js";
+import {completeAchievementCountByClassAndLevel} from "@/scripts/utils/countCompleteAchievement.js";
 
 // 使用Pinia作为本地缓存
 const achievementStore = useSrAchievementStore()

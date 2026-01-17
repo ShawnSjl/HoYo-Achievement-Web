@@ -1,8 +1,8 @@
 <script setup>
 import SrTableRow from "@/views/SrAchievement/SrTableRow.vue";
-import {useSrAchievementStore} from "@/stores/srAchievementStore.js";
+import {useSrAchievementStore} from "@/scripts/stores/srAchievementStore.js";
 import {computed, ref} from "vue";
-import {useAccountStore} from "@/stores/accountStore.js";
+import {useAccountStore} from "@/scripts/stores/accountStore.js";
 
 // 传入只读数据
 const props = defineProps({

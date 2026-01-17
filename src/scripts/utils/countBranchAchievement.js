@@ -1,6 +1,6 @@
-import {showError} from "@/utils/notification.js";
-import {useSrAchievementStore} from "@/stores/srAchievementStore.js";
-import {useZzzAchievementStore} from "@/stores/zzzAchievementsStore.js";
+import {showError} from "@/scripts/utils/notification.js";
+import {useSrAchievementStore} from "@/scripts/stores/srAchievementStore.js";
+import {useZzzAchievementStore} from "@/scripts/stores/zzzAchievementsStore.js";
 
 /**
  * Get the total number of additional achievements in all branches with the specified level.

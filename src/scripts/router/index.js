@@ -2,10 +2,10 @@ import {createRouter, createWebHistory} from "vue-router";
 import ZzzView from "@/views/ZzzAchievement/ZzzView.vue";
 import HomeView from "@/views/Home/HomeView.vue"
 import SrView from "@/views/SrAchievement/SrView.vue";
-import {useAccountStore} from "@/stores/accountStore.js";
-import {useSrAchievementStore} from "@/stores/srAchievementStore.js";
-import {useZzzAchievementStore} from "@/stores/zzzAchievementsStore.js";
-import {useServerInfoStore} from "@/stores/serverInfoStore.js";
+import {useAccountStore} from "@/scripts/stores/accountStore.js";
+import {useSrAchievementStore} from "@/scripts/stores/srAchievementStore.js";
+import {useZzzAchievementStore} from "@/scripts/stores/zzzAchievementsStore.js";
+import {useServerInfoStore} from "@/scripts/stores/serverInfoStore.js";
 
 const routes = [
     {

@@ -1,8 +1,8 @@
 import {defineStore} from "pinia";
 import {computed, ref} from "vue";
-import {srGetAllAchievement, srGetAllBranch, srUpdateAchievement} from "@/api/sr";
-import {showError, showInfo, showWarn} from "@/utils/notification.js";
-import {useAccountStore} from "@/stores/accountStore.js";
+import {srGetAllAchievement, srGetAllBranch, srUpdateAchievement} from "@/scripts/api/sr.js";
+import {showError, showInfo, showWarn} from "@/scripts/utils/notification.js";
+import {useAccountStore} from "@/scripts/stores/accountStore.js";
 
 export const useSrAchievementStore = defineStore(
     'srAchievementStore',

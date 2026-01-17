@@ -1,7 +1,7 @@
 <script setup>
 import {computed, nextTick, onBeforeUnmount, onMounted, ref} from "vue";
-import {useIsMobileStore} from "@/stores/isMobileStore.js";
-import {useAccountStore} from "@/stores/accountStore.js";
+import {useIsMobileStore} from "@/scripts/stores/isMobileStore.js";
+import {useAccountStore} from "@/scripts/stores/accountStore.js";
 import CardZzzAccount from "@/views/Home/CardZzzAccount.vue";
 import CardSrAccount from "@/views/Home/CardSrAccount.vue";
 import CardServerInfo from "@/views/Home/CardServerInfo.vue";
