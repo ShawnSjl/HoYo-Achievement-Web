@@ -200,6 +200,11 @@ html, body {
   max-width: 1080px;
   margin: 0 auto;
   padding: 0 20px;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
 }
 
 @media (max-width: 900px) {
