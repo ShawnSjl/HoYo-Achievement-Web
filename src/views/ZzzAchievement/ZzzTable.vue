@@ -55,10 +55,41 @@ const achievementsInClass = computed(() => {
   return achievementStore.achievements.filter(achievement => achievement.class_id === zzzGetClassIdByName(achievementClass.value))
 });
 
+// 过滤器
+const input = ref("");
+const type = ref("全部");
+
+const filteredAchievements = computed(() => {
+  let achievementsInType;
+
+  switch (type.value) {
+    case '全部':
+      achievementsInType = achievementsInClass.value;
+      break;
+    case '未完成':
+      achievementsInType = achievementsInClass.value.filter(achieve => getProgress(achieve.achievement_id) === 0);
+      break;
+    case '已完成':
+      achievementsInType = achievementsInClass.value.filter(achieve => getProgress(achieve.achievement_id) !== 0);
+      break;
+    case '最新版本':
+      achievementsInType = achievementsInClass.value.filter(achieve => achieve.game_version === serverInfoStore.lastestInfo.zzz_version);
+      break;
+    default:
+      achievementsInType = achievementsInClass.value;
+  }
+
+  if (input.value !== "") {
+    return achievementsInType.filter(achieve => achieve.name.includes(input.value) || achieve.game_version === input.value);
+  } else {
+    return achievementsInType;
+  }
+})
+
 // 根据条件排序
 const sortedAchievements = computed(() => {
   if (achievementStore.isCompleteFirst) {
-    return [...achievementsInClass.value].sort((a, b) => {
+    return [...filteredAchievements.value].sort((a, b) => {
       const statusA = getProgress(a.achievement_id);
       const statusB = getProgress(b.achievement_id);
 
@@ -74,44 +105,13 @@ const sortedAchievements = computed(() => {
       return a.id - b.id;
     });
   } else {
-    return achievementsInClass.value;
+    return filteredAchievements.value;
   }
 });
 
-// 过滤器
-const input = ref("");
-const type = ref("全部");
-
-const filteredAchievements = computed(() => {
-  let achievementsInType;
-
-  switch (type.value) {
-    case '全部':
-      achievementsInType = sortedAchievements.value;
-      break;
-    case '未完成':
-      achievementsInType = sortedAchievements.value.filter(achieve => getProgress(achieve.achievement_id) === 0);
-      break;
-    case '已完成':
-      achievementsInType = sortedAchievements.value.filter(achieve => getProgress(achieve.achievement_id) !== 0);
-      break;
-    case '最新版本':
-      achievementsInType = sortedAchievements.value.filter(achieve => achieve.game_version === serverInfoStore.lastestInfo.zzz_version);
-      break;
-    default:
-      achievementsInType = sortedAchievements.value;
-  }
-
-  if (input.value !== "") {
-    return achievementsInType.filter(achieve => achieve.name.includes(input.value) || achieve.game_version === input.value);
-  } else {
-    return achievementsInType;
-  }
-})
-
 // 渲染优化部分
 const num = ref(30);
-const displayList = computed(() => filteredAchievements.value.slice(0, num.value));
+const displayList = computed(() => sortedAchievements.value.slice(0, num.value));
 
 const loadMore = (direction) => {
   if (direction === 'bottom') {
