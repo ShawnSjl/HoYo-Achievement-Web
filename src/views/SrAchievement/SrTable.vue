@@ -68,7 +68,7 @@ const filteredAchievements = computed(() => {
       achievementsInType = achievementsInClass.value.filter(achieve => getProgress(achieve.achievement_id) !== 0);
       break;
     case '最新版本':
-      achievementsInType = achievementsInClass.value.filter(achieve => achieve.game_version === serverInfoStore.lastestInfo.zzz_version);
+      achievementsInType = achievementsInClass.value.filter(achieve => achieve.game_version === serverInfoStore.lastestInfo.sr_version);
       break;
     default:
       achievementsInType = achievementsInClass.value;
