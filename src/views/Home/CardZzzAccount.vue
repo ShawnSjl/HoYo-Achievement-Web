@@ -7,7 +7,6 @@ import ZzzAchievementImg1 from '@/assets/zzz-image/zzz-achievement-level-1.png';
 import ZzzAchievementImg2 from '@/assets/zzz-image/zzz-achievement-level-2.png';
 import ZzzAchievementImg3 from '@/assets/zzz-image/zzz-achievement-level-3.png';
 import {useAccountStore} from "@/scripts/stores/accountStore.js";
-import {useServerInfoStore} from "@/scripts/stores/serverInfoStore.js";
 import ButtonAccountEdit from "@/views/Home/ButtonAccountEdit.vue";
 import {branchAchievementCountByLevel} from "@/scripts/utils/countBranchAchievement.js";
 import {completeAchievementCountByLevel} from "@/scripts/utils/countCompleteAchievement.js";
@@ -15,7 +14,6 @@ import {completeAchievementCountByLevel} from "@/scripts/utils/countCompleteAchi
 // 使用Pinia作为本地缓存
 const accountStore = useAccountStore();
 const achievementStore = useZzzAchievementStore();
-const serverInfoStore = useServerInfoStore();
 
 // 传入只读数据
 const props = defineProps({
@@ -116,7 +114,7 @@ const handleClick = () => {
         </div>
 
         <div style="display: flex; flex-direction: column-reverse">
-          <p class="version">版本： {{ serverInfoStore.lastestInfo.zzz_version }}</p>
+          <p class="version">版本： {{ achievementStore.achievementVersion }}</p>
         </div>
       </div>
     </el-card>

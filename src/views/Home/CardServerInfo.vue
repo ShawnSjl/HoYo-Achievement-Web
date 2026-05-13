@@ -1,9 +1,9 @@
 <script setup>
-import {useServerInfoStore} from "@/scripts/stores/serverInfoStore.js";
+import {useServerUpdateLogStore} from "@/scripts/stores/serverUpdateLogStore.js";
 import ButtonServerInfoList from "@/views/Home/ButtonServerInfoList.vue";
 
 // 使用Pinia作为本地缓存
-const serverInfoStore = useServerInfoStore();
+const serverUpdateLogStore = useServerUpdateLogStore();
 </script>
 
 <template>
@@ -18,9 +18,9 @@ const serverInfoStore = useServerInfoStore();
 
       <div>
         <b>版本：</b>
-        <p>v{{ serverInfoStore.lastestInfo.server_version }}</p>
+        <p>v{{ serverUpdateLogStore.lastestLog.server_version }}</p>
         <b>更新内容</b>
-        <p>{{ serverInfoStore.lastestInfo.update_description }}</p>
+        <p>{{ serverUpdateLogStore.lastestLog.update_description }}</p>
       </div>
     </el-card>
   </div>

@@ -4,13 +4,11 @@ import {useZzzAchievementStore} from "@/scripts/stores/zzzAchievementsStore";
 import ZzzAchievementImg1 from '@/assets/zzz-image/zzz-achievement-level-1.png';
 import ZzzAchievementImg2 from '@/assets/zzz-image/zzz-achievement-level-2.png';
 import ZzzAchievementImg3 from '@/assets/zzz-image/zzz-achievement-level-3.png';
-import {useServerInfoStore} from "@/scripts/stores/serverInfoStore.js";
 import {branchAchievementCountByLevel} from "@/scripts/utils/countBranchAchievement.js";
 import {completeAchievementCountByLevel} from "@/scripts/utils/countCompleteAchievement.js";
 
 // 使用Pinia作为本地缓存
 const achievementStore = useZzzAchievementStore();
-const serverInfoStore = useServerInfoStore();
 
 // 传入只读数据
 const props = defineProps({
@@ -54,7 +52,7 @@ const getCompleteLevel3Number = computed(() => {
   <el-card shadow="never">
     <template #header>
       <div slot="header">
-        成就完成度统计 游戏版本: {{ serverInfoStore.lastestInfo.zzz_version }}
+        成就完成度统计 游戏版本: {{ achievementStore.achievementVersion }}
       </div>
     </template>
     <div class="zzz-statistic-total">

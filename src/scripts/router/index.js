@@ -5,7 +5,7 @@ import SrView from "@/views/SrAchievement/SrView.vue";
 import {useAccountStore} from "@/scripts/stores/accountStore.js";
 import {useSrAchievementStore} from "@/scripts/stores/srAchievementStore.js";
 import {useZzzAchievementStore} from "@/scripts/stores/zzzAchievementsStore.js";
-import {useServerInfoStore} from "@/scripts/stores/serverInfoStore.js";
+import {useServerUpdateLogStore} from "@/scripts/stores/serverUpdateLogStore.js";
 
 const routes = [
     {
@@ -19,17 +19,16 @@ const routes = [
         beforeEnter: async (to, from, next) => {
             const srAchievementStore = useSrAchievementStore();
             const zzzAchievementStore = useZzzAchievementStore();
-            const serverInfoStore = useServerInfoStore();
+            const serverUpdateLogStore = useServerUpdateLogStore();
 
             // Ensure SR's data are loaded
-            await srAchievementStore.ensureAchievementData();
-            await srAchievementStore.ensureBranchData();
+            await srAchievementStore.checkAchievementVersion();
 
             // Ensure ZZZ's data are loaded
-            await zzzAchievementStore.ensureAchievementData();
-            await zzzAchievementStore.ensureBranchData();
-            // Fetch the server info
-            await serverInfoStore.ensureServerInfo();
+            await zzzAchievementStore.checkAchievementVersion();
+
+            // Fetch the server update log
+            await serverUpdateLogStore.ensureServerUpdateLog();
 
             next();
         }

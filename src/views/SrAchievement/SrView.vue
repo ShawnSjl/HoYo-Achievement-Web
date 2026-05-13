@@ -34,7 +34,6 @@ watch(userName, (_) => {
 const fetchRemoteData = async () => {
   // Ensure SR's data are loaded
   await achievementStore.ensureAchievementData();
-  await achievementStore.ensureBranchData();
 };
 onMounted(() => {
   fetchRemoteData();
