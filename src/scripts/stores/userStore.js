@@ -89,7 +89,7 @@ export const useUserStore = defineStore(
 
             // Empty the account list in the account store
             const accountStore = useAccountStore();
-            accountStore.remoteAccounts.value = [];
+            accountStore.removeRemoteAccount();
         }
 
         /**

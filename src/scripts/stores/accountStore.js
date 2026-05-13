@@ -252,6 +252,10 @@ export const useAccountStore = defineStore(
             }
         }
 
+        function removeRemoteAccount() {
+            remoteAccounts.value = [];
+        }
+
         return {
             remoteAccounts,
             localAccounts,
@@ -260,7 +264,8 @@ export const useAccountStore = defineStore(
             createNew,
             updateName,
             updateInGameUid,
-            deleteTargetAccount
+            deleteTargetAccount,
+            removeRemoteAccount
         };
     },
     {persist: true}
