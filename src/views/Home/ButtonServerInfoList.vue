@@ -64,7 +64,7 @@ const handleClick = async () => {
               </div>
 
               <b>更新内容：</b>
-              <p>{{ info.update_description }}</p>
+              <p class="content">{{ info.update_description }}</p>
             </el-card>
           </el-timeline-item>
         </el-timeline>
@@ -91,6 +91,10 @@ const handleClick = async () => {
 .content-wrapper {
   display: flex;
   align-content: center;
+}
+
+.content {
+  white-space: pre-line;
 }
 
 p {

@@ -20,7 +20,7 @@ const serverUpdateLogStore = useServerUpdateLogStore();
         <b>版本：</b>
         <p>v{{ serverUpdateLogStore.lastestLog.server_version }}</p>
         <b>更新内容</b>
-        <p>{{ serverUpdateLogStore.lastestLog.update_description }}</p>
+        <p class="content">{{ serverUpdateLogStore.lastestLog.update_description }}</p>
       </div>
     </el-card>
   </div>
@@ -31,6 +31,10 @@ const serverUpdateLogStore = useServerUpdateLogStore();
   min-height: 360px;
   border-radius: 16px;
   overflow: hidden;
+}
+
+.content {
+  white-space: pre-line;
 }
 
 p {
