@@ -8,7 +8,6 @@ import {useZzzAchievementStore} from "@/scripts/stores/zzzAchievementsStore.js";
 import {zzzGetClassIdByName} from "@/scripts/utils/zzzAchievementClass.js";
 import {useAccountStore} from "@/scripts/stores/accountStore.js";
 import FilterZzzAchievement from "@/views/ZzzAchievement/FilterZzzAchievement.vue";
-import {useServerInfoStore} from "@/scripts/stores/serverInfoStore.js";
 
 // 传入只读数据
 const props = defineProps({
@@ -22,7 +21,6 @@ const achievementClass = defineModel();
 // 使用Pinia作为本地缓存
 const accountStore = useAccountStore();
 const achievementStore = useZzzAchievementStore();
-const serverInfoStore = useServerInfoStore();
 const isMobileStore = useIsMobileStore();
 
 // 获取账户列表
@@ -73,7 +71,7 @@ const filteredAchievements = computed(() => {
       achievementsInType = achievementsInClass.value.filter(achieve => getProgress(achieve.achievement_id) !== 0);
       break;
     case '最新版本':
-      achievementsInType = achievementsInClass.value.filter(achieve => achieve.game_version === serverInfoStore.lastestInfo.zzz_version);
+      achievementsInType = achievementsInClass.value.filter(achieve => achieve.game_version === achievementStore.achievementVersion);
       break;
     default:
       achievementsInType = achievementsInClass.value;

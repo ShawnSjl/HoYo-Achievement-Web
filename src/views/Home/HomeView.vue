@@ -1,5 +1,5 @@
 <script setup>
-import {computed, onMounted, reactive, ref, watch} from "vue";
+import {computed, onMounted, reactive, ref} from "vue";
 import DefaultAvatar from '@/assets/avatar/zzz-1.png'
 import {useUserStore} from "@/scripts/stores/userStore.js";
 import ButtonSettingProfile from "@/views/Home/ButtonSettingProfile.vue";
@@ -9,18 +9,12 @@ import ButtonLogout from "@/views/components/ButtonLogout.vue";
 import ButtonRegister from "@/views/components/ButtonRegister.vue";
 import ProfileCardsLayout from "@/views/Home/ProfileCardsLayout.vue";
 import {useIsMobileStore} from "@/scripts/stores/isMobileStore.js";
-import {useSrAchievementStore} from "@/scripts/stores/srAchievementStore.js";
-import {useZzzAchievementStore} from "@/scripts/stores/zzzAchievementsStore.js";
-import {useServerInfoStore} from "@/scripts/stores/serverInfoStore.js";
 import {secondAuth} from "@/scripts/api/user.js";
 import {showError} from "@/scripts/utils/notification.js";
 import {passwordCharPattern} from "@/scripts/utils/formRegex.js";
 
 // 使用Pinia作为本地缓存
 const userStore = useUserStore();
-const srAchievementStore = useSrAchievementStore();
-const zzzAchievementStore = useZzzAchievementStore();
-const serverInfoStore = useServerInfoStore();
 const isMobileStore = useIsMobileStore();
 
 // 获取用户是否login
@@ -38,30 +32,17 @@ const avatarSize = computed(() => {
   return isMobileStore.isMobile ? 'default' : 'large'
 })
 
-// 同步数据
-const fetchRemoteData = async () => {
-  // Ensure SR's data are loaded
-  await srAchievementStore.ensureAchievementData();
-  await srAchievementStore.ensureBranchData();
-
-  // Ensure ZZZ's data are loaded
-  await zzzAchievementStore.ensureAchievementData();
-  await zzzAchievementStore.ensureBranchData();
-  // Fetch the server info
-  await serverInfoStore.ensureServerInfo();
-};
+// 检查用户数据
 onMounted(async () => {
-  await fetchRemoteData();
   await userStore.forceCheckIsUserLogin();
 });
 
-// 获取用户名，并处理用户登录登出
+// 成就数据检查部分在 router/index 中
+
+// 获取用户名
 const userName = computed(() => {
   return userStore.getUserName()
 })
-watch(userName, async (newUserName) => {
-  await fetchRemoteData();
-});
 
 // 二次验证用
 const verifying = ref(false);

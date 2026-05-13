@@ -1,16 +1,38 @@
 import {defineStore} from 'pinia';
 import {computed, ref} from 'vue';
 import {zzzGetAllAchievement, zzzGetAllBranch, zzzUpdateAchievement} from '@/scripts/api/zzz.js';
-import {showError, showInfo, showWarn} from "@/scripts/utils/notification.js";
+import {showError, showInfo, showSuccess, showWarn} from "@/scripts/utils/notification.js";
 import {useAccountStore} from "@/scripts/stores/accountStore.js";
+import {getGameInfoByGameId} from "@/scripts/api/gameInfo.js";
 
 export const useZzzAchievementStore = defineStore(
     'zzzAchievementStore',
     () => {
+        const achievementVersion = ref("0.0");
         const achievements = ref([]);
         const branches = ref([]);
         const isMale = ref(true);
         const isCompleteFirst = ref(false);
+
+        /**
+         * Fetch achievement version from the backend.
+         * @return {Promise<void>}
+         */
+        async function fetchAchievementVersion() {
+            try {
+                const requestBody = {gameId: 'zzz'};
+                const resp = await getGameInfoByGameId(requestBody);
+                if (resp.code === 200) {
+                    achievementVersion.value = resp.data.game_version;
+                    showSuccess("检查ZZZ成就版本", resp.msg)
+                } else {
+                    showWarn(resp.msg)
+                }
+            } catch (error) {
+                console.error("Fail to get ZZZ achievement version:", error);
+                showError("ZZZ成就版本获取失败", error);
+            }
+        }
 
         /**
          * Fetch achievements from the backend.
@@ -45,14 +67,6 @@ export const useZzzAchievementStore = defineStore(
         });
 
         /**
-         * Ensure that the achievements data is fetched from the backend.
-         * @returns {Promise<void>}
-         */
-        async function ensureAchievementData() {
-            if (achievements.value.length === 0) await fetchAchievements();
-        }
-
-        /**
          * Fetch branches from the backend.
          * @returns {Promise<void>}
          */
@@ -71,11 +85,36 @@ export const useZzzAchievementStore = defineStore(
         }
 
         /**
-         * Ensure that the branches data is fetched from the backend.
+         * Force to fetch all data from the backend.
+         * @return {Promise<void>}
+         */
+        async function fetchAll() {
+            await fetchAchievementVersion()
+            await fetchAchievements();
+            await fetchBranches();
+        }
+
+        /**
+         * Check the version of the achievement data and fetch data from the backend if the version is different.
+         * @return {Promise<void>}
+         */
+        async function checkAchievementVersion() {
+            const oldValue = achievementVersion.value;
+            await fetchAchievementVersion();
+            if (oldValue !== achievementVersion.value) {
+                await fetchAll();
+            }
+        }
+
+        /**
+         * Ensure that the achievement data is fetched from the backend.
          * @returns {Promise<void>}
          */
-        async function ensureBranchData() {
-            if (branches.value.length === 0) await fetchBranches();
+        async function ensureAchievementData() {
+            // data is empty, fetch data from backend
+            if (achievements.value.length === 0 || achievementVersion.value === "0.0") {
+                await fetchAll()
+            }
         }
 
         /**
@@ -131,7 +170,6 @@ export const useZzzAchievementStore = defineStore(
         async function completeAchievement(uuid, achievementId, complete) {
             try {
                 // Ensure data is fetched from the backend before updating
-                await ensureBranchData();
                 await ensureAchievementData();
 
                 // Ignore complete status other than 1 and 0
@@ -140,7 +178,7 @@ export const useZzzAchievementStore = defineStore(
                     return;
                 }
 
-                // Check if the target achievement exists in the achievements list
+                // Check if the target achievement exists in the achievement list
                 const targetAchievement = achievementMap.value.get(achievementId);
                 if (!targetAchievement) {
                     showWarn("未知成就ID");
@@ -233,15 +271,15 @@ export const useZzzAchievementStore = defineStore(
         }
 
         return {
+            achievementVersion,
             achievements,
             achievementMap,
             branches,
             isMale,
             isCompleteFirst,
-            fetchAchievements,
+            fetchAll,
+            checkAchievementVersion,
             ensureAchievementData,
-            fetchBranches,
-            ensureBranchData,
             completeAchievement,
             getAchievementBranchID,
         };

@@ -8,7 +8,6 @@ import SrAchievementImg2 from "@/assets/sr-image/sr-achievement-level-2.png";
 import SrAchievementImg1 from "@/assets/sr-image/sr-achievement-level-1.png";
 import SrAchievement from "@/assets/sr-image/sr-achievement.png";
 import {useAccountStore} from "@/scripts/stores/accountStore.js";
-import {useServerInfoStore} from "@/scripts/stores/serverInfoStore.js";
 import ButtonAccountEdit from "@/views/Home/ButtonAccountEdit.vue";
 import {branchAchievementCountByLevel} from "@/scripts/utils/countBranchAchievement.js";
 import {completeAchievementCountByLevel} from "@/scripts/utils/countCompleteAchievement.js";
@@ -16,7 +15,6 @@ import {completeAchievementCountByLevel} from "@/scripts/utils/countCompleteAchi
 // 使用Pinia作为本地缓存
 const accountStore = useAccountStore();
 const achievementStore = useSrAchievementStore();
-const serverInfoStore = useServerInfoStore();
 
 // 传入只读数据
 const props = defineProps({
@@ -120,7 +118,7 @@ const handleClick = () => {
 
       <template #footer>
         <div style="display: flex; flex-direction: row-reverse">
-          <p class="version">版本： {{ serverInfoStore.lastestInfo.sr_version }}</p>
+          <p class="version">版本： {{ achievementStore.achievementVersion }}</p>
         </div>
       </template>
     </el-card>

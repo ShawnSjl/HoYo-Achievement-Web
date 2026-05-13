@@ -1,11 +1,11 @@
 <script setup>
-import {useServerInfoStore} from "@/scripts/stores/serverInfoStore.js";
+import {useServerUpdateLogStore} from "@/scripts/stores/serverUpdateLogStore.js";
 import {ref} from "vue";
 import {dayjs} from "element-plus";
 import {useIsMobileStore} from "@/scripts/stores/isMobileStore.js";
 
 // 使用Pinia作为本地缓存
-const serverInfoStore = useServerInfoStore();
+const serverUpdateLogStore = useServerUpdateLogStore();
 const isMobileStore = useIsMobileStore();
 
 // dialog可视性
@@ -26,7 +26,7 @@ const getTime = (timeStr) => {
 
 // 处理更新按钮
 const handleClick = async () => {
-  await serverInfoStore.fetchServerInfo();
+  await serverUpdateLogStore.fetchLatestServerUpdateLog();
 }
 </script>
 
@@ -52,8 +52,8 @@ const handleClick = async () => {
 
         <el-timeline :reverse="!reverse">
           <el-timeline-item
-              v-for="info in serverInfoStore.allInfo"
-              :key="info.info_id"
+              v-for="info in serverUpdateLogStore.updateLog"
+              :key="info.id"
               :timestamp="getTime(info.updated_at)"
               placement="top"
           >
@@ -63,18 +63,8 @@ const handleClick = async () => {
                 <p>{{ info.server_version }}</p>
               </div>
 
-              <div class="content-wrapper" style="margin-bottom: 10px">
-                <b>《崩坏：星穹铁道》版本：</b>
-                <p>{{ info.sr_version }}</p>
-              </div>
-
-              <div class="content-wrapper" style="margin-bottom: 10px">
-                <b>《绝区零》版本：</b>
-                <p>{{ info.zzz_version }}</p>
-              </div>
-
               <b>更新内容：</b>
-              <p>{{ info.update_description }}</p>
+              <p class="content">{{ info.update_description }}</p>
             </el-card>
           </el-timeline-item>
         </el-timeline>
@@ -101,6 +91,10 @@ const handleClick = async () => {
 .content-wrapper {
   display: flex;
   align-content: center;
+}
+
+.content {
+  white-space: pre-line;
 }
 
 p {
