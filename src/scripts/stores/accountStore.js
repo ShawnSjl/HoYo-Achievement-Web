@@ -16,6 +16,8 @@ import {useUserStore} from "@/scripts/stores/userStore.js";
 export const useAccountStore = defineStore(
     'accountStore',
     () => {
+        const userStore = useUserStore();
+
         const remoteAccounts = ref([]);
         const localAccounts = ref([]);
 
@@ -24,8 +26,7 @@ export const useAccountStore = defineStore(
          * @returns []
          */
         function getAccounts() {
-            const userStore = useUserStore();
-            if (userStore.token !== '') {
+            if (userStore.isLogin) {
                 return remoteAccounts.value;
             } else {
                 return localAccounts.value;
@@ -103,7 +104,7 @@ export const useAccountStore = defineStore(
                 const uuid = uuidv7();
 
                 // In user is login, create a new account at the backend
-                if (localStorage.getItem('token')) {
+                if (userStore.isLogin) {
                     const requestBody = {
                         account_uuid: uuid,
                         game_type: type,
@@ -127,7 +128,7 @@ export const useAccountStore = defineStore(
                 }
 
                 // Push the account to the list
-                if (localStorage.getItem('token')) {
+                if (userStore.isLogin) {
                     remoteAccounts.value.push(newAccount);
                     showSuccess("游戏账号创建成功")
                 } else {
@@ -148,8 +149,9 @@ export const useAccountStore = defineStore(
          */
         async function updateName(uuid, newName) {
             try {
-                // Update the account name in the backend if the user is login
-                if (localStorage.getItem('token')) {
+                // If user is login
+                if (userStore.isLogin) {
+                    // Update the account name in the backend
                     const requestBody = {
                         account_uuid: uuid,
                         account_name: newName
@@ -160,14 +162,13 @@ export const useAccountStore = defineStore(
                         showInfo(updateResponse.msg);
                         return;
                     }
-                }
 
-                // Update the account name in the local data
-                if (localStorage.getItem('token')) {
+                    // Update the account name in the local data
                     const target = remoteAccounts.value.find(item => item.uuid === uuid);
                     target.name = newName;
                     showSuccess("游戏账户名称更新成功")
                 } else {
+                    // Update the account name in the local data
                     const target = localAccounts.value.find(item => item.uuid === uuid);
                     target.name = newName;
                     showSuccess("本地游戏账户名称更新成功")
@@ -186,8 +187,9 @@ export const useAccountStore = defineStore(
          */
         async function updateInGameUid(uuid, newInGameUid) {
             try {
-                // Update the account in game uid in the backend if the user is login
-                if (localStorage.getItem('token')) {
+                // If user is login
+                if (userStore.isLogin) {
+                    // Update the account in game uid in the backend
                     const requestBody = {
                         account_uuid: uuid,
                         account_in_game_uid: newInGameUid
@@ -198,14 +200,13 @@ export const useAccountStore = defineStore(
                         showInfo(updateResponse.msg);
                         return;
                     }
-                }
 
-                // Update the account in game uid in the local data
-                if (localStorage.getItem('token')) {
+                    // Update the account in game uid in the local data
                     const target = remoteAccounts.value.find(item => item.uuid === uuid);
                     target.inGameUid = newInGameUid;
                     showSuccess("游戏账户uid更新成功")
                 } else {
+                    // Update the account in game uid in the local data
                     const target = localAccounts.value.find(item => item.uuid === uuid);
                     target.inGameUid = newInGameUid;
                     showSuccess("本地游戏账户uid更新成功")
@@ -223,8 +224,9 @@ export const useAccountStore = defineStore(
          */
         async function deleteTargetAccount(uuid) {
             try {
-                // Delete the account from the backend if the user is login
-                if (localStorage.getItem('token')) {
+                // If user is login
+                if (userStore.isLogin) {
+                    // Delete the account from the backend if the user is login
                     const requestBody = {
                         account_uuid: uuid
                     };
@@ -234,14 +236,13 @@ export const useAccountStore = defineStore(
                         showInfo(deleteResponse.msg);
                         return;
                     }
-                }
 
-                // Remove the account from the local data
-                if (localStorage.getItem('token')) {
+                    // Remove the account from the local data
                     const index = remoteAccounts.value.findIndex(item => item.uuid === uuid);
                     remoteAccounts.value.splice(index, 1);
                     showSuccess("游戏账户删除成功")
                 } else {
+                    // Remove the account from the local data
                     const index = localAccounts.value.findIndex(item => item.uuid === uuid);
                     localAccounts.value.splice(index, 1);
                     showSuccess("本地游戏账户删除成功")

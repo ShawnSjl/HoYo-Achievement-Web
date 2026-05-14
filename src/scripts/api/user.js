@@ -6,7 +6,7 @@ export const login = (credentials) => {
 };
 
 // Check if the current user is logged in
-export const isLogin = () => {
+export const isUserLogin = () => {
     return api.get("/api/user/is-login");
 }
 

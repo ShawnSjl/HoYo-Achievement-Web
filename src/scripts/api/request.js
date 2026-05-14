@@ -7,25 +7,10 @@ const api = axios.create({
     timeout: 10000, // 超时时间
     headers: {
         "Content-Type": "application/json",
+        "x-auth-mode": "cookie",
     },
+    withCredentials: true,
 });
-
-// 请求拦截器
-api.interceptors.request.use(
-    (config) => {
-        // 从 localStorage 或 Vuex 中获取 token
-        const token = localStorage.getItem("token");
-
-        if (token) {
-            config.headers["satoken"] = token;
-        }
-
-        return config;
-    },
-    (error) => {
-        return Promise.reject(error);
-    }
-);
 
 // 响应拦截器
 api.interceptors.response.use(
