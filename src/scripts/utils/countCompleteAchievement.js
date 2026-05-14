@@ -13,7 +13,7 @@ import {showError} from "@/scripts/utils/notification.js";
 export const completeAchievementCountByLevel = (type, uuid, level) => {
     let store;
     switch (type) {
-        case 'SR':
+        case 'HSR':
             store = useSrAchievementStore();
             break;
         case 'ZZZ':
@@ -51,7 +51,7 @@ export const completeAchievementCountByLevel = (type, uuid, level) => {
 export const completeAchievementCountByClass = (type, uuid, achievement_class) => {
     let store;
     switch (type) {
-        case 'SR':
+        case 'HSR':
             store = useSrAchievementStore();
             break;
         case 'ZZZ':
@@ -74,7 +74,7 @@ export const completeAchievementCountByClass = (type, uuid, achievement_class) =
         // If the class matches, add to the total count
         const achievement = store.achievementMap.get(record.achievement_id);
         if (!achievement) continue;
-        if (type === 'SR') {
+        if (type === 'HSR') {
             if (achievement.class_name !== achievement_class) continue;
         } else {
             if (achievement.class_id !== achievement_class) continue;
@@ -95,7 +95,7 @@ export const completeAchievementCountByClass = (type, uuid, achievement_class) =
 export const completeAchievementCountByClassAndLevel = (type, uuid, achievement_class, level) => {
     let store;
     switch (type) {
-        case 'SR':
+        case 'HSR':
             store = useSrAchievementStore();
             break;
         case 'ZZZ':
@@ -119,7 +119,7 @@ export const completeAchievementCountByClassAndLevel = (type, uuid, achievement_
         const achievement = store.achievementMap.get(record.achievement_id);
         if (!achievement) continue;
         if (achievement.reward_level !== level) continue;
-        if (type === 'SR') {
+        if (type === 'HSR') {
             if (achievement.class_name !== achievement_class) continue;
         } else {
             if (achievement.class_id !== achievement_class) continue;

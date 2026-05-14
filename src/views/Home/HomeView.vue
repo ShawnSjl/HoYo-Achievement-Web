@@ -19,7 +19,7 @@ const isMobileStore = useIsMobileStore();
 
 // 获取用户是否login
 const isLoggedIn = computed(() => {
-  return userStore.token !== ''
+  return userStore.isLogin
 })
 
 // 获取用户是否有高级权限

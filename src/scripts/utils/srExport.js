@@ -7,7 +7,7 @@ import {useSrAchievementStore} from "@/scripts/stores/srAchievementStore.js";
 export const srExport = async (uuid) => {
     try {
         const workbook = new ExcelJS.Workbook();
-        const worksheet = workbook.addWorksheet('SR Achievements');
+        const worksheet = workbook.addWorksheet('HSR Achievements');
 
         // 表头
         worksheet.columns = [

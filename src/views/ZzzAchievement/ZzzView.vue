@@ -15,17 +15,24 @@ import ZzzAside from "@/views/ZzzAchievement/ZzzAside.vue";
 import {useRoute} from "vue-router";
 import router from "@/scripts/router/index.js";
 import {useZzzAchievementStore} from "@/scripts/stores/zzzAchievementsStore.js";
+import {useAccountStore} from "@/scripts/stores/accountStore.js";
 
 // 创建Route
 const route = useRoute();
 
 // 使用Pinia作为本地缓存
 const userStore = useUserStore();
+const accountStore = useAccountStore();
 const achievementStore = useZzzAchievementStore();
 const isMobileStore = useIsMobileStore();
 
 // 当前账号UUID
-const currentUUID = route.meta.uuid;
+const currentUUID = computed(() => {
+  const shortId = route.query.id;
+  return accountStore
+      .getAccounts()
+      .find(account => account.uuid.endsWith(shortId))?.uuid;
+})
 
 // 如果用户变更，返回主页
 const userName = computed(() => userStore.getUserName());

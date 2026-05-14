@@ -4,10 +4,13 @@ import {zzzGetAllAchievement, zzzGetAllBranch, zzzUpdateAchievement} from '@/scr
 import {showError, showInfo, showSuccess, showWarn} from "@/scripts/utils/notification.js";
 import {useAccountStore} from "@/scripts/stores/accountStore.js";
 import {getGameInfoByGameId} from "@/scripts/api/gameInfo.js";
+import {useUserStore} from "@/scripts/stores/userStore.js";
 
 export const useZzzAchievementStore = defineStore(
     'zzzAchievementStore',
     () => {
+        const userStore = useUserStore();
+
         const achievementVersion = ref("0.0");
         const achievements = ref([]);
         const branches = ref([]);
@@ -199,7 +202,7 @@ export const useZzzAchievementStore = defineStore(
                 }
 
                 // Update achievement in the backend if the user is logged in
-                if (localStorage.getItem('token')) {
+                if (userStore.isLogin) {
                     const requestBody = {
                         uuid: uuid,
                         achievement_id: `${achievementId}`,

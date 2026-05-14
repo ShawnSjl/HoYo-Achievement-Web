@@ -99,6 +99,7 @@ async function handleFile(file) {
         missCount++;
         if (missCount >= 10) {
           showError('成就表格导入失败', '错误次数过多');
+          return false;
         }
         continue;
       }

@@ -39,26 +39,26 @@ const completeNumber = computed(() => {
 
 const getLevel1Number = computed(() => {
   return achievementStore.achievements.filter(achievement => achievement.reward_level === 1).length
-      - branchAchievementCountByLevel('SR', 1);
+      - branchAchievementCountByLevel('HSR', 1);
 })
 const getCompleteLevel1Number = computed(() => {
-  return completeAchievementCountByLevel('SR', props.uuid, 1);
+  return completeAchievementCountByLevel('HSR', props.uuid, 1);
 })
 
 const getLevel2Number = computed(() => {
   return achievementStore.achievements.filter(achievement => achievement.reward_level === 2).length
-      - branchAchievementCountByLevel('SR', 2);
+      - branchAchievementCountByLevel('HSR', 2);
 })
 const getCompleteLevel2Number = computed(() => {
-  return completeAchievementCountByLevel('SR', props.uuid, 2);
+  return completeAchievementCountByLevel('HSR', props.uuid, 2);
 })
 
 const getLevel3Number = computed(() => {
   return achievementStore.achievements.filter(achievement => achievement.reward_level === 3).length
-      - branchAchievementCountByLevel('SR', 3);
+      - branchAchievementCountByLevel('HSR', 3);
 })
 const getCompleteLevel3Number = computed(() => {
-  return completeAchievementCountByLevel('SR', props.uuid, 3);
+  return completeAchievementCountByLevel('HSR', props.uuid, 3);
 })
 
 // 处理点击转跳
@@ -66,7 +66,7 @@ const handleClick = () => {
   const shortId = props.uuid.slice(-8);
 
   router.push({
-    path: '/sr',
+    path: '/hsr',
     query: {
       id: shortId
     }
