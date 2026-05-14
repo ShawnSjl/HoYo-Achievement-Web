@@ -66,7 +66,7 @@ const handleClick = () => {
   const shortId = props.uuid.slice(-8);
 
   router.push({
-    path: '/sr',
+    path: '/hsr',
     query: {
       id: shortId
     }
