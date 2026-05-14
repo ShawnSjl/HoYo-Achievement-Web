@@ -42,17 +42,9 @@ const routes = [
             color: '#000000'
         },
         beforeEnter: (to, from, next) => {
-            const accountStore = useAccountStore();
+            const uuid = resolveUuid(to);
 
-            if (accountStore.getAccounts().length === 0) {
-                return next('/');
-            }
-
-            const shortId = to.query.id;
-            const found = accountStore.getAccounts().find(acc => acc.uuid.endsWith(shortId));
-
-            if (found) {
-                to.meta.uuid = found.uuid;
+            if (uuid) {
                 next();
             } else {
                 next('/');
@@ -68,17 +60,9 @@ const routes = [
             color: '#f6f6f6'
         },
         beforeEnter: (to, from, next) => {
-            const accountStore = useAccountStore();
+            const uuid = resolveUuid(to);
 
-            if (accountStore.getAccounts().length === 0) {
-                return next('/');
-            }
-
-            const shortId = to.query.id;
-            const found = accountStore.getAccounts().find(acc => acc.uuid.endsWith(shortId));
-
-            if (found) {
-                to.meta.uuid = found.uuid;
+            if (uuid) {
                 next();
             } else {
                 next('/');
@@ -86,6 +70,25 @@ const routes = [
         },
     },
 ];
+
+function resolveUuid(to) {
+    const accountStore = useAccountStore();
+
+    if (accountStore.getAccounts().length === 0) {
+        return null;
+    }
+
+    const shortId = to.query.id;
+    if (!shortId) {
+        return null;
+    }
+
+    const found = accountStore
+        .getAccounts()
+        .find(acc => acc.uuid.endsWith(shortId));
+
+    return found?.uuid ?? null;
+}
 
 const router = createRouter({
     history: createWebHistory(),
