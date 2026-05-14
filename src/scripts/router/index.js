@@ -60,7 +60,7 @@ const routes = [
         },
     },
     {
-        path: "/sr",
+        path: "/hsr",
         component: SrView,
         meta: {
             title: '崩坏：星穹铁道成就',
