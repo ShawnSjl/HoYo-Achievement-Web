@@ -22,7 +22,7 @@ const accounts = computed(() => {
 // 获取账户对应游戏的logo
 const gameLogo = (type) => {
   switch (type) {
-    case 'SR':
+    case 'HSR':
       return Sr;
     case 'ZZZ':
       return Zzz;
@@ -37,9 +37,9 @@ const handleClick = (command) => {
 
   const shortId = command.uuid.slice(-8);
   switch (command.type) {
-    case 'SR':
+    case 'HSR':
       router.push({
-        path: '/sr',
+        path: '/hsr',
         query: {
           id: shortId
         }
