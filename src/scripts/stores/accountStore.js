@@ -56,7 +56,7 @@ export const useAccountStore = defineStore(
                     const requestBody = {uuid: account.account_uuid};
                     let recordResponse;
                     switch (account.game_type) {
-                        case "SR":
+                        case "HSR":
                             recordResponse = await srGetAccountRecord(requestBody);
                             break;
                         case "ZZZ":
