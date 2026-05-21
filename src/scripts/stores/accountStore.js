@@ -95,7 +95,7 @@ export const useAccountStore = defineStore(
                 if (userStore.isLogin) {
                     const requestBody = {
                         account_uuid: uuid,
-                        game_type: type,
+                        game_id: type,
                         account_name: accountName,
                         account_in_game_uid: inGameUid,
                     }
