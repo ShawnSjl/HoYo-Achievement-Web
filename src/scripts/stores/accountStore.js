@@ -64,7 +64,7 @@ export const useAccountStore = defineStore(
                     // Create a data structure for the account
                     const accountData = {
                         uuid: account.account_uuid,
-                        type: account.game_type,
+                        type: account.game_id,
                         name: account.account_name,
                         inGameUid: account.account_in_game_uid,
                         records: recordResponse.data,
