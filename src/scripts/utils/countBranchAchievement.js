@@ -64,11 +64,7 @@ export const branchAchievementCountByClass = (type, achievement_class) => {
 
         // If the level matches, add to the total count
         if (!achievement) continue;
-        if (type === 'HSR') {
-            if (achievement.class_name !== achievement_class) continue;
-        } else {
-            if (achievement.class_id !== achievement_class) continue;
-        }
+        if (achievement.category !== achievement_class) continue;
         count = count + branch.achievement_id.length - 1;
     }
     return count;
@@ -104,11 +100,7 @@ export const branchAchievementCountByClassAndLevel = (type, achievement_class, l
         // If the level matches, add to the total count
         if (achievement.reward_level !== level) continue;
         if (!achievement) continue;
-        if (type === 'HSR') {
-            if (achievement.class_name !== achievement_class) continue;
-        } else {
-            if (achievement.class_id !== achievement_class) continue;
-        }
+        if (achievement.category !== achievement_class) continue;
         count = count + branch.achievement_id.length - 1;
     }
     return count;
