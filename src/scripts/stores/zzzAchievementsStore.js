@@ -1,10 +1,10 @@
 import {defineStore} from 'pinia';
 import {computed, ref} from 'vue';
-import {zzzGetAllAchievement, zzzGetAllBranch, zzzUpdateAchievement} from '@/scripts/api/zzz.js';
 import {showError, showInfo, showSuccess, showWarn} from "@/scripts/utils/notification.js";
 import {useAccountStore} from "@/scripts/stores/accountStore.js";
 import {getGameInfoByGameId} from "@/scripts/api/gameInfo.js";
 import {useUserStore} from "@/scripts/stores/userStore.js";
+import {getAllAchievementByGameId, getAllBranchByGameId, updateAchievementById} from "@/scripts/api/achievement.js";
 
 export const useZzzAchievementStore = defineStore(
     'zzzAchievementStore',
@@ -17,14 +17,16 @@ export const useZzzAchievementStore = defineStore(
         const isMale = ref(true);
         const isCompleteFirst = ref(false);
 
+        const gameId = "ZZZ";
+
         /**
          * Fetch achievement version from the backend.
          * @return {Promise<void>}
          */
         async function fetchAchievementVersion() {
             try {
-                const requestBody = {gameId: 'zzz'};
-                const resp = await getGameInfoByGameId(requestBody);
+                const requestParams = {gameId: gameId};
+                const resp = await getGameInfoByGameId(requestParams);
                 if (resp.code === 200) {
                     achievementVersion.value = resp.data.game_version;
                     showSuccess("检查ZZZ成就版本", resp.msg)
@@ -43,7 +45,8 @@ export const useZzzAchievementStore = defineStore(
          */
         async function fetchAchievements() {
             try {
-                const response = await zzzGetAllAchievement();
+                const requestParams = {gameId: gameId};
+                const response = await getAllAchievementByGameId(requestParams);
                 if (response.code === 200) {
                     achievements.value = response.data;
                 } else {
@@ -75,7 +78,8 @@ export const useZzzAchievementStore = defineStore(
          */
         async function fetchBranches() {
             try {
-                const response = await zzzGetAllBranch();
+                const requestParams = {gameId: gameId};
+                const response = await getAllBranchByGameId(requestParams);
                 if (response.code === 200) {
                     branches.value = processBranchData(response.data);
                 } else {
@@ -205,11 +209,11 @@ export const useZzzAchievementStore = defineStore(
                 if (userStore.isLogin) {
                     const requestBody = {
                         uuid: uuid,
+                        game_id: gameId,
                         achievement_id: `${achievementId}`,
                         complete_status: `${complete}`
                     }
-
-                    const updateResponse = await zzzUpdateAchievement(requestBody);
+                    const updateResponse = await updateAchievementById(requestBody);
                     if (updateResponse.code !== 200) {
                         showInfo(updateResponse.msg)
                         return;

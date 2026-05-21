@@ -8,10 +8,9 @@ import {
     updateAccountName
 } from "@/scripts/api/account.js";
 import {showError, showInfo, showSuccess} from "@/scripts/utils/notification.js";
-import {srGetAccountRecord} from "@/scripts/api/sr.js";
-import {zzzGetAccountRecord} from "@/scripts/api/zzz.js";
 import {v7 as uuidv7} from 'uuid';
 import {useUserStore} from "@/scripts/stores/userStore.js";
+import {getRecordById} from "@/scripts/api/achievement.js";
 
 export const useAccountStore = defineStore(
     'accountStore',
@@ -53,19 +52,8 @@ export const useAccountStore = defineStore(
                 // For each account, get achievements from the backend
                 for (const account of accountsResponse.data) {
                     // Get achievements from the backend
-                    const requestBody = {uuid: account.account_uuid};
-                    let recordResponse;
-                    switch (account.game_type) {
-                        case "HSR":
-                            recordResponse = await srGetAccountRecord(requestBody);
-                            break;
-                        case "ZZZ":
-                            recordResponse = await zzzGetAccountRecord(requestBody);
-                            break;
-                        default:
-                            showError("未知游戏类型");
-                            return;
-                    }
+                    const requestParams = {uuid: account.account_uuid};
+                    const recordResponse = await getRecordById(requestParams);
 
                     // Check response
                     if (recordResponse.code !== 200) {
@@ -76,7 +64,7 @@ export const useAccountStore = defineStore(
                     // Create a data structure for the account
                     const accountData = {
                         uuid: account.account_uuid,
-                        type: account.game_type,
+                        type: account.game_id,
                         name: account.account_name,
                         inGameUid: account.account_in_game_uid,
                         records: recordResponse.data,
@@ -107,7 +95,7 @@ export const useAccountStore = defineStore(
                 if (userStore.isLogin) {
                     const requestBody = {
                         account_uuid: uuid,
-                        game_type: type,
+                        game_id: type,
                         account_name: accountName,
                         account_in_game_uid: inGameUid,
                     }
