@@ -1,10 +1,10 @@
 import {defineStore} from "pinia";
 import {computed, ref} from "vue";
-import {srGetAllAchievement, srGetAllBranch, srUpdateAchievement} from "@/scripts/api/sr.js";
 import {showError, showInfo, showSuccess, showWarn} from "@/scripts/utils/notification.js";
 import {useAccountStore} from "@/scripts/stores/accountStore.js";
 import {getGameInfoByGameId} from "@/scripts/api/gameInfo.js";
 import {useUserStore} from "@/scripts/stores/userStore.js";
+import {getAllAchievementByGameId, getAllBranchByGameId, updateAchievementById} from "@/scripts/api/achievement.js";
 
 export const useSrAchievementStore = defineStore(
     'srAchievementStore',
@@ -16,14 +16,16 @@ export const useSrAchievementStore = defineStore(
         const branches = ref([]);
         const isCompleteFirst = ref(false);
 
+        const gameId = "HSR";
+
         /**
          * Fetch achievement version from the backend.
          * @return {Promise<void>}
          */
         async function fetchAchievementVersion() {
             try {
-                const requestBody = {gameId: 'hsr'};
-                const resp = await getGameInfoByGameId(requestBody);
+                const requestParams = {gameId: gameId};
+                const resp = await getGameInfoByGameId(requestParams);
                 if (resp.code === 200) {
                     achievementVersion.value = resp.data.game_version;
                     showSuccess("检查HSR成就版本", resp.msg)
@@ -42,7 +44,8 @@ export const useSrAchievementStore = defineStore(
          */
         async function fetchAchievements() {
             try {
-                const response = await srGetAllAchievement();
+                const requestParams = {gameId: gameId};
+                const response = await getAllAchievementByGameId(requestParams);
                 if (response.code === 200) {
                     achievements.value = response.data;
                 } else {
@@ -74,7 +77,8 @@ export const useSrAchievementStore = defineStore(
          */
         async function fetchBranches() {
             try {
-                const response = await srGetAllBranch();
+                const requestParams = {gameId: gameId};
+                const response = await getAllBranchByGameId(requestParams);
                 if (response.code === 200) {
                     branches.value = processBranchData(response.data);
                 } else {
@@ -204,11 +208,11 @@ export const useSrAchievementStore = defineStore(
                 if (userStore.isLogin) {
                     const requestBody = {
                         uuid: uuid,
+                        game_id: gameId,
                         achievement_id: `${achievementId}`,
                         complete_status: `${complete}`
                     }
-
-                    const updateResponse = await srUpdateAchievement(requestBody);
+                    const updateResponse = await updateAchievementById(requestBody);
                     if (updateResponse.code !== 200) {
                         showInfo(updateResponse.msg)
                         return;

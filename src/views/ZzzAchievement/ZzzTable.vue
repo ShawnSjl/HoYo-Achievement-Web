@@ -5,7 +5,6 @@ import {useIsMobileStore} from "@/scripts/stores/isMobileStore";
 import CardZzzStatisticClass from "@/views/ZzzAchievement/CardZzzStatisticClass.vue";
 import {computed, ref, watch} from "vue";
 import {useZzzAchievementStore} from "@/scripts/stores/zzzAchievementsStore.js";
-import {zzzGetClassIdByName} from "@/scripts/utils/zzzAchievementClass.js";
 import {useAccountStore} from "@/scripts/stores/accountStore.js";
 import FilterZzzAchievement from "@/views/ZzzAchievement/FilterZzzAchievement.vue";
 
@@ -50,7 +49,7 @@ function getProgress(achievementId) {
 
 // 根据类别获取成就
 const achievementsInClass = computed(() => {
-  return achievementStore.achievements.filter(achievement => achievement.class_id === zzzGetClassIdByName(achievementClass.value))
+  return achievementStore.achievements.filter(achievement => achievement.category === achievementClass.value)
 });
 
 // 过滤器

@@ -45,7 +45,7 @@ function getProgress(achievementId) {
 
 // 根据类别获取成就
 const achievementsInClass = computed(() => {
-  return achievementStore.achievements.filter(achievement => achievement.class_name === achievementClass.value)
+  return achievementStore.achievements.filter(achievement => achievement.category === achievementClass.value)
 })
 
 // 过滤器

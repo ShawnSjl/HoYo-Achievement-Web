@@ -1,7 +1,6 @@
 <script setup>
 import {computed} from 'vue';
 import {useZzzAchievementStore} from "@/scripts/stores/zzzAchievementsStore";
-import {zzzGetClassIdByName} from "@/scripts/utils/zzzAchievementClass";
 import ZzzAchievementImg1 from '@/assets/zzz-image/zzz-achievement-level-1.png';
 import ZzzAchievementImg2 from '@/assets/zzz-image/zzz-achievement-level-2.png';
 import ZzzAchievementImg3 from '@/assets/zzz-image/zzz-achievement-level-3.png';
@@ -17,11 +16,6 @@ const props = defineProps({
   achievementClass: String,
 })
 
-// 获得classID
-const classId = computed(() => {
-  return zzzGetClassIdByName(props.achievementClass);
-});
-
 // 计算成就数量
 const totalNumber = computed(() => {
   return getLevel1Number.value + getLevel2Number.value + getLevel3Number.value;
@@ -31,30 +25,30 @@ const completeNumber = computed(() => {
 })
 
 const getLevel1Number = computed(() => {
-  return achievementStore.achievements.filter(achievement =>
-          achievement.reward_level === 1 && achievement.class_id === classId.value).length
-      - branchAchievementCountByClassAndLevel('ZZZ', classId.value, 1);
+  return achievementStore.achievements.filter(achievement => achievement.reward_level === 1
+          && achievement.category === props.achievementClass).length
+      - branchAchievementCountByClassAndLevel('ZZZ', props.achievementClass, 1);
 })
 const getCompleteLevel1Number = computed(() => {
-  return completeAchievementCountByClassAndLevel('ZZZ', props.uuid, classId.value, 1);
+  return completeAchievementCountByClassAndLevel('ZZZ', props.uuid, props.achievementClass, 1);
 })
 
 const getLevel2Number = computed(() => {
-  return achievementStore.achievements.filter(achievement =>
-          achievement.reward_level === 2 && achievement.class_id === classId.value).length
-      - branchAchievementCountByClassAndLevel('ZZZ', classId.value, 2);
+  return achievementStore.achievements.filter(achievement => achievement.reward_level === 2
+          && achievement.category === props.achievementClass).length
+      - branchAchievementCountByClassAndLevel('ZZZ', props.achievementClass, 2);
 })
 const getCompleteLevel2Number = computed(() => {
-  return completeAchievementCountByClassAndLevel('ZZZ', props.uuid, classId.value, 2);
+  return completeAchievementCountByClassAndLevel('ZZZ', props.uuid, props.achievementClass, 2);
 })
 
 const getLevel3Number = computed(() => {
-  return achievementStore.achievements.filter(achievement =>
-          achievement.reward_level === 3 && achievement.class_id === classId.value).length
-      - branchAchievementCountByClassAndLevel('ZZZ', classId.value, 3);
+  return achievementStore.achievements.filter(achievement => achievement.reward_level === 3
+          && achievement.category === props.achievementClass).length
+      - branchAchievementCountByClassAndLevel('ZZZ', props.achievementClass, 3);
 })
 const getCompleteLevel3Number = computed(() => {
-  return completeAchievementCountByClassAndLevel('ZZZ', props.uuid, classId.value, 3);
+  return completeAchievementCountByClassAndLevel('ZZZ', props.uuid, props.achievementClass, 3);
 })
 </script>
 
