@@ -4,10 +4,11 @@ import {
     createAccount,
     deleteAccount,
     getAccountByUserId,
+    getAccountByUuid,
     updateAccountInGameUid,
     updateAccountName
 } from "@/scripts/api/account.js";
-import {showError, showInfo, showSuccess} from "@/scripts/utils/notification.js";
+import {showError, showInfo, showSuccess, showWarn} from "@/scripts/utils/notification.js";
 import {v7 as uuidv7} from 'uuid';
 import {useUserStore} from "@/scripts/stores/userStore.js";
 import {getRecordById} from "@/scripts/api/achievement.js";
@@ -76,6 +77,59 @@ export const useAccountStore = defineStore(
             } catch (error) {
                 console.error('Fail to get accounts:', error);
                 showError("游戏账号获取错误", error)
+            }
+        }
+
+        async function fetchAccountByUuid(uuid) {
+            try {
+                // Check if the target account exists in the local data
+                const targetAccount = remoteAccounts.value.find(item => item.uuid === uuid);
+                if (!targetAccount) {
+                    showWarn('未知UUID');
+                    return;
+                }
+
+                // Get account from the backend
+                const requestParams = {accountUuid: uuid};
+                const accountResponse = await getAccountByUuid(requestParams);
+                if (accountResponse.code !== 200) {
+                    showWarn(accountResponse.msg)
+                    return;
+                }
+                showSuccess(accountResponse.msg);
+
+                // Update the account data in the local data
+                targetAccount.name = accountResponse.data.account_name;
+                targetAccount.inGameUid = accountResponse.data.account_in_game_uid;
+            } catch (error) {
+                console.error('Fail to get account by uuid:', error);
+                showError("游戏账号获取错误", error)
+            }
+        }
+
+        async function fetchAccountRecords(uuid) {
+            try {
+                // Check if the target account exists in the local data
+                const targetAccount = remoteAccounts.value.find(item => item.uuid === uuid);
+                if (!targetAccount) {
+                    showWarn('未知UUID');
+                    return;
+                }
+
+                // Get account from the backend
+                const requestParams = {uuid: uuid};
+                const recordResponse = await getRecordById(requestParams);
+                if (recordResponse.code !== 200) {
+                    showWarn(recordResponse.msg)
+                    return;
+                }
+                showSuccess(recordResponse.msg);
+
+                // Update the account data in the local data
+                targetAccount.records = recordResponse.data;
+            } catch (error) {
+                console.error('Fail to get account records:', error);
+                showError("游戏账号记录获取错误", error)
             }
         }
 
@@ -250,6 +304,8 @@ export const useAccountStore = defineStore(
             localAccounts,
             getAccounts,
             fetchAccounts,
+            fetchAccountByUuid,
+            fetchAccountRecords,
             createNew,
             updateName,
             updateInGameUid,

@@ -1,8 +1,13 @@
 import api from "@/scripts/api/request.js";
 
-// Get account by user id
+// Get accounts by user id
 export const getAccountByUserId = () => {
     return api.get('/account/get-by-user-id');
+}
+
+// Get account by uuid
+export const getAccountByUuid = (requestParams) => {
+    return api.get('/account/get-by-uuid', {params: requestParams});
 }
 
 // Create a new account for the current user

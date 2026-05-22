@@ -392,7 +392,6 @@ export const useSrAchievementStore = defineStore(
             fetchAll,
             checkAchievementVersion,
             ensureAchievementData,
-            fetchBranches,
             completeAchievement,
             handleJson,
             getAchievementBranchID,

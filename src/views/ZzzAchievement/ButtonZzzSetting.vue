@@ -5,6 +5,7 @@ import {Check, Close, Warning} from '@element-plus/icons-vue';
 import {useIsMobileStore} from "@/scripts/stores/isMobileStore";
 import {zzzExport} from "@/scripts/utils/zzzExport";
 import ButtonZzzImport from "@/views/ZzzAchievement/ButtonZzzImport.vue";
+import {useAccountStore} from "@/scripts/stores/accountStore.js";
 
 // 传入只读数据
 const props = defineProps({
@@ -13,6 +14,7 @@ const props = defineProps({
 
 // 使用Pinia作为本地缓存
 const achievementStore = useZzzAchievementStore();
+const accountStore = useAccountStore();
 const isMobileStore = useIsMobileStore();
 
 // dialog可视性
@@ -35,8 +37,9 @@ const handleClose = () => {
 
 // 处理强制刷新
 const handleFetch = async () => {
-  await achievementStore.fetchAchievements();
-  await achievementStore.fetchBranches();
+  await achievementStore.fetchAll(); // 更新成就数据
+  await accountStore.fetchAccountByUuid(props.uuid); // 更新账户信息
+  await accountStore.fetchAccountRecords(props.uuid); // 更新账户记录
 }
 </script>
 
