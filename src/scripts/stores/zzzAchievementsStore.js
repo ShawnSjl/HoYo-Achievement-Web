@@ -301,10 +301,10 @@ export const useZzzAchievementStore = defineStore(
                     // Update achievement in the backend if the user is logged in
                     if (userStore.isLogin) {
                         const requestBody = {
-                            uuid: item.uuid,
+                            uuid: uuid,
                             game_id: gameId,
                             achievement_id: `${item.achievement_id}`,
-                            complete_status: `${item.complete}`
+                            complete_status: `${complete}`
                         }
                         batch.push(requestBody);
                     }

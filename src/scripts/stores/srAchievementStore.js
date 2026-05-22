@@ -303,7 +303,7 @@ export const useSrAchievementStore = defineStore(
                             uuid: uuid,
                             game_id: gameId,
                             achievement_id: `${targetAchievement.achievement_id}`,
-                            complete_status: `${item.complete}`
+                            complete_status: `${complete}`
                         }
                         batch.push(requestBody);
                     }
