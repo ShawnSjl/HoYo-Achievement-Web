@@ -19,3 +19,8 @@ export const getRecordById = (requestParams) => {
 export const updateAchievementById = (requestBody) => {
     return api.put('/achievement/update', requestBody);
 }
+
+// Update achievement status in batch
+export const updateAchievementBatch = (requestBody) => {
+    return api.put('/achievement/update-batch', requestBody);
+}

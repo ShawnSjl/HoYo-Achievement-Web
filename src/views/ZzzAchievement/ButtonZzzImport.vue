@@ -1,9 +1,7 @@
 <script setup>
 import ExcelJS from 'exceljs';
-import {showError, showSuccess} from "@/scripts/utils/notification";
+import {showError} from "@/scripts/utils/notification";
 import {useZzzAchievementStore} from "@/scripts/stores/zzzAchievementsStore";
-import {useAccountStore} from "@/scripts/stores/accountStore.js";
-import {computed} from "vue";
 
 // 传入只读数据
 const props = defineProps({
@@ -11,18 +9,7 @@ const props = defineProps({
 })
 
 // 使用Pinia作为本地缓存
-const accountStore = useAccountStore();
 const achievementStore = useZzzAchievementStore();
-
-// 获取账户列表
-const accounts = computed(() => {
-  return accountStore.getAccounts();
-})
-
-// 获取账号成就
-const account = computed(() =>
-    accounts.value.find(account => account.uuid === props.uuid)
-);
 
 // 匹配的列名
 const requiredFields = {
@@ -77,7 +64,7 @@ async function handleFile(file) {
     const worksheet = workbook.getWorksheet(1); // 获取第一个 sheet
     const rows = [];
 
-    worksheet.eachRow((row, rowNumber) => {
+    worksheet.eachRow((row, _) => {
       rows.push(row.values.slice(1)); // 跳过 row.values[0]
     });
 
@@ -85,44 +72,8 @@ async function handleFile(file) {
     const [headers, ...body] = rows;
     const json = convertMinimalRows(headers, body);
 
-    // 记录错误次数
-    let missCount = 0;
-
-    // 更新记录
-    for (const item of json) {
-      const complete = Number(item.complete) === 1 || item.complete === '已完成' ? 1 : 0;
-
-      // 检查成就是否存在
-      const targetAchievement = achievementStore.achievementMap.get(item.achievement_id);
-      if (!targetAchievement) {
-        showError('未知成就ID', item.achievement_id);
-        missCount++;
-        if (missCount >= 10) {
-          showError('成就表格导入失败', '错误次数过多');
-          return false;
-        }
-        continue;
-      }
-
-      // 获取本地记录
-      const records = account.value.records;
-
-      // 查找目标记录
-      const targetRecord = records.find(record => record.achievement_id === item.achievement_id);
-
-      // 忽略未更改数据
-      if (targetRecord && targetRecord.complete === complete) {
-        continue;
-      }
-
-      // 防止被标记为未完成的分支成就清除了加载过的成就的状态
-      if (targetRecord && targetRecord.complete === 2 && complete === 0) {
-        continue;
-      }
-      await achievementStore.completeAchievement(props.uuid, item.achievement_id, complete);
-    }
-
-    showSuccess('成就表格导入成功')
+    // 处理数据
+    await achievementStore.handleJson(props.uuid, json);
   } catch (err) {
     showError('成就表格导入失败', err)
   }
