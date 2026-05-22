@@ -6,7 +6,6 @@ import {
     isRootUser,
     isSuperUser,
     isUserLogin,
-    login,
     logout,
     updateUsername
 } from "@/scripts/api/user.js";
@@ -24,39 +23,6 @@ export const useUserStore = defineStore(
         // 2FA variable
         const is2FAVisible = ref(false);
         const pendingRetryRequest = ref(null);
-
-        /**
-         * Async function that tries to log in the user
-         * @param username
-         * @param password
-         */
-        async function loginUser(username, password) {
-            try {
-                // Login by given credentials
-                const requestBody = {
-                    username: username,
-                    password: password
-                }
-                const loginResponse = await login(requestBody);
-                if (loginResponse.code === 200) {
-                    isLogin.value = true;
-                    user.value = loginResponse.data.username;
-                    isSuper.value = loginResponse.data.isSuper;
-                    isRoot.value = loginResponse.data.isRoot;
-
-                    // Fetch accounts from the backend
-                    const accountStore = useAccountStore();
-                    await accountStore.fetchAccounts();
-
-                    showSuccess('登录成功');
-                } else {
-                    showInfo(loginResponse.msg);
-                }
-            } catch (error) {
-                console.error('Login error:', error);
-                showError("登录错误", error)
-            }
-        }
 
         /**
          * Log out the current user
@@ -287,7 +253,6 @@ export const useUserStore = defineStore(
             isRoot,
             is2FAVisible,
             pendingRetryRequest,
-            loginUser,
             logoutUser,
             forceCheckIsUserLogin,
             isUserSuper,
