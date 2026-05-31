@@ -21,6 +21,10 @@ export const useAccountStore = defineStore(
         const remoteAccounts = ref([]);
         const localAccounts = ref([]);
 
+        // Get client id from session storage or generate a new one
+        const clientId = sessionStorage.getItem('SSE_CLIENT_ID') || Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15)
+        sessionStorage.setItem('SSE_CLIENT_ID', clientId)
+
         /**
          * Return the list of accounts. If the user is logged in, return the accounts from the backend; otherwise, return the local data.
          * @returns []
@@ -147,13 +151,16 @@ export const useAccountStore = defineStore(
 
                 // In user is login, create a new account at the backend
                 if (userStore.isLogin) {
+                    const requestParams = {
+                        clientId: clientId,
+                    }
                     const requestBody = {
                         account_uuid: uuid,
                         game_id: type,
                         account_name: accountName,
                         account_in_game_uid: inGameUid,
                     }
-                    const createResponse = await createAccount(requestBody);
+                    const createResponse = await createAccount(requestParams, requestBody);
                     if (createResponse.code !== 200) {
                         showInfo(createResponse.msg);
                         return;
@@ -194,12 +201,15 @@ export const useAccountStore = defineStore(
                 // If user is login
                 if (userStore.isLogin) {
                     // Update the account name in the backend
+                    const requestParams = {
+                        clientId: clientId,
+                    }
                     const requestBody = {
                         account_uuid: uuid,
                         account_name: newName
                     };
 
-                    const updateResponse = await updateAccountName(requestBody);
+                    const updateResponse = await updateAccountName(requestParams, requestBody);
                     if (updateResponse.code !== 200) {
                         showInfo(updateResponse.msg);
                         return;
@@ -232,12 +242,15 @@ export const useAccountStore = defineStore(
                 // If user is login
                 if (userStore.isLogin) {
                     // Update the account in game uid in the backend
+                    const requestParams = {
+                        clientId: clientId,
+                    }
                     const requestBody = {
                         account_uuid: uuid,
                         account_in_game_uid: newInGameUid
                     };
 
-                    const updateResponse = await updateAccountInGameUid(requestBody);
+                    const updateResponse = await updateAccountInGameUid(requestParams, requestBody);
                     if (updateResponse.code !== 200) {
                         showInfo(updateResponse.msg);
                         return;
@@ -269,11 +282,14 @@ export const useAccountStore = defineStore(
                 // If user is login
                 if (userStore.isLogin) {
                     // Delete the account from the backend if the user is login
+                    const requestParams = {
+                        clientId: clientId,
+                    }
                     const requestBody = {
                         account_uuid: uuid
                     };
 
-                    const deleteResponse = await deleteAccount(requestBody);
+                    const deleteResponse = await deleteAccount(requestParams, requestBody);
                     if (deleteResponse.code !== 200) {
                         showInfo(deleteResponse.msg);
                         return;

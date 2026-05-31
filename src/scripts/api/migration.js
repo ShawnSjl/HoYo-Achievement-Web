@@ -6,6 +6,6 @@ export const getAllMigrationRecords = () => {
 }
 
 // Load local data in server
-export const loadLocalData = () => {
-    return api.post('/migration/load-local')
+export const loadLocalData = (params) => {
+    return api.post('/migration/load-local', null, {params: params})
 }

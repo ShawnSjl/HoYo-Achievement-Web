@@ -1,8 +1,8 @@
 import api from "@/scripts/api/request.js";
 
 // User login
-export const login = (credentials) => {
-    return api.post("/user/login", credentials);
+export const login = (body) => {
+    return api.post("/user/login", body);
 };
 
 // Check if the current user is logged in
@@ -31,36 +31,36 @@ export const getAllUsers = () => {
 }
 
 // Create a new user
-export const createUser = (request) => {
-    return api.post("/user/create", request);
+export const createUser = (body) => {
+    return api.post("/user/create", body);
 };
 
 // Update the user's username
-export const updateUsername = (request) => {
-    return api.put("/user/update-username", request);
+export const updateUsername = (params, body) => {
+    return api.put("/user/update-username", body, {params: params});
 }
 
 // Change the user's password
-export const changePassword = (request) => {
-    return api.put("/user/update-password", request);
+export const changePassword = (body) => {
+    return api.put("/user/update-password", body);
 }
 
 // Update the user's status
-export const updateUserStatus = (request) => {
-    return api.put("/user/update-status", request);
+export const updateUserStatus = (body) => {
+    return api.put("/user/update-status", body);
 }
 
 // Update the user's role; Should only be called by admin or root
-export const updateUserRole = (request) => {
-    return api.put("/user/update-role", request);
+export const updateUserRole = (body) => {
+    return api.put("/user/update-role", body);
 }
 
 // Delete the user
-export const deleteCurrentUser = () => {
-    return api.delete("/user/delete");
+export const deleteCurrentUser = (params) => {
+    return api.delete("/user/delete", {params: params});
 }
 
 // Do the second authentication
-export const secondAuth = (request) => {
-    return api.post("/user/second-auth", request);
+export const secondAuth = (body) => {
+    return api.post("/user/second-auth", body);
 }

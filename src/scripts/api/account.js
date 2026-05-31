@@ -6,28 +6,26 @@ export const getAccountByUserId = () => {
 }
 
 // Get account by uuid
-export const getAccountByUuid = (requestParams) => {
-    return api.get('/account/get-by-uuid', {params: requestParams});
+export const getAccountByUuid = (params) => {
+    return api.get('/account/get-by-uuid', {params: params});
 }
 
 // Create a new account for the current user
-export const createAccount = (request) => {
-    return api.post('/account/create', request);
+export const createAccount = (params, body) => {
+    return api.post('/account/create', body, {params: params});
 }
 
 // Update account name
-export const updateAccountName = (request) => {
-    return api.put('/account/update-name', request);
+export const updateAccountName = (params, body) => {
+    return api.put('/account/update-name', body, {params: params});
 }
 
 // Update account in-game uid
-export const updateAccountInGameUid = (request) => {
-    return api.put('/account/update-in-game-uid', request);
+export const updateAccountInGameUid = (params, body) => {
+    return api.put('/account/update-in-game-uid', body, {params: params});
 }
 
 // Delete an account
-export const deleteAccount = (request) => {
-    return api.delete('/account/delete', {
-        data: request
-    });
+export const deleteAccount = (params, body) => {
+    return api.delete('/account/delete', {params: params, data: body});
 }

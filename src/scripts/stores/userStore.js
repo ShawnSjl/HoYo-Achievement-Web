@@ -24,6 +24,10 @@ export const useUserStore = defineStore(
         const is2FAVisible = ref(false);
         const pendingRetryRequest = ref(null);
 
+        // Get client id from session storage or generate a new one
+        const clientId = sessionStorage.getItem('SSE_CLIENT_ID') || Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15)
+        sessionStorage.setItem('SSE_CLIENT_ID', clientId)
+
         /**
          * Log out the current user
          */
@@ -162,7 +166,13 @@ export const useUserStore = defineStore(
 
             // Update the username in the backend
             try {
-                const updateResponse = await updateUsername({username: newUsername});
+                const requestParams = {
+                    clientId: clientId,
+                }
+                const requestBody = {
+                    username: newUsername,
+                }
+                const updateResponse = await updateUsername(requestParams, requestBody);
                 if (updateResponse.code === 200) {
                     user.value = newUsername;
                     showInfo(updateResponse.msg);
@@ -216,7 +226,10 @@ export const useUserStore = defineStore(
             }
 
             try {
-                const deleteResponse = await deleteCurrentUser();
+                const requestParams = {
+                    clientId: clientId,
+                }
+                const deleteResponse = await deleteCurrentUser(requestParams);
                 if (deleteResponse.code === 200) {
                     await logoutUser();
                     showSuccess(deleteResponse.msg);
