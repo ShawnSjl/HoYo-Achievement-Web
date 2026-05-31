@@ -3,9 +3,6 @@ import ZzzView from "@/views/ZzzAchievement/ZzzView.vue";
 import HomeView from "@/views/Home/HomeView.vue"
 import SrView from "@/views/SrAchievement/SrView.vue";
 import {useAccountStore} from "@/scripts/stores/accountStore.js";
-import {useSrAchievementStore} from "@/scripts/stores/srAchievementStore.js";
-import {useZzzAchievementStore} from "@/scripts/stores/zzzAchievementsStore.js";
-import {useServerUpdateLogStore} from "@/scripts/stores/serverUpdateLogStore.js";
 
 const routes = [
     {
@@ -17,19 +14,6 @@ const routes = [
             color: '#FFFFFF'
         },
         beforeEnter: async (to, from, next) => {
-            const srAchievementStore = useSrAchievementStore();
-            const zzzAchievementStore = useZzzAchievementStore();
-            const serverUpdateLogStore = useServerUpdateLogStore();
-
-            // Ensure SR's data are loaded
-            await srAchievementStore.checkAchievementVersion();
-
-            // Ensure ZZZ's data are loaded
-            await zzzAchievementStore.checkAchievementVersion();
-
-            // Fetch the server update log
-            await serverUpdateLogStore.ensureServerUpdateLog();
-
             next();
         }
     },
