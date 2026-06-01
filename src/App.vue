@@ -1,12 +1,14 @@
 <script setup>
 import {useRoute} from "vue-router";
-import {onMounted, onUnmounted} from "vue";
+import {onMounted, onUnmounted, watch} from "vue";
 import {SseSyncClient} from "@/scripts/utils/sseSyncClient.js";
 import {useSrAchievementStore} from "@/scripts/stores/srAchievementStore.js";
 import {useZzzAchievementStore} from "@/scripts/stores/zzzAchievementsStore.js";
 import {useServerUpdateLogStore} from "@/scripts/stores/serverUpdateLogStore.js";
+import {useUserStore} from "@/scripts/stores/userStore.js";
 
 const route = useRoute()
+const userStore = useUserStore();
 
 // Get client id from session storage or generate a new one
 const clientId = sessionStorage.getItem('SSE_CLIENT_ID') || Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15)
@@ -33,7 +35,13 @@ const handleUpdate = (payload) => {
   console.log('Received update:', payload);
 }
 
-onMounted(() => {
+const rebuildSseChannel = () => {
+  if (sseClient) {
+    console.log('Rebuilding SSE channel...');
+    sseClient.destroy();
+    sseClient = null;
+  }
+
   sseClient = new SseSyncClient({
     clientId: clientId,
     onSyncNeeded: handleSync,
@@ -41,6 +49,23 @@ onMounted(() => {
   });
 
   sseClient.start();
+}
+
+// rebuild sseClient when user login/logout
+watch(
+    () => userStore.isLogin,
+    (newStatus, oldStatus) => {
+      if (newStatus !== oldStatus) {
+        console.log('User login status changed, rebuilding SSE channel...');
+        rebuildSseChannel();
+      }
+    },
+    {immediate: false}
+);
+
+onMounted(() => {
+  console.log('Website loaded, starting SSE channel...')
+  rebuildSseChannel();
 })
 
 onUnmounted(() => {
