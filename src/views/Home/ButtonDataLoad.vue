@@ -5,6 +5,7 @@ import {showError, showInfo, showSuccess} from "@/scripts/utils/notification.js"
 import {useServerUpdateLogStore} from "@/scripts/stores/serverUpdateLogStore.js";
 import {useZzzAchievementStore} from "@/scripts/stores/zzzAchievementsStore.js";
 import {useSrAchievementStore} from "@/scripts/stores/srAchievementStore.js";
+import {getClientId} from "@/scripts/utils/clientId.js";
 
 // 使用Pinia作为本地缓存
 const serverUpdateLogStore = useServerUpdateLogStore();
@@ -20,10 +21,6 @@ const isDisabled = ref(false);
 const buttonText = ref('加载本地数据');
 const countdown = ref(60);
 
-// Get client id from session storage or generate a new one
-const clientId = sessionStorage.getItem('SSE_CLIENT_ID') || Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15)
-sessionStorage.setItem('SSE_CLIENT_ID', clientId)
-
 // 处理local数据的加载
 const handleLocalLoad = async () => {
   isLoading.value = true;
@@ -31,7 +28,7 @@ const handleLocalLoad = async () => {
 
   try {
     const requestParams = {
-      clientId: clientId,
+      clientId: getClientId(),
     }
     const loadResponse = await loadLocalData(requestParams);
     if (loadResponse.code !== 200) {

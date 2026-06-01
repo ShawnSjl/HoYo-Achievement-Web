@@ -12,6 +12,7 @@ import {showError, showInfo, showSuccess, showWarn} from "@/scripts/utils/notifi
 import {v7 as uuidv7} from 'uuid';
 import {useUserStore} from "@/scripts/stores/userStore.js";
 import {getRecordById} from "@/scripts/api/achievement.js";
+import {getClientId} from "@/scripts/utils/clientId.js";
 
 export const useAccountStore = defineStore(
     'accountStore',
@@ -20,11 +21,7 @@ export const useAccountStore = defineStore(
 
         const remoteAccounts = ref([]);
         const localAccounts = ref([]);
-
-        // Get client id from session storage or generate a new one
-        const clientId = sessionStorage.getItem('SSE_CLIENT_ID') || Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15)
-        sessionStorage.setItem('SSE_CLIENT_ID', clientId)
-
+        
         /**
          * Return the list of accounts. If the user is logged in, return the accounts from the backend; otherwise, return the local data.
          * @returns []
@@ -152,7 +149,7 @@ export const useAccountStore = defineStore(
                 // In user is login, create a new account at the backend
                 if (userStore.isLogin) {
                     const requestParams = {
-                        clientId: clientId,
+                        clientId: getClientId(),
                     }
                     const requestBody = {
                         account_uuid: uuid,
@@ -202,7 +199,7 @@ export const useAccountStore = defineStore(
                 if (userStore.isLogin) {
                     // Update the account name in the backend
                     const requestParams = {
-                        clientId: clientId,
+                        clientId: getClientId(),
                     }
                     const requestBody = {
                         account_uuid: uuid,
@@ -243,7 +240,7 @@ export const useAccountStore = defineStore(
                 if (userStore.isLogin) {
                     // Update the account in game uid in the backend
                     const requestParams = {
-                        clientId: clientId,
+                        clientId: getClientId(),
                     }
                     const requestBody = {
                         account_uuid: uuid,
@@ -283,7 +280,7 @@ export const useAccountStore = defineStore(
                 if (userStore.isLogin) {
                     // Delete the account from the backend if the user is login
                     const requestParams = {
-                        clientId: clientId,
+                        clientId: getClientId(),
                     }
                     const requestBody = {
                         account_uuid: uuid

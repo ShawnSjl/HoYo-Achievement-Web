@@ -10,6 +10,7 @@ import {
     updateAchievementBatch,
     updateAchievementById
 } from "@/scripts/api/achievement.js";
+import {getClientId} from "@/scripts/utils/clientId.js";
 
 export const useZzzAchievementStore = defineStore(
     'zzzAchievementStore',
@@ -24,10 +25,6 @@ export const useZzzAchievementStore = defineStore(
         const isCompleteFirst = ref(false);
 
         const gameId = "ZZZ";
-
-        // Get client id from session storage or generate a new one
-        const clientId = sessionStorage.getItem('SSE_CLIENT_ID') || Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15)
-        sessionStorage.setItem('SSE_CLIENT_ID', clientId)
 
         /**
          * Fetch achievement version from the backend.
@@ -217,7 +214,7 @@ export const useZzzAchievementStore = defineStore(
                 // Update achievement in the backend if the user is logged in
                 if (userStore.isLogin) {
                     const requestParams = {
-                        clientId: clientId,
+                        clientId: getClientId(),
                     }
                     const requestBody = {
                         uuid: uuid,
@@ -354,7 +351,7 @@ export const useZzzAchievementStore = defineStore(
                 // Update records in the backend
                 if (userStore.isLogin) {
                     const requestParams = {
-                        clientId: clientId,
+                        clientId: getClientId(),
                     }
                     const updateResponse = await updateAchievementBatch(requestParams, batch);
                     if (updateResponse.code !== 200) {

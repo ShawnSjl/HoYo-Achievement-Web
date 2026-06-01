@@ -6,21 +6,17 @@ import {useSrAchievementStore} from "@/scripts/stores/srAchievementStore.js";
 import {useZzzAchievementStore} from "@/scripts/stores/zzzAchievementsStore.js";
 import {useServerUpdateLogStore} from "@/scripts/stores/serverUpdateLogStore.js";
 import {useUserStore} from "@/scripts/stores/userStore.js";
+import {getClientId} from "@/scripts/utils/clientId.js";
 
 const route = useRoute()
 const userStore = useUserStore();
-
-// Get client id from session storage or generate a new one
-const clientId = sessionStorage.getItem('SSE_CLIENT_ID') || Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15)
-sessionStorage.setItem('SSE_CLIENT_ID', clientId)
+const srAchievementStore = useSrAchievementStore();
+const zzzAchievementStore = useZzzAchievementStore();
+const serverUpdateLogStore = useServerUpdateLogStore();
 
 let sseClient = null
 
 const handleSync = async () => {
-  const srAchievementStore = useSrAchievementStore();
-  const zzzAchievementStore = useZzzAchievementStore();
-  const serverUpdateLogStore = useServerUpdateLogStore();
-
   // Ensure SR's data are loaded
   await srAchievementStore.checkAchievementVersion();
 
@@ -43,7 +39,7 @@ const rebuildSseChannel = () => {
   }
 
   sseClient = new SseSyncClient({
-    clientId: clientId,
+    clientId: getClientId(),
     onSyncNeeded: handleSync,
     onMessageReceived: handleUpdate,
   });

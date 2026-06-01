@@ -10,6 +10,7 @@ import {
     updateAchievementBatch,
     updateAchievementById
 } from "@/scripts/api/achievement.js";
+import {getClientId} from "@/scripts/utils/clientId.js";
 
 export const useSrAchievementStore = defineStore(
     'srAchievementStore',
@@ -23,10 +24,6 @@ export const useSrAchievementStore = defineStore(
         const isCompleteFirst = ref(false);
 
         const gameId = "HSR";
-
-        // Get client id from session storage or generate a new one
-        const clientId = sessionStorage.getItem('SSE_CLIENT_ID') || Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15)
-        sessionStorage.setItem('SSE_CLIENT_ID', clientId)
 
         /**
          * Fetch achievement version from the backend.
@@ -216,7 +213,7 @@ export const useSrAchievementStore = defineStore(
                 // Update achievement in the backend if the user is logged in
                 if (userStore.isLogin) {
                     const requestParams = {
-                        clientId: clientId,
+                        clientId: getClientId(),
                     }
                     const requestBody = {
                         uuid: uuid,
@@ -354,7 +351,7 @@ export const useSrAchievementStore = defineStore(
                 if (userStore.isLogin) {
                     // Update records in the backend
                     const requestParams = {
-                        clientId: clientId,
+                        clientId: getClientId(),
                     }
                     const updateResponse = await updateAchievementBatch(requestParams, batch);
                     if (updateResponse.code !== 200) {

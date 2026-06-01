@@ -11,6 +11,7 @@ import {
 } from "@/scripts/api/user.js";
 import {showError, showInfo, showSuccess} from "@/scripts/utils/notification.js";
 import {useAccountStore} from "@/scripts/stores/accountStore.js";
+import {getClientId} from "@/scripts/utils/clientId.js";
 
 export const useUserStore = defineStore(
     "userStore",
@@ -23,10 +24,6 @@ export const useUserStore = defineStore(
         // 2FA variable
         const is2FAVisible = ref(false);
         const pendingRetryRequest = ref(null);
-
-        // Get client id from session storage or generate a new one
-        const clientId = sessionStorage.getItem('SSE_CLIENT_ID') || Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15)
-        sessionStorage.setItem('SSE_CLIENT_ID', clientId)
 
         /**
          * Log out the current user
@@ -167,7 +164,7 @@ export const useUserStore = defineStore(
             // Update the username in the backend
             try {
                 const requestParams = {
-                    clientId: clientId,
+                    clientId: getClientId(),
                 }
                 const requestBody = {
                     username: newUsername,
@@ -227,7 +224,7 @@ export const useUserStore = defineStore(
 
             try {
                 const requestParams = {
-                    clientId: clientId,
+                    clientId: getClientId(),
                 }
                 const deleteResponse = await deleteCurrentUser(requestParams);
                 if (deleteResponse.code === 200) {
