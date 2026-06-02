@@ -49,7 +49,7 @@ export const useAccountStore = defineStore(
                     showInfo(accountsResponse.msg)
                     return;
                 }
-                showSuccess(accountsResponse.msg);
+                console.log(accountsResponse.msg);
 
                 // For each account, get achievements from the backend
                 for (const account of accountsResponse.data) {

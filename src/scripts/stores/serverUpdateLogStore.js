@@ -38,7 +38,10 @@ export const useServerUpdateLogStore = defineStore(
                 const requestBody = {logID: lastestLog.value.id}
                 const newLogsResp = await getLatestServerUpdateLog(requestBody);
                 if (newLogsResp.code === 200) {
-                    if (newLogsResp.data.length === 0) return;
+                    if (newLogsResp.data.length === 0) {
+                        showInfo("历史更新信息已是最新")
+                        return;
+                    }
                     updateLog.value.unshift(...newLogsResp.data.sort((a, b) => b.id - a.id));
                     lastestLog.value = newLogsResp.data[0];
                     showSuccess(newLogsResp.msg)

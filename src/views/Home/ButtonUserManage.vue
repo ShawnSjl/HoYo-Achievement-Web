@@ -1,6 +1,6 @@
 <script setup>
 import {computed, onMounted, onUnmounted, ref, watch} from "vue";
-import {showError, showInfo, showSuccess} from "@/scripts/utils/notification.js";
+import {showError, showInfo} from "@/scripts/utils/notification.js";
 import {getAllUsers} from "@/scripts/api/user.js";
 import ButtonUserAdd from "@/views/Home/ButtonUserAdd.vue";
 import {useUserStore} from "@/scripts/stores/userStore.js";
@@ -49,7 +49,7 @@ const fetchAllUsers = async () => {
       return;
     }
     allUsers.value = response.data;
-    showSuccess(response.msg);
+    console.log(response.msg);
   } catch (e) {
     showError('获取用户列表失败', e);
   }
