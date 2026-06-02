@@ -3,6 +3,7 @@ import {ref} from 'vue';
 import {
     changePassword,
     deleteCurrentUser,
+    getCurrentUserInfo,
     isRootUser,
     isSuperUser,
     isUserLogin,
@@ -183,6 +184,28 @@ export const useUserStore = defineStore(
         }
 
         /**
+         * Fetch user info
+         * @return {Promise<void>}
+         */
+        async function fetchUserInfo() {
+            if (!isLogin.value) return;
+
+            try {
+                const infoResponse = await getCurrentUserInfo();
+                if (infoResponse.code === 200) {
+                    user.value = infoResponse.data.username;
+                    isSuper.value = infoResponse.data.isSuper;
+                    isRoot.value = infoResponse.data.isRoot;
+                } else {
+                    showError(infoResponse.msg);
+                }
+            } catch (error) {
+                console.error("Fail to fetch user info:", error);
+                showError("同步用户信息出错", error)
+            }
+        }
+
+        /**
          * Update the username of the current user.
          * @param newUsername
          * @returns {Promise<void>}
@@ -303,6 +326,7 @@ export const useUserStore = defineStore(
             isUserRoot,
             forceCheckIsUserRoot,
             getUserName,
+            fetchUserInfo,
             updateUserUsername,
             updateUserPassword,
             deleteUser,

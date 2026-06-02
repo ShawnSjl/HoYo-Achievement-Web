@@ -60,7 +60,7 @@ export class SseSyncClient {
         this.sseSource.addEventListener('data_changed', (event) => {
             console.log('SSE data changed:', event.data);
             if (this.onMessageReceived) {
-                this.onMessageReceived(event.data);
+                this.onMessageReceived(JSON.parse(event.data));
             }
         })
 

@@ -7,12 +7,14 @@ import {useZzzAchievementStore} from "@/scripts/stores/zzzAchievementsStore.js";
 import {useServerUpdateLogStore} from "@/scripts/stores/serverUpdateLogStore.js";
 import {useUserStore} from "@/scripts/stores/userStore.js";
 import {getClientId} from "@/scripts/utils/clientId.js";
+import {useAccountStore} from "@/scripts/stores/accountStore.js";
 
 const route = useRoute()
 const userStore = useUserStore();
 const srAchievementStore = useSrAchievementStore();
 const zzzAchievementStore = useZzzAchievementStore();
 const serverUpdateLogStore = useServerUpdateLogStore();
+const accountStore = useAccountStore();
 
 let sseClient = null
 
@@ -25,10 +27,63 @@ const handleSync = async () => {
 
   // Fetch the server update log
   await serverUpdateLogStore.ensureServerUpdateLog();
+
+  if (userStore.isLogin) {
+    // Fetch user's data
+    await userStore.fetchUserInfo();
+
+    // Fetch user's achievements
+    await accountStore.fetchAccounts();
+  }
 }
 
-const handleUpdate = (payload) => {
+const handleUpdate = async (payload) => {
   console.log('Received update:', payload);
+  switch (payload.entity_type) {
+    case 'USER':
+      switch (payload.action) {
+        case 'UPDATE':
+          await userStore.fetchUserInfo();
+          break;
+        case 'DELETE':
+          await userStore.logoutUser();
+          break;
+        default:
+          console.error('Unknown action:', payload.action);
+          break;
+      }
+      break;
+
+    case 'ACCOUNT':
+      switch (payload.action) {
+        case 'INSERT':
+          await accountStore.fetchNewAccountByUuid(payload.entity_id);
+          break;
+        case 'UPDATE':
+          await accountStore.fetchAccountByUuid(payload.entity_id);
+          break;
+        case 'DELETE':
+          // TODO: handle account deletion, if account is on front page and be deleted, need to go back to home page
+          // await accountStore.fetchAccounts();
+          break;
+        default:
+          console.error('Unknown action:', payload.action);
+          break;
+      }
+      break;
+
+    case 'ACCOUNT_RECORD':
+      await accountStore.fetchAccountRecords(payload.entity_id.split("&")[0]);
+      break;
+
+    case 'ACHIEVEMENT':
+      await srAchievementStore.fetchAll();
+      await zzzAchievementStore.fetchAll();
+      break;
+
+    default:
+      console.error('Unknown entity type:', payload.entity_type);
+  }
 }
 
 const rebuildSseChannel = () => {

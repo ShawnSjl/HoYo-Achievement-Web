@@ -4,6 +4,8 @@ import ButtonServerInfoList from "@/views/Home/ButtonServerInfoList.vue";
 
 // 使用Pinia作为本地缓存
 const serverUpdateLogStore = useServerUpdateLogStore();
+
+// FIXME: fix error when page is loading first time
 </script>
 
 <template>

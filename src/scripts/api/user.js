@@ -25,6 +25,11 @@ export const isRootUser = () => {
     return api.get("/user/is-root");
 }
 
+// Get current user info
+export const getCurrentUserInfo = () => {
+    return api.get("/user/info");
+}
+
 // Get all users
 export const getAllUsers = () => {
     return api.get("/user/all");

@@ -21,7 +21,7 @@ export const useAccountStore = defineStore(
 
         const remoteAccounts = ref([]);
         const localAccounts = ref([]);
-        
+
         /**
          * Return the list of accounts. If the user is logged in, return the accounts from the backend; otherwise, return the local data.
          * @returns []
@@ -102,6 +102,32 @@ export const useAccountStore = defineStore(
                 // Update the account data in the local data
                 targetAccount.name = accountResponse.data.account_name;
                 targetAccount.inGameUid = accountResponse.data.account_in_game_uid;
+            } catch (error) {
+                console.error('Fail to get account by uuid:', error);
+                showError("游戏账号获取错误", error)
+            }
+        }
+
+        async function fetchNewAccountByUuid(uuid) {
+            try {
+                // Get account from the backend
+                const requestParams = {accountUuid: uuid};
+                const accountResponse = await getAccountByUuid(requestParams);
+                if (accountResponse.code !== 200) {
+                    showWarn(accountResponse.msg)
+                    return;
+                }
+                showSuccess(accountResponse.msg);
+
+                // Create a data structure for the account
+                const accountData = {
+                    uuid: accountResponse.data.account_uuid,
+                    type: accountResponse.data.game_id,
+                    name: accountResponse.data.account_name,
+                    inGameUid: accountResponse.data.account_in_game_uid,
+                    records: [],
+                }
+                remoteAccounts.value.push(accountData);
             } catch (error) {
                 console.error('Fail to get account by uuid:', error);
                 showError("游戏账号获取错误", error)
@@ -318,6 +344,7 @@ export const useAccountStore = defineStore(
             getAccounts,
             fetchAccounts,
             fetchAccountByUuid,
+            fetchNewAccountByUuid,
             fetchAccountRecords,
             createNew,
             updateName,
