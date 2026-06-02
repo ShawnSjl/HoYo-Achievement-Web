@@ -134,7 +134,7 @@ export const useAccountStore = defineStore(
             }
         }
 
-        async function fetchAccountRecords(uuid) {
+        async function fetchAccountRecords(uuid, active = false) {
             try {
                 // Check if the target account exists in the local data
                 const targetAccount = remoteAccounts.value.find(item => item.uuid === uuid);
@@ -150,7 +150,9 @@ export const useAccountStore = defineStore(
                     showWarn(recordResponse.msg)
                     return;
                 }
-                showSuccess(recordResponse.msg);
+                if (active) {
+                    showSuccess(recordResponse.msg);
+                }
 
                 // Update the account data in the local data
                 targetAccount.records = recordResponse.data;
@@ -296,6 +298,15 @@ export const useAccountStore = defineStore(
         }
 
         /**
+         * Delete a remote account in locally.
+         * @param uuid
+         */
+        function deleteAccountByRemoteUpdate(uuid) {
+            const index = remoteAccounts.value.findIndex(item => item.uuid === uuid);
+            remoteAccounts.value.splice(index, 1);
+        }
+
+        /**
          * Delete the target account; if the user is login, delete it at the backend.
          * @param uuid
          * @returns {Promise<void>}
@@ -349,6 +360,7 @@ export const useAccountStore = defineStore(
             createNew,
             updateName,
             updateInGameUid,
+            deleteAccountByRemoteUpdate,
             deleteTargetAccount,
             removeRemoteAccount
         };

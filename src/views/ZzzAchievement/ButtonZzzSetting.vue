@@ -39,7 +39,7 @@ const handleClose = () => {
 const handleFetch = async () => {
   await achievementStore.fetchAll(); // 更新成就数据
   await accountStore.fetchAccountByUuid(props.uuid); // 更新账户信息
-  await accountStore.fetchAccountRecords(props.uuid); // 更新账户记录
+  await accountStore.fetchAccountRecords(props.uuid, true); // 更新账户记录
 }
 </script>
 
