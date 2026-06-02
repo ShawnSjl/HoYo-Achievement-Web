@@ -36,7 +36,6 @@ export const useZzzAchievementStore = defineStore(
                 const resp = await getGameInfoByGameId(requestParams);
                 if (resp.code === 200) {
                     achievementVersion.value = resp.data.game_version;
-                    showSuccess("检查ZZZ成就版本", resp.msg)
                 } else {
                     showWarn(resp.msg)
                 }

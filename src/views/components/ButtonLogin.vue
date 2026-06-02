@@ -56,8 +56,7 @@ const handleLogin = async () => {
     // 等待页面卸载掉
     await nextTick();
 
-    // 获取用户的账号
-    await accountStore.fetchAccounts();
+    // 这里不需要加载用户的账号，App.vue中sse建立连接时会加载
   }
 }
 </script>
