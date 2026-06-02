@@ -1,8 +1,7 @@
 <script setup>
 import {nextTick, reactive, ref} from 'vue';
 import {useUserStore} from '@/scripts/stores/userStore.js';
-import {showError, showSuccess, showWarn} from "@/scripts/utils/notification.js";
-import {login} from "@/scripts/api/user.js";
+import {showError} from "@/scripts/utils/notification.js";
 import router from "@/scripts/router/index.js";
 import {useAccountStore} from "@/scripts/stores/accountStore.js";
 
@@ -47,36 +46,18 @@ const submitForm = () => {
   })
 }
 const handleLogin = async () => {
-  try {
-    // Login by given credentials
-    const requestBody = {
-      username: loginForm.username,
-      password: loginForm.password
-    }
-    const loginResponse = await login(requestBody);
-    if (loginResponse.code === 200) {
-      // 返回主页面
-      await router.replace({
-        path: '/'
-      });
+  const loginResult = await userStore.loginUser(loginForm.username, loginForm.password);
+  if (loginResult) {
+    // 返回主页面
+    await router.replace({
+      path: '/'
+    });
 
-      // 等待页面卸载掉
-      await nextTick();
+    // 等待页面卸载掉
+    await nextTick();
 
-      userStore.isLogin = true;
-      userStore.user = loginResponse.data.username;
-      userStore.isSuper = loginResponse.data.isSuper;
-      userStore.isRoot = loginResponse.data.isRoot;
-
-      await accountStore.fetchAccounts();
-
-      showSuccess('登录成功');
-    } else {
-      showWarn(loginResponse.msg);
-    }
-  } catch (error) {
-    console.error('Login error:', error);
-    showError("登录错误", error);
+    // 获取用户的账号
+    await accountStore.fetchAccounts();
   }
 }
 </script>

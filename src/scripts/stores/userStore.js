@@ -6,10 +6,11 @@ import {
     isRootUser,
     isSuperUser,
     isUserLogin,
+    login,
     logout,
     updateUsername
 } from "@/scripts/api/user.js";
-import {showError, showInfo, showSuccess} from "@/scripts/utils/notification.js";
+import {showError, showInfo, showSuccess, showWarn} from "@/scripts/utils/notification.js";
 import {useAccountStore} from "@/scripts/stores/accountStore.js";
 import {getClientId} from "@/scripts/utils/clientId.js";
 
@@ -24,6 +25,37 @@ export const useUserStore = defineStore(
         // 2FA variable
         const is2FAVisible = ref(false);
         const pendingRetryRequest = ref(null);
+
+        /**
+         * Login user
+         * @param username
+         * @param password
+         * @return {Promise<boolean>}
+         */
+        async function loginUser(username, password) {
+            try {
+                const requestBody = {
+                    username: username,
+                    password: password,
+                }
+                const loginResponse = await login(requestBody);
+                if (loginResponse.code === 200) {
+                    isLogin.value = true;
+                    user.value = loginResponse.data.username;
+                    isSuper.value = loginResponse.data.isSuper;
+                    isRoot.value = loginResponse.data.isRoot;
+
+                    showSuccess('登录成功');
+                    return true;
+                } else {
+                    showWarn(loginResponse.msg);
+                }
+            } catch (error) {
+                console.log('Login error:', error);
+                showError("登录错误", error);
+            }
+            return false;
+        }
 
         /**
          * Log out the current user
@@ -263,6 +295,7 @@ export const useUserStore = defineStore(
             isRoot,
             is2FAVisible,
             pendingRetryRequest,
+            loginUser,
             logoutUser,
             forceCheckIsUserLogin,
             isUserSuper,
