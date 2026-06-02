@@ -40,9 +40,6 @@ export const useAccountStore = defineStore(
          */
         async function fetchAccounts() {
             try {
-                // Clean the current data first
-                remoteAccounts.value = [];
-
                 // Get accounts from the backend
                 const accountsResponse = await getAccountByUserId();
                 if (accountsResponse.code !== 200) {
@@ -63,17 +60,27 @@ export const useAccountStore = defineStore(
                         continue;
                     }
 
-                    // Create a data structure for the account
-                    const accountData = {
-                        uuid: account.account_uuid,
-                        type: account.game_id,
-                        name: account.account_name,
-                        inGameUid: account.account_in_game_uid,
-                        records: recordResponse.data,
-                    }
+                    // Find that target account in remoteAccounts
+                    const targetAccount = remoteAccounts.value.find(item => item.uuid === account.account_uuid);
 
-                    // Push the account to the list
-                    remoteAccounts.value.push(accountData);
+                    // If target account does not exist, add new one; otherwise, update the account data
+                    if (!targetAccount) {
+                        // Create a data structure for the account
+                        const accountData = {
+                            uuid: account.account_uuid,
+                            type: account.game_id,
+                            name: account.account_name,
+                            inGameUid: account.account_in_game_uid,
+                            records: recordResponse.data,
+                        }
+
+                        // Push the account to the list
+                        remoteAccounts.value.push(accountData);
+                    } else {
+                        targetAccount.name = account.account_name;
+                        targetAccount.inGameUid = account.account_in_game_uid;
+                        targetAccount.records = recordResponse.data;
+                    }
                 }
             } catch (error) {
                 console.error('Fail to get accounts:', error);
