@@ -1,11 +1,14 @@
 <script setup>
 import {useServerUpdateLogStore} from "@/scripts/stores/serverUpdateLogStore.js";
 import ButtonServerInfoList from "@/views/Home/ButtonServerInfoList.vue";
+import {computed} from "vue";
 
 // 使用Pinia作为本地缓存
 const serverUpdateLogStore = useServerUpdateLogStore();
 
-// FIXME: fix error when page is loading first time
+const latestLog = computed(() => {
+  return serverUpdateLogStore.getLatestLog();
+})
 </script>
 
 <template>
@@ -20,9 +23,9 @@ const serverUpdateLogStore = useServerUpdateLogStore();
 
       <div>
         <b>版本：</b>
-        <p>v{{ serverUpdateLogStore.lastestLog.server_version }}</p>
+        <p>v{{ latestLog.server_version }}</p>
         <b>更新内容</b>
-        <p class="content">{{ serverUpdateLogStore.lastestLog.update_description }}</p>
+        <p class="content">{{ latestLog.update_description }}</p>
       </div>
     </el-card>
   </div>

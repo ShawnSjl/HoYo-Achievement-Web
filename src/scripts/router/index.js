@@ -3,6 +3,7 @@ import ZzzView from "@/views/ZzzAchievement/ZzzView.vue";
 import HomeView from "@/views/Home/HomeView.vue"
 import SrView from "@/views/SrAchievement/SrView.vue";
 import {useAccountStore} from "@/scripts/stores/accountStore.js";
+import {useServerUpdateLogStore} from "@/scripts/stores/serverUpdateLogStore.js";
 
 const routes = [
     {
@@ -14,6 +15,9 @@ const routes = [
             color: '#FFFFFF'
         },
         beforeEnter: async (to, from, next) => {
+            const serverUpdateLogStore = useServerUpdateLogStore();
+            // Fetch the server info
+            await serverUpdateLogStore.ensureServerUpdateLog();
             next();
         }
     },

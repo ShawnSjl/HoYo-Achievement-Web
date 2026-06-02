@@ -7,7 +7,15 @@ export const useServerUpdateLogStore = defineStore(
     'serverInfoStore',
     () => {
         const updateLog = ref([]);
-        const lastestLog = ref(null);
+
+        /**
+         * Get the latest server update log.
+         * @return {*|null}
+         */
+        function getLatestLog() {
+            if (updateLog.value.length === 0) return null;
+            return updateLog.value[0];
+        }
 
         /**
          * Fetch all server update log from the backend.
@@ -18,7 +26,6 @@ export const useServerUpdateLogStore = defineStore(
                 const allLogResp = await getAllServerUpdateLog();
                 if (allLogResp.code === 200) {
                     updateLog.value = allLogResp.data.sort((a, b) => b.id - a.id);
-                    lastestLog.value = updateLog.value[0];
                     showSuccess(allLogResp.msg)
                 } else {
                     showInfo(allLogResp.msg);
@@ -31,19 +38,21 @@ export const useServerUpdateLogStore = defineStore(
 
         /**
          * Fetch the latest server update log from the backend.
+         * @param {boolean} active Whether to show a notification if the log is already the latest.
          * @return {Promise<void>}
          */
-        async function fetchLatestServerUpdateLog() {
+        async function fetchLatestServerUpdateLog(active = false) {
             try {
-                const requestBody = {logID: lastestLog.value.id}
+                const requestBody = {logID: updateLog.value[0].id}
                 const newLogsResp = await getLatestServerUpdateLog(requestBody);
                 if (newLogsResp.code === 200) {
                     if (newLogsResp.data.length === 0) {
-                        showInfo("历史更新信息已是最新")
+                        if (active) {
+                            showInfo("历史更新信息已是最新")
+                        }
                         return;
                     }
                     updateLog.value.unshift(...newLogsResp.data.sort((a, b) => b.id - a.id));
-                    lastestLog.value = newLogsResp.data[0];
                     showSuccess(newLogsResp.msg)
                 } else {
                     showWarn("", newLogsResp.msg)
@@ -64,7 +73,7 @@ export const useServerUpdateLogStore = defineStore(
 
         return {
             updateLog,
-            lastestLog,
+            getLatestLog,
             ensureServerUpdateLog,
             fetchServerInfo,
             fetchLatestServerUpdateLog,
