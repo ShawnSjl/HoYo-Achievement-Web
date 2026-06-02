@@ -26,7 +26,7 @@ const getTime = (timeStr) => {
 
 // 处理更新按钮
 const handleClick = async () => {
-  await serverUpdateLogStore.fetchLatestServerUpdateLog();
+  await serverUpdateLogStore.fetchLatestServerUpdateLog(true);
 }
 </script>
 

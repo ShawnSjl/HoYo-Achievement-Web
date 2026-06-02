@@ -6,6 +6,6 @@ export const getAllServerUpdateLog = () => {
 }
 
 // Get latest server info
-export const getLatestServerUpdateLog = (request) => {
-    return api.get('/server/latest', {params: request});
+export const getLatestServerUpdateLog = (params) => {
+    return api.get('/server/latest', {params: params});
 }

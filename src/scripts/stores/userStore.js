@@ -3,6 +3,7 @@ import {ref} from 'vue';
 import {
     changePassword,
     deleteCurrentUser,
+    getCurrentUserInfo,
     isRootUser,
     isSuperUser,
     isUserLogin,
@@ -10,8 +11,9 @@ import {
     logout,
     updateUsername
 } from "@/scripts/api/user.js";
-import {showError, showInfo, showSuccess} from "@/scripts/utils/notification.js";
+import {showError, showInfo, showSuccess, showWarn} from "@/scripts/utils/notification.js";
 import {useAccountStore} from "@/scripts/stores/accountStore.js";
+import {getClientId} from "@/scripts/utils/clientId.js";
 
 export const useUserStore = defineStore(
     "userStore",
@@ -26,16 +28,16 @@ export const useUserStore = defineStore(
         const pendingRetryRequest = ref(null);
 
         /**
-         * Async function that tries to log in the user
+         * Login user
          * @param username
          * @param password
+         * @return {Promise<boolean>}
          */
         async function loginUser(username, password) {
             try {
-                // Login by given credentials
                 const requestBody = {
                     username: username,
-                    password: password
+                    password: password,
                 }
                 const loginResponse = await login(requestBody);
                 if (loginResponse.code === 200) {
@@ -44,18 +46,16 @@ export const useUserStore = defineStore(
                     isSuper.value = loginResponse.data.isSuper;
                     isRoot.value = loginResponse.data.isRoot;
 
-                    // Fetch accounts from the backend
-                    const accountStore = useAccountStore();
-                    await accountStore.fetchAccounts();
-
                     showSuccess('登录成功');
+                    return true;
                 } else {
-                    showInfo(loginResponse.msg);
+                    showWarn(loginResponse.msg);
                 }
             } catch (error) {
-                console.error('Login error:', error);
-                showError("登录错误", error)
+                console.log('Login error:', error);
+                showError("登录错误", error);
             }
+            return false;
         }
 
         /**
@@ -184,6 +184,28 @@ export const useUserStore = defineStore(
         }
 
         /**
+         * Fetch user info
+         * @return {Promise<void>}
+         */
+        async function fetchUserInfo() {
+            if (!isLogin.value) return;
+
+            try {
+                const infoResponse = await getCurrentUserInfo();
+                if (infoResponse.code === 200) {
+                    user.value = infoResponse.data.username;
+                    isSuper.value = infoResponse.data.isSuper;
+                    isRoot.value = infoResponse.data.isRoot;
+                } else {
+                    showError(infoResponse.msg);
+                }
+            } catch (error) {
+                console.error("Fail to fetch user info:", error);
+                showError("同步用户信息出错", error)
+            }
+        }
+
+        /**
          * Update the username of the current user.
          * @param newUsername
          * @returns {Promise<void>}
@@ -196,7 +218,13 @@ export const useUserStore = defineStore(
 
             // Update the username in the backend
             try {
-                const updateResponse = await updateUsername({username: newUsername});
+                const requestParams = {
+                    clientId: getClientId(),
+                }
+                const requestBody = {
+                    username: newUsername,
+                }
+                const updateResponse = await updateUsername(requestParams, requestBody);
                 if (updateResponse.code === 200) {
                     user.value = newUsername;
                     showInfo(updateResponse.msg);
@@ -250,7 +278,10 @@ export const useUserStore = defineStore(
             }
 
             try {
-                const deleteResponse = await deleteCurrentUser();
+                const requestParams = {
+                    clientId: getClientId(),
+                }
+                const deleteResponse = await deleteCurrentUser(requestParams);
                 if (deleteResponse.code === 200) {
                     await logoutUser();
                     showSuccess(deleteResponse.msg);
@@ -295,6 +326,7 @@ export const useUserStore = defineStore(
             isUserRoot,
             forceCheckIsUserRoot,
             getUserName,
+            fetchUserInfo,
             updateUserUsername,
             updateUserPassword,
             deleteUser,

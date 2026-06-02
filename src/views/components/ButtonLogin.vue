@@ -1,10 +1,13 @@
 <script setup>
-import {reactive, ref} from 'vue';
+import {nextTick, reactive, ref} from 'vue';
 import {useUserStore} from '@/scripts/stores/userStore.js';
 import {showError} from "@/scripts/utils/notification.js";
+import router from "@/scripts/router/index.js";
+import {useAccountStore} from "@/scripts/stores/accountStore.js";
 
 // 使用Pinia作为本地缓存
 const userStore = useUserStore();
+const accountStore = useAccountStore();
 
 // 登录窗口可视性
 const loginDialogVisible = ref(false);
@@ -43,7 +46,18 @@ const submitForm = () => {
   })
 }
 const handleLogin = async () => {
-  await userStore.loginUser(loginForm.username, loginForm.password)
+  const loginResult = await userStore.loginUser(loginForm.username, loginForm.password);
+  if (loginResult) {
+    // 返回主页面
+    await router.replace({
+      path: '/'
+    });
+
+    // 等待页面卸载掉
+    await nextTick();
+
+    // 这里不需要加载用户的账号，App.vue中sse建立连接时会加载
+  }
 }
 </script>
 

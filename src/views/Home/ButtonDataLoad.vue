@@ -1,10 +1,11 @@
 <script setup>
 import {ref} from "vue";
 import {loadLocalData} from "@/scripts/api/migration.js";
-import {showError, showInfo, showSuccess} from "@/scripts/utils/notification.js";
+import {showError, showInfo, showSuccess, showWarn} from "@/scripts/utils/notification.js";
 import {useServerUpdateLogStore} from "@/scripts/stores/serverUpdateLogStore.js";
 import {useZzzAchievementStore} from "@/scripts/stores/zzzAchievementsStore.js";
 import {useSrAchievementStore} from "@/scripts/stores/srAchievementStore.js";
+import {getClientId} from "@/scripts/utils/clientId.js";
 
 // 使用Pinia作为本地缓存
 const serverUpdateLogStore = useServerUpdateLogStore();
@@ -26,9 +27,12 @@ const handleLocalLoad = async () => {
   isDisabled.value = true;
 
   try {
-    const loadResponse = await loadLocalData();
+    const requestParams = {
+      clientId: getClientId(),
+    }
+    const loadResponse = await loadLocalData(requestParams);
     if (loadResponse.code !== 200) {
-      showInfo(loadResponse.msg);
+      showWarn(loadResponse.msg);
       return;
     }
     if (loadResponse.data.length > 0) {
@@ -40,7 +44,7 @@ const handleLocalLoad = async () => {
       await zzzAchievementStore.fetchAll();
       await srAchievementStore.fetchAll();
     } else {
-      showSuccess(loadResponse.msg);
+      showInfo("本地数据无更新");
     }
   } catch (e) {
     showError(e);
