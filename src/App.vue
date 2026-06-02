@@ -4,16 +4,15 @@ import {onMounted, onUnmounted, watch} from "vue";
 import {SseSyncClient} from "@/scripts/utils/sseSyncClient.js";
 import {useSrAchievementStore} from "@/scripts/stores/srAchievementStore.js";
 import {useZzzAchievementStore} from "@/scripts/stores/zzzAchievementsStore.js";
-import {useServerUpdateLogStore} from "@/scripts/stores/serverUpdateLogStore.js";
 import {useUserStore} from "@/scripts/stores/userStore.js";
 import {getClientId} from "@/scripts/utils/clientId.js";
 import {useAccountStore} from "@/scripts/stores/accountStore.js";
+import router from "@/scripts/router/index.js";
 
 const route = useRoute()
 const userStore = useUserStore();
 const srAchievementStore = useSrAchievementStore();
 const zzzAchievementStore = useZzzAchievementStore();
-const serverUpdateLogStore = useServerUpdateLogStore();
 const accountStore = useAccountStore();
 
 let sseClient = null
@@ -25,10 +24,8 @@ const handleSync = async () => {
   // Ensure ZZZ's data are loaded
   await zzzAchievementStore.checkAchievementVersion();
 
-  // Fetch the server update log
-  await serverUpdateLogStore.ensureServerUpdateLog();
-
-  if (userStore.isLogin) {
+  // Check if user is logged in
+  if (userStore.isLogin && await userStore.forceCheckIsUserLogin()) {
     // Fetch user's data
     await userStore.fetchUserInfo();
 
@@ -63,8 +60,10 @@ const handleUpdate = async (payload) => {
           await accountStore.fetchAccountByUuid(payload.entity_id);
           break;
         case 'DELETE':
-          // TODO: handle account deletion, if account is on front page and be deleted, need to go back to home page
-          // await accountStore.fetchAccounts();
+          if (payload.entity_id.endsWith(route.query.id)) {
+            await router.push({path: '/'})
+          }
+          accountStore.deleteAccountByRemoteUpdate(payload.entity_id);
           break;
         default:
           console.error('Unknown action:', payload.action);
