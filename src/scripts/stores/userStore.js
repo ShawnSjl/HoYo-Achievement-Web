@@ -1,5 +1,5 @@
 import {defineStore} from "pinia";
-import {ref} from 'vue';
+import {nextTick, ref} from 'vue';
 import {
     changePassword,
     deleteCurrentUser,
@@ -14,6 +14,7 @@ import {
 import {showError, showInfo, showSuccess, showWarn} from "@/scripts/utils/notification.js";
 import {useAccountStore} from "@/scripts/stores/accountStore.js";
 import {getClientId} from "@/scripts/utils/clientId.js";
+import router from "@/scripts/router/index.js";
 
 export const useUserStore = defineStore(
     "userStore",
@@ -31,7 +32,6 @@ export const useUserStore = defineStore(
          * Login user
          * @param username
          * @param password
-         * @return {Promise<boolean>}
          */
         async function loginUser(username, password) {
             try {
@@ -41,13 +41,18 @@ export const useUserStore = defineStore(
                 }
                 const loginResponse = await login(requestBody);
                 if (loginResponse.code === 200) {
+                    // back to home page
+                    await router.replace({
+                        path: '/'
+                    });
+                    await nextTick(); // wait for the page to be unloaded
+
                     isLogin.value = true;
                     user.value = loginResponse.data.username;
                     isSuper.value = loginResponse.data.isSuper;
                     isRoot.value = loginResponse.data.isRoot;
 
                     showSuccess('登录成功');
-                    return true;
                 } else {
                     showWarn(loginResponse.msg);
                 }
@@ -55,7 +60,6 @@ export const useUserStore = defineStore(
                 console.log('Login error:', error);
                 showError("登录错误", error);
             }
-            return false;
         }
 
         /**
