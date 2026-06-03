@@ -7,12 +7,12 @@ import {useSrAchievementStore} from "@/scripts/stores/srAchievementStore.js";
 export const srExport = async (uuid) => {
     try {
         const workbook = new ExcelJS.Workbook();
-        const worksheet = workbook.addWorksheet('SR Achievements');
+        const worksheet = workbook.addWorksheet('HSR Achievements');
 
         // 表头
         worksheet.columns = [
             {header: '成就ID', key: 'achievement_id', width: 15},
-            {header: '类别', key: 'class_name', width: 10},
+            {header: '类别', key: 'category', width: 10},
             {header: '名称', key: 'name', width: 20},
             {header: '描述', key: 'description', width: 40},
             {header: '奖励等级', key: 'reward_level', width: 15},

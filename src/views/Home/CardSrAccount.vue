@@ -8,7 +8,6 @@ import SrAchievementImg2 from "@/assets/sr-image/sr-achievement-level-2.png";
 import SrAchievementImg1 from "@/assets/sr-image/sr-achievement-level-1.png";
 import SrAchievement from "@/assets/sr-image/sr-achievement.png";
 import {useAccountStore} from "@/scripts/stores/accountStore.js";
-import {useServerInfoStore} from "@/scripts/stores/serverInfoStore.js";
 import ButtonAccountEdit from "@/views/Home/ButtonAccountEdit.vue";
 import {branchAchievementCountByLevel} from "@/scripts/utils/countBranchAchievement.js";
 import {completeAchievementCountByLevel} from "@/scripts/utils/countCompleteAchievement.js";
@@ -16,7 +15,6 @@ import {completeAchievementCountByLevel} from "@/scripts/utils/countCompleteAchi
 // 使用Pinia作为本地缓存
 const accountStore = useAccountStore();
 const achievementStore = useSrAchievementStore();
-const serverInfoStore = useServerInfoStore();
 
 // 传入只读数据
 const props = defineProps({
@@ -41,26 +39,26 @@ const completeNumber = computed(() => {
 
 const getLevel1Number = computed(() => {
   return achievementStore.achievements.filter(achievement => achievement.reward_level === 1).length
-      - branchAchievementCountByLevel('SR', 1);
+      - branchAchievementCountByLevel('HSR', 1);
 })
 const getCompleteLevel1Number = computed(() => {
-  return completeAchievementCountByLevel('SR', props.uuid, 1);
+  return completeAchievementCountByLevel('HSR', props.uuid, 1);
 })
 
 const getLevel2Number = computed(() => {
   return achievementStore.achievements.filter(achievement => achievement.reward_level === 2).length
-      - branchAchievementCountByLevel('SR', 2);
+      - branchAchievementCountByLevel('HSR', 2);
 })
 const getCompleteLevel2Number = computed(() => {
-  return completeAchievementCountByLevel('SR', props.uuid, 2);
+  return completeAchievementCountByLevel('HSR', props.uuid, 2);
 })
 
 const getLevel3Number = computed(() => {
   return achievementStore.achievements.filter(achievement => achievement.reward_level === 3).length
-      - branchAchievementCountByLevel('SR', 3);
+      - branchAchievementCountByLevel('HSR', 3);
 })
 const getCompleteLevel3Number = computed(() => {
-  return completeAchievementCountByLevel('SR', props.uuid, 3);
+  return completeAchievementCountByLevel('HSR', props.uuid, 3);
 })
 
 // 处理点击转跳
@@ -68,7 +66,7 @@ const handleClick = () => {
   const shortId = props.uuid.slice(-8);
 
   router.push({
-    path: '/sr',
+    path: '/hsr',
     query: {
       id: shortId
     }
@@ -120,7 +118,7 @@ const handleClick = () => {
 
       <template #footer>
         <div style="display: flex; flex-direction: row-reverse">
-          <p class="version">版本： {{ serverInfoStore.lastestInfo.sr_version }}</p>
+          <p class="version">版本： {{ achievementStore.achievementVersion }}</p>
         </div>
       </template>
     </el-card>

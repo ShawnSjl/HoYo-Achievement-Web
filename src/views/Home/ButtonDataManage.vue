@@ -2,7 +2,7 @@
 import {useUserStore} from "@/scripts/stores/userStore.js";
 import {computed, onMounted, onUnmounted, ref, watch} from "vue";
 import {dayjs} from "element-plus";
-import {showError, showInfo, showSuccess} from "@/scripts/utils/notification.js";
+import {showError, showInfo} from "@/scripts/utils/notification.js";
 import {getAllMigrationRecords} from "@/scripts/api/migration.js";
 import ButtonDataLoad from "@/views/Home/ButtonDataLoad.vue";
 import {useIsMobileStore} from "@/scripts/stores/isMobileStore.js";
@@ -48,7 +48,7 @@ const fetchAllMigrationRecords = async () => {
       return;
     }
     allMigrationRecords.value = response.data;
-    showSuccess(response.msg);
+    console.log(response.msg);
   } catch (e) {
     showError('获取数据迁移列表失败', e);
   }

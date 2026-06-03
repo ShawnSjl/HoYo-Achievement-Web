@@ -4,7 +4,6 @@ import {useSrAchievementStore} from "@/scripts/stores/srAchievementStore.js";
 import {computed, ref, watch} from "vue";
 import {useAccountStore} from "@/scripts/stores/accountStore.js";
 import FilterSrAchievement from "@/views/SrAchievement/FilterSrAchievement.vue";
-import {useServerInfoStore} from "@/scripts/stores/serverInfoStore.js";
 
 // 传入只读数据
 const props = defineProps({
@@ -18,7 +17,6 @@ const achievementClass = defineModel();
 // 使用Pinia作为本地缓存
 const accountStore = useAccountStore();
 const achievementStore = useSrAchievementStore();
-const serverInfoStore = useServerInfoStore();
 
 // 获取账户列表
 const accounts = computed(() => {
@@ -47,7 +45,7 @@ function getProgress(achievementId) {
 
 // 根据类别获取成就
 const achievementsInClass = computed(() => {
-  return achievementStore.achievements.filter(achievement => achievement.class_name === achievementClass.value)
+  return achievementStore.achievements.filter(achievement => achievement.category === achievementClass.value)
 })
 
 // 过滤器
@@ -68,7 +66,7 @@ const filteredAchievements = computed(() => {
       achievementsInType = achievementsInClass.value.filter(achieve => getProgress(achieve.achievement_id) !== 0);
       break;
     case '最新版本':
-      achievementsInType = achievementsInClass.value.filter(achieve => achieve.game_version === serverInfoStore.lastestInfo.sr_version);
+      achievementsInType = achievementsInClass.value.filter(achieve => achieve.game_version === achievementStore.achievementVersion);
       break;
     default:
       achievementsInType = achievementsInClass.value;

@@ -1,13 +1,14 @@
 <script setup>
 import {ref} from "vue";
 import {loadLocalData} from "@/scripts/api/migration.js";
-import {showError, showInfo, showSuccess} from "@/scripts/utils/notification.js";
-import {useServerInfoStore} from "@/scripts/stores/serverInfoStore.js";
+import {showError, showInfo, showSuccess, showWarn} from "@/scripts/utils/notification.js";
+import {useServerUpdateLogStore} from "@/scripts/stores/serverUpdateLogStore.js";
 import {useZzzAchievementStore} from "@/scripts/stores/zzzAchievementsStore.js";
 import {useSrAchievementStore} from "@/scripts/stores/srAchievementStore.js";
+import {getClientId} from "@/scripts/utils/clientId.js";
 
 // 使用Pinia作为本地缓存
-const serverInfoStore = useServerInfoStore();
+const serverUpdateLogStore = useServerUpdateLogStore();
 const zzzAchievementStore = useZzzAchievementStore();
 const srAchievementStore = useSrAchievementStore();
 
@@ -26,9 +27,12 @@ const handleLocalLoad = async () => {
   isDisabled.value = true;
 
   try {
-    const loadResponse = await loadLocalData();
+    const requestParams = {
+      clientId: getClientId(),
+    }
+    const loadResponse = await loadLocalData(requestParams);
     if (loadResponse.code !== 200) {
-      showInfo(loadResponse.msg);
+      showWarn(loadResponse.msg);
       return;
     }
     if (loadResponse.data.length > 0) {
@@ -36,13 +40,11 @@ const handleLocalLoad = async () => {
       // 触发刷新事件
       emit('refresh');
 
-      await serverInfoStore.fetchServerInfo();
-      await zzzAchievementStore.fetchAchievements();
-      await zzzAchievementStore.fetchBranches();
-      await srAchievementStore.fetchAchievements();
-      await srAchievementStore.fetchBranches();
+      await serverUpdateLogStore.fetchServerInfo();
+      await zzzAchievementStore.fetchAll();
+      await srAchievementStore.fetchAll();
     } else {
-      showSuccess(loadResponse.msg);
+      showInfo("本地数据无更新");
     }
   } catch (e) {
     showError(e);

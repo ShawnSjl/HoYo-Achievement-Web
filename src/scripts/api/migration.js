@@ -2,10 +2,10 @@ import api from "@/scripts/api/request.js"
 
 // Get all data migration records
 export const getAllMigrationRecords = () => {
-    return api.get('/api/migration/all');
+    return api.get('/migration/all');
 }
 
 // Load local data in server
-export const loadLocalData = () => {
-    return api.post('/api/migration/load-local')
+export const loadLocalData = (params) => {
+    return api.post('/migration/load-local', null, {params: params})
 }

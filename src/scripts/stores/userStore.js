@@ -1,22 +1,25 @@
 import {defineStore} from "pinia";
-import {ref} from 'vue';
+import {nextTick, ref} from 'vue';
 import {
     changePassword,
     deleteCurrentUser,
-    isLogin,
+    getCurrentUserInfo,
     isRootUser,
     isSuperUser,
+    isUserLogin,
     login,
     logout,
     updateUsername
 } from "@/scripts/api/user.js";
-import {showError, showInfo, showSuccess} from "@/scripts/utils/notification.js";
+import {showError, showInfo, showSuccess, showWarn} from "@/scripts/utils/notification.js";
 import {useAccountStore} from "@/scripts/stores/accountStore.js";
+import {getClientId} from "@/scripts/utils/clientId.js";
+import router from "@/scripts/router/index.js";
 
 export const useUserStore = defineStore(
     "userStore",
     () => {
-        const token = ref('');
+        const isLogin = ref(false);
         const user = ref('');
         const isSuper = ref(false);
         const isRoot = ref(false);
@@ -26,46 +29,46 @@ export const useUserStore = defineStore(
         const pendingRetryRequest = ref(null);
 
         /**
-         * Async function that tries to log in the user
+         * Login user
          * @param username
          * @param password
          */
         async function loginUser(username, password) {
             try {
-                // Login by given credentials
                 const requestBody = {
                     username: username,
-                    password: password
+                    password: password,
                 }
                 const loginResponse = await login(requestBody);
                 if (loginResponse.code === 200) {
-                    token.value = loginResponse.data.token;
+                    // back to home page
+                    await router.replace({
+                        path: '/'
+                    });
+                    await nextTick(); // wait for the page to be unloaded
+
+                    isLogin.value = true;
                     user.value = loginResponse.data.username;
                     isSuper.value = loginResponse.data.isSuper;
                     isRoot.value = loginResponse.data.isRoot;
 
-                    // Save the token in local storage for axios use
-                    localStorage.setItem('token', token.value);
-
-                    // Fetch accounts from the backend
-                    const accountStore = useAccountStore();
-                    await accountStore.fetchAccounts();
-
                     showSuccess('登录成功');
                 } else {
-                    showInfo(loginResponse.msg);
+                    showWarn(loginResponse.msg);
                 }
             } catch (error) {
-                console.error('Login error:', error);
-                showError("登录错误", error)
+                console.log('Login error:', error);
+                showError("登录错误", error);
             }
         }
 
         /**
-         * Log out current user
+         * Log out the current user
          */
         async function logoutUser() {
-            // Log out the token in the backend
+            if (!isLogin.value) return;
+
+            // Log out
             try {
                 const logoutResponse = await logout();
                 if (logoutResponse.code === 200) {
@@ -79,17 +82,14 @@ export const useUserStore = defineStore(
             }
 
             // Remove data from the local store whatever the response is
-            token.value = '';
+            isLogin.value = false;
             user.value = '';
             isSuper.value = false;
             isRoot.value = false;
 
-            // Remove the token from local storage
-            localStorage.removeItem('token');
-
             // Empty the account list in the account store
             const accountStore = useAccountStore();
-            accountStore.remoteAccounts.value = [];
+            accountStore.removeRemoteAccount();
         }
 
         /**
@@ -97,10 +97,8 @@ export const useUserStore = defineStore(
          * @returns {Promise<boolean>}
          */
         async function forceCheckIsUserLogin() {
-            if (!token.value) return false;
-
             try {
-                const isLoginResponse = await isLogin();
+                const isLoginResponse = await isUserLogin();
                 if (isLoginResponse.code === 200) {
                     if (!isLoginResponse.data) {
                         await logoutUser();
@@ -121,7 +119,7 @@ export const useUserStore = defineStore(
          * @returns {boolean}
          */
         function isUserSuper() {
-            return !!(token.value && isSuper.value);
+            return !!(isLogin.value && isSuper.value);
         }
 
         /**
@@ -130,7 +128,7 @@ export const useUserStore = defineStore(
          * @returns {Promise<any|boolean>}
          */
         async function forceCheckIsUserSuper() {
-            if (!token.value) return false;
+            if (!isLogin.value) return false;
 
             // Check if the user is an admin
             try {
@@ -153,7 +151,7 @@ export const useUserStore = defineStore(
          * @returns {boolean}
          */
         function isUserRoot() {
-            return !!(token.value && isRoot.value);
+            return !!(isLogin.value && isRoot.value);
         }
 
         /**
@@ -162,7 +160,7 @@ export const useUserStore = defineStore(
          * @returns {Promise<any|boolean>}
          */
         async function forceCheckIsUserRoot() {
-            if (!token.value) return false;
+            if (!isLogin.value) return false;
 
             // Check if the user is an admin
             try {
@@ -185,8 +183,30 @@ export const useUserStore = defineStore(
          * @returns string
          */
         function getUserName() {
-            if (!user.value) return '游客'
+            if (!user.value || !isLogin.value) return '游客'
             return user.value;
+        }
+
+        /**
+         * Fetch user info
+         * @return {Promise<void>}
+         */
+        async function fetchUserInfo() {
+            if (!isLogin.value) return;
+
+            try {
+                const infoResponse = await getCurrentUserInfo();
+                if (infoResponse.code === 200) {
+                    user.value = infoResponse.data.username;
+                    isSuper.value = infoResponse.data.isSuper;
+                    isRoot.value = infoResponse.data.isRoot;
+                } else {
+                    showError(infoResponse.msg);
+                }
+            } catch (error) {
+                console.error("Fail to fetch user info:", error);
+                showError("同步用户信息出错", error)
+            }
         }
 
         /**
@@ -195,14 +215,20 @@ export const useUserStore = defineStore(
          * @returns {Promise<void>}
          */
         async function updateUserUsername(newUsername) {
-            if (!token.value) {
+            if (!isLogin.value) {
                 showInfo("用户未登录");
                 return;
             }
 
             // Update the username in the backend
             try {
-                const updateResponse = await updateUsername({username: newUsername});
+                const requestParams = {
+                    clientId: getClientId(),
+                }
+                const requestBody = {
+                    username: newUsername,
+                }
+                const updateResponse = await updateUsername(requestParams, requestBody);
                 if (updateResponse.code === 200) {
                     user.value = newUsername;
                     showInfo(updateResponse.msg);
@@ -222,7 +248,7 @@ export const useUserStore = defineStore(
          * @returns {Promise<void>}
          */
         async function updateUserPassword(oldPassword, newPassword) {
-            if (!token.value) {
+            if (!isLogin.value) {
                 showInfo("用户未登录");
                 return;
             }
@@ -250,13 +276,16 @@ export const useUserStore = defineStore(
          * @returns {Promise<void>}
          */
         async function deleteUser() {
-            if (!token.value) {
+            if (!isLogin.value) {
                 showInfo("用户未登录");
                 return;
             }
 
             try {
-                const deleteResponse = await deleteCurrentUser();
+                const requestParams = {
+                    clientId: getClientId(),
+                }
+                const deleteResponse = await deleteCurrentUser(requestParams);
                 if (deleteResponse.code === 200) {
                     await logoutUser();
                     showSuccess(deleteResponse.msg);
@@ -270,7 +299,7 @@ export const useUserStore = defineStore(
         }
 
         /**
-         * Open 2FA validation dialog, register a callback function
+         * Open the 2FA validation dialog, register a callback function
          * @param {Function} retryFn
          */
         function trigger2FA(retryFn) {
@@ -279,7 +308,7 @@ export const useUserStore = defineStore(
         }
 
         /**
-         * Close 2FA validation dialog.
+         * Close the 2FA validation dialog.
          */
         function close2FA() {
             is2FAVisible.value = false;
@@ -287,8 +316,8 @@ export const useUserStore = defineStore(
         }
 
         return {
-            token,
             user,
+            isLogin,
             isSuper,
             isRoot,
             is2FAVisible,
@@ -301,6 +330,7 @@ export const useUserStore = defineStore(
             isUserRoot,
             forceCheckIsUserRoot,
             getUserName,
+            fetchUserInfo,
             updateUserUsername,
             updateUserPassword,
             deleteUser,

@@ -30,10 +30,10 @@ const handleSelect = async (srClass) => {
 // 计算完成度百分比
 const completePercentage = computed(() => {
   return (sr_class) => {
-    const totalNumber = achievementStore.achievements.filter(achievement => achievement.class_name === sr_class).length
-        - branchAchievementCountByClass('SR', sr_class);
+    const totalNumber = achievementStore.achievements.filter(achievement => achievement.category === sr_class).length
+        - branchAchievementCountByClass('HSR', sr_class);
 
-    const completeNumber = completeAchievementCountByClass('SR', props.uuid, sr_class);
+    const completeNumber = completeAchievementCountByClass('HSR', props.uuid, sr_class);
 
     if (totalNumber === 0) return 0; // 避免除以 0
 

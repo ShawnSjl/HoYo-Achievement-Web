@@ -49,7 +49,7 @@ onBeforeUnmount(() => {
         <div v-if="item.type === 'ZZZ'">
           <card-zzz-account :uuid="item.uuid" class="profile-card"/>
         </div>
-        <div v-if="item.type === 'SR'">
+        <div v-if="item.type === 'HSR'">
           <card-sr-account :uuid="item.uuid" class="profile-card"/>
         </div>
       </el-col>

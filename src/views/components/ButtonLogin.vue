@@ -33,7 +33,7 @@ const handleClose = () => {
 }
 
 // 处理提交
-const submitForm = () => {
+const submitForm = async () => {
   formRef.value.validate((valid) => {
     if (valid) {
       handleLogin()
@@ -43,7 +43,7 @@ const submitForm = () => {
   })
 }
 const handleLogin = async () => {
-  await userStore.loginUser(loginForm.username, loginForm.password)
+  await userStore.loginUser(loginForm.username, loginForm.password);
 }
 </script>
 

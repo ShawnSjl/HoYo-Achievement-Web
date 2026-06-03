@@ -4,14 +4,14 @@ import {useZzzAchievementStore} from "@/scripts/stores/zzzAchievementsStore.js";
 
 /**
  * Get the total number of additional achievements in all branches with the specified level.
- * @param type 'SR' or 'ZZZ'
+ * @param type 'HSR' or 'ZZZ'
  * @param level
  * @returns {number}
  */
 export const branchAchievementCountByLevel = (type, level) => {
     let store;
     switch (type) {
-        case 'SR':
+        case 'HSR':
             store = useSrAchievementStore();
             break;
         case 'ZZZ':
@@ -38,14 +38,14 @@ export const branchAchievementCountByLevel = (type, level) => {
 
 /**
  * Get the total number of additional achievements in all branches with the specified class.
- * @param type 'SR' or 'ZZZ'
+ * @param type 'HSR' or 'ZZZ'
  * @param achievement_class
  * @returns number
  */
 export const branchAchievementCountByClass = (type, achievement_class) => {
     let store;
     switch (type) {
-        case 'SR':
+        case 'HSR':
             store = useSrAchievementStore();
             break;
         case 'ZZZ':
@@ -64,11 +64,7 @@ export const branchAchievementCountByClass = (type, achievement_class) => {
 
         // If the level matches, add to the total count
         if (!achievement) continue;
-        if (type === 'SR') {
-            if (achievement.class_name !== achievement_class) continue;
-        } else {
-            if (achievement.class_id !== achievement_class) continue;
-        }
+        if (achievement.category !== achievement_class) continue;
         count = count + branch.achievement_id.length - 1;
     }
     return count;
@@ -76,7 +72,7 @@ export const branchAchievementCountByClass = (type, achievement_class) => {
 
 /**
  * Get the total number of additional achievements in all branches with the specified class and level.
- * @param type 'SR' or 'ZZZ'
+ * @param type 'HSR' or 'ZZZ'
  * @param achievement_class
  * @param level
  * @returns {number}
@@ -84,7 +80,7 @@ export const branchAchievementCountByClass = (type, achievement_class) => {
 export const branchAchievementCountByClassAndLevel = (type, achievement_class, level) => {
     let store;
     switch (type) {
-        case 'SR':
+        case 'HSR':
             store = useSrAchievementStore();
             break;
         case 'ZZZ':
@@ -104,11 +100,7 @@ export const branchAchievementCountByClassAndLevel = (type, achievement_class, l
         // If the level matches, add to the total count
         if (achievement.reward_level !== level) continue;
         if (!achievement) continue;
-        if (type === 'SR') {
-            if (achievement.class_name !== achievement_class) continue;
-        } else {
-            if (achievement.class_id !== achievement_class) continue;
-        }
+        if (achievement.category !== achievement_class) continue;
         count = count + branch.achievement_id.length - 1;
     }
     return count;

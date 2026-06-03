@@ -1,5 +1,4 @@
 <script setup>
-import {useUserStore} from "@/scripts/stores/userStore.js";
 import {useIsMobileStore} from "@/scripts/stores/isMobileStore";
 import {computed, nextTick, onBeforeUnmount, onMounted, ref, watch} from "vue";
 import {srClasses} from "@/scripts/utils/srAchievementClass";
@@ -10,31 +9,28 @@ import SrStatisticClass from "@/views/SrAchievement/SrStatisticClass.vue";
 import {useRoute} from "vue-router";
 import router from "@/scripts/router/index.js";
 import {useSrAchievementStore} from "@/scripts/stores/srAchievementStore.js";
+import {useAccountStore} from "@/scripts/stores/accountStore.js";
 
 // 创建Route
 const route = useRoute();
 
 // 使用Pinia作为本地缓存
-const userStore = useUserStore();
+const accountStore = useAccountStore();
 const achievementStore = useSrAchievementStore();
 const isMobileStore = useIsMobileStore();
 
 // 当前账号UUID
-const currentUUID = route.meta.uuid;
-
-// 如果用户变更，返回主页
-const userName = computed(() => userStore.getUserName());
-watch(userName, (_) => {
-  router.push({
-    path: '/',
-  })
-});
+const currentUUID = computed(() => {
+  const shortId = route.query.id;
+  return accountStore
+      .getAccounts()
+      .find(account => account.uuid.endsWith(shortId))?.uuid;
+})
 
 // 同步数据
 const fetchRemoteData = async () => {
   // Ensure SR's data are loaded
   await achievementStore.ensureAchievementData();
-  await achievementStore.ensureBranchData();
 };
 onMounted(() => {
   fetchRemoteData();

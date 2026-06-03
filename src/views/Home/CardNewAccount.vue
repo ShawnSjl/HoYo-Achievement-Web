@@ -79,6 +79,7 @@ const handleSubmit = async () => {
   formRef.value.validate((valid) => {
     if (valid) {
       handleAction();
+      handleClose();
     } else {
       showError("请填写要求的内容");
     }
@@ -139,7 +140,7 @@ const handleAction = async () => {
           >
             <el-form-item label="游戏类型" prop="type">
               <el-radio-group v-model="newAccountForm.type">
-                <el-radio border label="SR">崩坏：星穹铁道</el-radio>
+                <el-radio border label="HSR">崩坏：星穹铁道</el-radio>
                 <el-radio border label="ZZZ">绝区零</el-radio>
               </el-radio-group>
             </el-form-item>

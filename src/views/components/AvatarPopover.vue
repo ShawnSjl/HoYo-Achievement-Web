@@ -11,7 +11,7 @@ const userStore = useUserStore();
 
 // 获取用户是否login
 const isLoggedIn = computed(() => {
-  return userStore.token !== ''
+  return userStore.isLogin
 })
 </script>
 

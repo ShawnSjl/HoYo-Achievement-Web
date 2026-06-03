@@ -3,9 +3,7 @@ import ZzzView from "@/views/ZzzAchievement/ZzzView.vue";
 import HomeView from "@/views/Home/HomeView.vue"
 import SrView from "@/views/SrAchievement/SrView.vue";
 import {useAccountStore} from "@/scripts/stores/accountStore.js";
-import {useSrAchievementStore} from "@/scripts/stores/srAchievementStore.js";
-import {useZzzAchievementStore} from "@/scripts/stores/zzzAchievementsStore.js";
-import {useServerInfoStore} from "@/scripts/stores/serverInfoStore.js";
+import {useServerUpdateLogStore} from "@/scripts/stores/serverUpdateLogStore.js";
 
 const routes = [
     {
@@ -17,20 +15,9 @@ const routes = [
             color: '#FFFFFF'
         },
         beforeEnter: async (to, from, next) => {
-            const srAchievementStore = useSrAchievementStore();
-            const zzzAchievementStore = useZzzAchievementStore();
-            const serverInfoStore = useServerInfoStore();
-
-            // Ensure SR's data are loaded
-            await srAchievementStore.ensureAchievementData();
-            await srAchievementStore.ensureBranchData();
-
-            // Ensure ZZZ's data are loaded
-            await zzzAchievementStore.ensureAchievementData();
-            await zzzAchievementStore.ensureBranchData();
+            const serverUpdateLogStore = useServerUpdateLogStore();
             // Fetch the server info
-            await serverInfoStore.ensureServerInfo();
-
+            await serverUpdateLogStore.ensureServerUpdateLog();
             next();
         }
     },
@@ -43,17 +30,9 @@ const routes = [
             color: '#000000'
         },
         beforeEnter: (to, from, next) => {
-            const accountStore = useAccountStore();
+            const uuid = resolveUuid(to);
 
-            if (accountStore.getAccounts().length === 0) {
-                return next('/');
-            }
-
-            const shortId = to.query.id;
-            const found = accountStore.getAccounts().find(acc => acc.uuid.endsWith(shortId));
-
-            if (found) {
-                to.meta.uuid = found.uuid;
+            if (uuid) {
                 next();
             } else {
                 next('/');
@@ -61,7 +40,7 @@ const routes = [
         },
     },
     {
-        path: "/sr",
+        path: "/hsr",
         component: SrView,
         meta: {
             title: '崩坏：星穹铁道成就',
@@ -69,17 +48,9 @@ const routes = [
             color: '#f6f6f6'
         },
         beforeEnter: (to, from, next) => {
-            const accountStore = useAccountStore();
+            const uuid = resolveUuid(to);
 
-            if (accountStore.getAccounts().length === 0) {
-                return next('/');
-            }
-
-            const shortId = to.query.id;
-            const found = accountStore.getAccounts().find(acc => acc.uuid.endsWith(shortId));
-
-            if (found) {
-                to.meta.uuid = found.uuid;
+            if (uuid) {
                 next();
             } else {
                 next('/');
@@ -87,6 +58,25 @@ const routes = [
         },
     },
 ];
+
+function resolveUuid(to) {
+    const accountStore = useAccountStore();
+
+    if (accountStore.getAccounts().length === 0) {
+        return null;
+    }
+
+    const shortId = to.query.id;
+    if (!shortId) {
+        return null;
+    }
+
+    const found = accountStore
+        .getAccounts()
+        .find(acc => acc.uuid.endsWith(shortId));
+
+    return found?.uuid ?? null;
+}
 
 const router = createRouter({
     history: createWebHistory(),
