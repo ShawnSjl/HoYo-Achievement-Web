@@ -280,7 +280,7 @@ export const useSrAchievementStore = defineStore(
                     // Check if the target achievement exists in the achievement list
                     const targetAchievement = achievements.value.find(achievement => achievement.name === item.name);
                     if (!targetAchievement) {
-                        errorMessages.push(item.achievement_id);
+                        errorMessages.push(item.name);
                         if (errorMessages.length >= 10) {
                             showError('成就表格导入失败', '错误次数过多');
                             return false;
@@ -343,7 +343,7 @@ export const useSrAchievementStore = defineStore(
 
                 // Show unknow ids
                 if (errorMessages.length > 0) {
-                    showWarn('未知成就ID', String.join(', ', errorMessages))
+                    showWarn('未知成就', errorMessages.join(','))
                 }
 
                 // Update if is login

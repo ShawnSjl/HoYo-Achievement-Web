@@ -13,8 +13,8 @@ const achievementStore = useZzzAchievementStore();
 
 // 匹配的列名
 const requiredFields = {
-  achievement_id: ['ID', '成就ID', '编号'],
-  complete: ['完成', '完成状态', '是否完成', '状态']
+  name: ['名称', '成就'],
+  complete: ['完成', '完成状态', '获取状态', '状态']
 };
 
 // 寻找要求的列的名称
@@ -24,7 +24,7 @@ function matchRequiredHeaders(headers) {
 
   for (const [standardKey, candidates] of Object.entries(requiredFields)) {
     const match = headers.find(h =>
-        candidates.some(keyword => h.trim().includes(keyword))
+        candidates.some(keyword => h.trim() === keyword)
     );
     if (match) {
       result[standardKey] = match;
@@ -41,7 +41,7 @@ function convertMinimalRows(headers, body) {
   const {matched, missing} = matchRequiredHeaders(headers);
 
   if (missing.length) {
-    const readable = missing.map(k => k === 'achievement_id' ? 'ID' : '完成');
+    const readable = missing.map(k => k === 'name' ? '名称' : '状态');
     throw new Error(`缺少必要字段：${readable.join('、')}`);
   }
 
