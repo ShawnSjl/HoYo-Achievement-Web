@@ -279,9 +279,9 @@ export const useZzzAchievementStore = defineStore(
                     const complete = Number(item.complete) === 1 || item.complete === '已完成' ? 1 : 0;
 
                     // Check if the target achievement exists in the achievement list
-                    const targetAchievement = achievementMap.value.get(item.achievement_id);
+                    const targetAchievement = achievements.value.find(achievement => achievement.name === item.name);
                     if (!targetAchievement) {
-                        errorMessages.push(item.achievement_id);
+                        errorMessages.push(item.name);
                         if (errorMessages.length >= 10) {
                             showError('成就表格导入失败', '错误次数过多');
                             return false;
@@ -290,7 +290,7 @@ export const useZzzAchievementStore = defineStore(
                     }
 
                     // Get the target record from the record list
-                    const targetRecord = records.find(record => record.achievement_id === item.achievement_id);
+                    const targetRecord = records.find(record => record.achievement_id === targetAchievement.achievement_id);
 
                     // If the target record exists and the complete status is the same, ignore the update
                     if (targetRecord && targetRecord.complete === complete) {
@@ -306,7 +306,7 @@ export const useZzzAchievementStore = defineStore(
                         const requestBody = {
                             uuid: uuid,
                             game_id: gameId,
-                            achievement_id: `${item.achievement_id}`,
+                            achievement_id: `${targetAchievement.achievement_id}`,
                             complete_status: `${complete}`
                         }
                         batch.push(requestBody);
@@ -316,7 +316,7 @@ export const useZzzAchievementStore = defineStore(
                     if (!targetRecord) {
                         records.push({
                             account_uuid: uuid,
-                            achievement_id: item.achievement_id,
+                            achievement_id: targetAchievement.achievement_id,
                             complete: complete,
                         })
                     }
@@ -326,7 +326,7 @@ export const useZzzAchievementStore = defineStore(
                     }
 
                     // Update other achievements in the same branch
-                    const branchAchievements = getOtherAchievements(item.achievement_id);
+                    const branchAchievements = getOtherAchievements(targetAchievement.achievement_id);
                     const branchStatus = complete === 1 ? 2 : 0;
                     for (const branchAchievement of branchAchievements) {
                         const branchTarget = records.find(record => record.achievement_id === branchAchievement);
@@ -344,7 +344,7 @@ export const useZzzAchievementStore = defineStore(
 
                 // Show know ids
                 if (errorMessages.length > 0) {
-                    showWarn('未知成就ID', String.join(', ', errorMessages))
+                    showWarn('未知成就', errorMessages.join(','))
                 }
 
                 // Update records in the backend
